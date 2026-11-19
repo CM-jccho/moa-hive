@@ -547,6 +547,35 @@ const CASES = [
   },
 ];
 
+/* 업종별 한 줄 버튼 · 짧은 팀 이름 (초보자용 3단계 체험) */
+const CASE_QUICK = {
+  store: {
+    short: '동네 매장',
+    quick: ['🎪 이번 주 단골 이벤트 기획해줘', '📣 이번 주 홍보글 3편 써줘', '⭐ 새 리뷰 답글 초안 만들어줘'],
+  },
+  office: {
+    short: '직장인',
+    quick: ['📝 회의 메모 3줄로 요약해줘', '📊 주간 보고서 초안 써줘', '✉️ 답장할 메일 2건 정리해줘'],
+  },
+  seller: {
+    short: '스마트스토어',
+    quick: ['🖼️ 상세페이지 카피 3안 써줘', '💬 CS 답변 5종 만들어줘', '🎁 이번 주 프로모션 기획해줘'],
+  },
+  creator: {
+    short: '1인 크리에이터',
+    quick: ['🔭 다음 주 콘텐츠 소재 10개 뽑아줘', '🎞️ 쇼츠 대본 3편 써줘', '💌 댓글 답글 초안 만들어줘'],
+  },
+  freelancer: {
+    short: '프리랜서',
+    quick: ['📄 제안서 초안 써줘', '🧮 견적 3안 만들어줘', '⏰ 마감 리마인드 메일 써줘'],
+  },
+  product: {
+    short: '프로덕트 팀',
+    quick: ['🧭 2주 안에 낼 MVP 범위 정해줘', '💡 새 컨셉 3안 내줘', '🔨 첫 화면부터 만들어줘'],
+  },
+};
+const QUICK_DEFAULT = ['🗂️ 이번 주 할 일 정리해줘', '🎯 팀 우선순위 정해줘', '✅ 다음 액션 하나 골라줘'];
+
 const ROLE_TASKS = {
   pm: ['이번 주 목표를 PRD 초안으로 쪼개기', '회의록을 액션 아이템으로 정리', '릴리즈 전 QA 체크리스트 만들기'],
   dev: ['구현 순서와 파일 구조 정리', '버그 재현 → 수정 계획 세우기', '배포 스크립트 점검'],
@@ -644,7 +673,7 @@ function seedState() {
     channels,
     messages: {
       ch_all: [
-        { id: uid('msg'), kind: 'system', name: 'MOA Hive', text: LN('seed.system', '로컬 하네스 준비 완료. 이 대화는 이 PC의 ./data/에만 저장됩니다.') },
+        { id: uid('msg'), kind: 'system', name: 'MOA Hive', text: LN('seed.system', '체험판이 준비됐습니다. 이 대화는 이 탭 안에만 남고 어디로도 보내지 않습니다.') },
         {
           id: uid('msg'),
           kind: 'bot',
@@ -652,7 +681,7 @@ function seedState() {
           name: 'MOA Chief',
           emoji: '🧠',
           role: 'chief',
-          text: LN('seed.greeting', '**MOA Chief**입니다. 하고 싶은 일을 말해 주세요 — 💡 Prototyper(발산) · 🔨 Builder(구현) · 🧹 Sweeper(정돈) · 🌱 Grower(성장) · 🛡️ Maintainer(운영)에게 나눠 맡기고 결과만 정리해 드립니다.\n\n- 그냥 말하면 팀이 알아서 나눠 일합니다\n- 한 사람에게만 시키려면 `@Builder`처럼 불러 주세요'),
+          text: LN('seed.greeting', '안녕하세요, 팀장 봇 **MOA Chief**입니다.\n\n1. 위에서 **내 업종**을 고르고\n2. 아래 **큰 버튼**을 하나 누르면\n\n나머지는 팀이 나눠서 합니다. 결과만 보시면 됩니다.'),
         },
       ],
       ch_b2b: [],
@@ -660,6 +689,7 @@ function seedState() {
     },
     activeChannelId: 'ch_all',
     activeBotId: 'bot_chief',
+    currentCaseId: null,
     typingBotId: null,
     officeBusy: null,
     proposal: null,
@@ -717,32 +747,134 @@ function characterClass(name) {
   return '';
 }
 
-function officeChar(b, working, bubble) {
-  return '<button type="button" class="d-office-char ' + characterClass(b.name) + ' ' + (working ? 'working' : 'idle') + '" data-office-bot="' + esc(b.id) + '" data-testid="office-char" title="' + esc(u('openRole') || '역할 카드 열기') + '">' +
-    '<span class="d-char-bubble">' + esc(bubble || '') + '</span>' +
-    '<span class="d-char-avatar">' + esc(b.emoji || '🤖') + '</span>' +
-    '<span class="d-char-desk"></span>' +
-    '<span class="d-char-name">' + esc(b.name) + '</span>' +
-    '</button>';
+/* ── 2D 가상 사무실 ─────────────────────────────────────── */
+function officeLabels() {
+  return {
+    zoneMeeting: LN('demo.zoneMeeting', '회의실'),
+    zoneMaker: LN('demo.zoneMaker', '메이커 존'),
+    zoneLounge: LN('demo.zoneLounge', '라운지'),
+    phaseDay: LN('demo.timeDay', '낮'),
+    phaseSunset: LN('demo.timeSunset', '노을'),
+    phaseNight: LN('demo.timeNight', '밤'),
+    delegating: LN('demo.bubbleDelegating', '배분 중…'),
+    working: LN('demo.bubbleWorking', '작업 중…'),
+    openRole: u('openRole') || '역할 카드 열기',
+  };
+}
+
+function initOffice() {
+  const scene = window.OfficeScene;
+  if (!scene) return;
+  scene.init({
+    stage: $('#officeStage'),
+    canvas: $('#officeCanvas'),
+    overlay: $('#officeOverlay'),
+    clock: $('#officeClock'),
+    phaseEl: $('#officePhase'),
+    times: $('#officeTimes'),
+    labels: officeLabels(),
+    onPick: openBot,
+  });
 }
 
 function renderOffice() {
   const floor = $('#officeFloor');
   if (!floor) return;
   const chief = state.bots.find((b) => b.isChief);
-  const rest = state.bots.filter((b) => b !== chief);
-  const busy = state.officeBusy || {};
-  const working = (b) => b.id === state.typingBotId || (busy.chief && b === chief) || busy.agent === b.id;
-  const delegating = LN('demo.bubbleDelegating', '위임 중…');
-  const workingLabel = LN('demo.bubbleWorking', '작업 중…');
-  const bubble = (b) => (busy.chief && b === chief ? delegating : working(b) ? workingLabel : '');
-  const groups = [];
-  if (chief) groups.push(officeChar(chief, working(chief), bubble(chief)));
-  rest.slice(0, 3).forEach((b) => groups.push(officeChar(b, working(b), bubble(b))));
-  const lounge = rest.slice(3, 5).map((b) => officeChar(b, working(b), bubble(b)));
-  floor.innerHTML = groups.join('') + (lounge.length ? '<span class="d-office-lounge">' + esc(LN('demo.officeLounge', '그로스 · 운영')) + '</span>' + lounge.join('') : '');
+  if (window.OfficeScene) {
+    window.OfficeScene.sync(
+      state.bots.map((b) => ({ id: b.id, name: b.name, emoji: b.emoji, isChief: !!b.isChief })),
+      {
+        labels: officeLabels(),
+        activeId: state.activeBotId,
+        chiefId: chief ? chief.id : null,
+        busy: state.officeBusy || {},
+      }
+    );
+  }
   const hint = $('#officeHint');
-  if (hint) hint.textContent = chief ? fmt(LN('demo.officeHint', '{chief} + 에이전트 {n}명'), { chief: chief.name, n: rest.length }) : '';
+  if (hint) {
+    hint.textContent = chief
+      ? fmt(LN('demo.officeHint', '{chief} 팀장 · 봇 {n}명'), { chief: chief.name, n: Math.max(0, state.bots.length - 1) })
+      : '';
+  }
+}
+
+function openBot(id) {
+  if (!id) return;
+  state.activeBotId = id;
+  renderInspector();
+  renderOffice();
+  const sheet = $('#botSheet');
+  if (sheet) {
+    sheet.hidden = false;
+    document.body.classList.add('no-scroll');
+    const close = $('#closeBot');
+    if (close && close.focus) close.focus();
+  }
+}
+
+function closeBot() {
+  const sheet = $('#botSheet');
+  if (sheet) sheet.hidden = true;
+  document.body.classList.remove('no-scroll');
+}
+
+/* ── 3단계 체험 흐름 ─────────────────────────────────────── */
+let currentStep = 1;
+const STEP_TARGET = { 1: '#stepCase', 2: '#stepTry', 3: '#stepPack' };
+
+function setStep(n, opts) {
+  n = Number(n) || 1;
+  currentStep = n;
+  $$('#demoSteps .d-gstep').forEach((el) => {
+    const s = Number(el.getAttribute('data-step'));
+    const on = s === n;
+    el.classList.toggle('is-active', on);
+    el.classList.toggle('is-done', s < n);
+    if (on) el.setAttribute('aria-current', 'step');
+    else el.removeAttribute('aria-current');
+  });
+  const bar = $('#demoSteps');
+  if (bar) bar.setAttribute('data-current', String(n));
+  if (opts && opts.scroll) {
+    const target = $(STEP_TARGET[n]);
+    if (target && target.scrollIntoView) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function splitEmoji(q) {
+  const m = String(q).match(/^([\u{1F000}-\u{1FAFF}\u{2190}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]+)\s+([\s\S]+)$/u);
+  return m ? { em: m[1], text: m[2] } : { em: '▶️', text: String(q) };
+}
+
+function quickPrompts() {
+  const c = CASES.find((x) => x.id === state.currentCaseId);
+  const list = c ? caseInfo(c).quick : LN('demo.quickDefault', QUICK_DEFAULT);
+  return (Array.isArray(list) ? list : QUICK_DEFAULT).slice(0, 3);
+}
+
+function renderQuickTasks() {
+  const box = $('#quickTasks');
+  if (!box) return;
+  box.innerHTML = quickPrompts()
+    .map((q) => {
+      const p = splitEmoji(q);
+      return (
+        '<button class="d-quick-btn" type="button" data-quick="' + esc(p.text) + '">' +
+        '<span class="em" aria-hidden="true">' + esc(p.em) + '</span><span>' + esc(p.text) + '</span>' +
+        '</button>'
+      );
+    })
+    .join('');
+}
+
+function renderTeamChip() {
+  const el = $('#currentTeam');
+  if (!el) return;
+  const c = CASES.find((x) => x.id === state.currentCaseId);
+  const label = c ? caseInfo(c).short : LN('demo.teamDefault', '내 AI 팀');
+  el.textContent = fmt(LN('demo.teamChip', '{label} · 봇 {n}명'), { label, n: state.bots.length });
 }
 
 /* ───────────────────────── 환경 · 패널 렌더 ───────────────────────── */
@@ -791,7 +923,7 @@ function renderEnv() {
     input.disabled = isProd();
     const ph = isProd()
       ? LN('demo.inputProd', 'PROD는 읽기 전용입니다')
-      : (LANG === 'ko' ? '메시지 입력 — @봇이름 호출, “이번 주 할 일 정리해줘”' : input.getAttribute('data-' + LANG + '-placeholder') || LN('demo.inputProd', ''));
+      : (LANG === 'ko' ? '직접 쓰기 — 예: 이번 주 할 일 정리해줘' : input.getAttribute('data-' + LANG + '-placeholder') || LN('demo.inputProd', ''));
     input.placeholder = ph;
   }
   if (banner) banner.hidden = !isProd();
@@ -838,7 +970,7 @@ function renderBots() {
         (b.id === state.typingBotId
           ? '<span class="d-bot-state working">' + esc(LN('demo.workingBadge', '⚡ 작업 중')) + '</span>'
           : b.isChief
-          ? '<span class="d-bot-state">' + esc(LN('demo.chiefBadge', '총괄')) + '</span>'
+          ? '<span class="d-bot-state">' + esc(LN('demo.chiefBadge', '팀장')) + '</span>'
           : '') +
         '</button>'
     )
@@ -996,8 +1128,8 @@ function messageHtml(msg) {
       esc(p.body) +
       '</p>' +
       (p.status === 'pending'
-        ? '<div class="row"><button class="btn btn-sm btn-primary" type="button" data-prop="ok">OK · 자동 붙이기</button><button class="btn btn-sm btn-ghost" type="button" data-prop="pass">패스</button></div>'
-        : '<div class="done">' + (p.status === 'ok' ? '✓ 팀에 반영되었습니다.' : '· 기록되었습니다.') + '</div>') +
+        ? '<div class="row"><button class="btn btn-sm btn-primary" type="button" data-prop="ok">' + esc(LN('demo.proposalOk', '좋아요, 붙이기')) + '</button><button class="btn btn-sm btn-ghost" type="button" data-prop="pass">' + esc(LN('demo.proposalPass', '괜찮아요')) + '</button></div>'
+        : '<div class="done">' + esc(p.status === 'ok' ? LN('orch.proposalDone', '✓ 팀에 반영되었습니다.') : LN('orch.proposalPassed', '· 기록되었습니다.')) + '</div>') +
       '</div>';
   }
   inner += '</div>';
@@ -1009,7 +1141,7 @@ function messageHtml(msg) {
     '</div><div class="d-body"><div class="d-author"><b>' +
     esc(msg.name || '봇') +
     '</b>' +
-    (isChief ? '<span class="pill blue" style="font-size:9.5px;padding:1px 7px">' + esc(LN('demo.chiefBadge', '총괄')) + '</span>' : '') +
+    (isChief ? '<span class="pill blue" style="font-size:9.5px;padding:1px 7px">' + esc(LN('demo.chiefBadge', '팀장')) + '</span>' : '') +
     '<span class="d-time">' +
     (msg.time || nowLabel()) +
     '</span></div>' +
@@ -1047,6 +1179,9 @@ function renderAll(forceScroll) {
   renderInspector();
   renderRelease();
   renderHeader();
+  renderCaseGallery();
+  renderQuickTasks();
+  renderTeamChip();
   renderMessages(forceScroll !== false);
 }
 
@@ -1300,8 +1435,11 @@ function applyPlan() {
 function caseInfo(c) {
   const d = DICT();
   const l = d && d.cases && d.cases[c.id];
+  const q = CASE_QUICK[c.id] || {};
   return {
     label: (l && l.label) || c.label,
+    short: (l && l.short) || q.short || c.label,
+    quick: (l && l.quick) || q.quick || [],
     tagline: (l && l.tagline) || c.tagline,
     channel: (l && l.channel) || c.channel,
     names: (l && l.names) || c.bots.map((b) => b.name),
@@ -1315,40 +1453,43 @@ function renderCaseGallery() {
   if (!box) return;
   box.innerHTML = CASES.map((c) => {
     const info = caseInfo(c);
-    const names = c.bots.map((b, i) => b.emoji + ' ' + (info.names[i] || b.name)).join(' · ');
-    const pool = info.examples
-      ? info.examples.map((e) => e.text)
-      : [((c.example || []).find((e) => e.from !== 'user') || {}).text];
-    const sample = pool.find((t) => t && !String(t).trim().startsWith('**')) || pool[0];
-    let q = sample ? String(sample).replace(/[*_`]/g, '').replace(/\s+/g, ' ').trim() : '';
-    if (q.length > 72) {
-      q = q.slice(0, 72);
-      const cut = q.lastIndexOf(' ');
-      if (cut > 40) q = q.slice(0, cut);
-      q += '…';
-    }
-    return '<article class="case-tile" data-case-id="' + esc(c.id) + '" data-testid="case-tile">' +
-      '<div class="ct-top"><span class="ct-emoji">' + esc(c.emoji) + '</span><div><b>' + esc(info.label) + '</b><span>' + esc(info.tagline) + '</span></div></div>' +
-      '<div class="ct-bots">' + esc(names) + '</div>' +
-      (q ? '<div class="ct-quote">“' + esc(q) + '”</div>' : '') +
-      '<div class="ct-actions">' +
-      '<button class="btn btn-sm btn-primary" type="button" data-apply-case="' + esc(c.id) + '">' + esc(u('applyCase') || '이 케이스 바로 적용') + '</button>' +
-      '<button class="btn btn-sm btn-ghost" type="button" data-pack-case="' + esc(c.id) + '">' + esc(u('packBtn') || '🎁 세팅 팩') + '</button>' +
-      '</div>' +
-      '</article>';
+    const on = state.currentCaseId === c.id;
+    return (
+      '<button type="button" class="d-case' + (on ? ' is-active' : '') + '"' +
+      ' data-apply-case="' + esc(c.id) + '" data-case-id="' + esc(c.id) + '" data-testid="case-tile"' +
+      ' aria-pressed="' + (on ? 'true' : 'false') + '" title="' + esc(info.tagline) + '">' +
+      '<span class="em" aria-hidden="true">' + esc(c.emoji) + '</span>' +
+      '<b>' + esc(info.short) + '</b>' +
+      '<small>' + esc(info.tagline) + '</small>' +
+      '</button>'
+    );
   }).join('');
 }
 
-function applyCase(id) {
+function applyCase(id, opts) {
   const c = CASES.find((x) => x.id === id);
   if (!c) return;
   const info = caseInfo(c);
   const localized = LANG !== 'ko';
-  const bots = c.bots.map((spec, i) => {
+  const specs = c.bots.slice();
+  const hasChief = specs.some((b) => b.isChief);
+  const bots = [];
+  if (!hasChief) {
+    const chief = makeBot({
+      id: uid('bot'),
+      name: 'MOA Chief',
+      emoji: '🧠',
+      role: 'chief',
+      isChief: true,
+      summary: LN('roles.chief', '차분하고 명쾌한 팀장 — 할 일을 나눠 맡기고 결과만 정리합니다.'),
+      keywords: ['총괄', '팀', '전체', '요약', '진행', '보고'],
+      activity: [],
+    });
+    bots.push(chief);
+  }
+  specs.forEach((spec, i) => {
     const name = info.names[i] || spec.name;
-    let bot = state.bots.find((b) => b.name === name);
-    if (bot) return bot;
-    bot = makeBot({
+    const bot = makeBot({
       id: uid('bot'),
       name,
       emoji: spec.emoji,
@@ -1357,55 +1498,53 @@ function applyCase(id) {
       summary: localized ? ((u('roleSummary') || {})[spec.role] || spec.summary) : spec.summary,
       tasks: localized ? undefined : spec.tasks,
     });
-    state.bots.push(bot);
-    return bot;
+    bot.activity = [];
+    bots.push(bot);
   });
-  let ch = state.channels.find((x) => x.name === c.channel);
-  if (!ch) {
-    ch = { id: uid('ch'), name: c.channel, mode: 'auto', topic: info.tagline, members: [], orchestrator: bots.some((b) => b.isChief) };
-    state.channels.push(ch);
-    state.messages[ch.id] = [];
-  }
-  ch.members = Array.from(new Set([].concat(ch.members || [], bots.map((b) => b.id))));
-  pushMessage(ch.id, {
-    kind: 'system',
-    name: 'MOA Hive',
-    text: fmt(LN('orch.caseCreated', '**{label}** 케이스를 세팅했습니다 — 봇 {n}명 · #{channel}. 아래 예시 대화를 그대로 이어서 써 보세요.'), { label: info.label, n: bots.length, channel: info.channel }),
-  });
-  pushMessage(ch.id, {
+  const chief = bots.find((b) => b.isChief) || bots[0];
+  const channel = {
+    id: uid('ch'),
+    name: info.channel,
+    mode: 'auto',
+    topic: info.tagline,
+    members: bots.map((b) => b.id),
+    orchestrator: true,
+  };
+  state.bots = bots;
+  state.channels = [channel];
+  state.messages = {};
+  state.messages[channel.id] = [
+    {
+      id: uid('msg'),
+      kind: 'system',
+      name: 'MOA Hive',
+      text: fmt(LN('demo.teamReady', '**{label} 팀**을 만들었습니다 — 봇 {n}명이 사무실에 들어왔습니다.\n\n이제 **2단계**에서 큰 버튼을 하나 눌러 보세요.'), { label: info.short, n: bots.length }),
+    },
+  ];
+  pushMessage(channel.id, {
     kind: 'bot',
-    botId: bots[0].id,
-    name: bots[0].name,
-    emoji: bots[0].emoji,
-    role: bots[0].role,
-    text: info.starter + LN('orch.caseStarterNote', '\n\n_추천 업무는 오른쪽 역할 카드에서 바로 누를 수 있습니다._'),
+    botId: chief.id,
+    name: chief.name,
+    emoji: chief.emoji,
+    role: 'chief',
+    text: fmt(LN('demo.teamHello', '좋습니다. **{label}** 일은 저희에게 맡기세요.\n\n아래 버튼을 누르면 제가 봇들에게 나눠 맡기고, 결과만 정리해서 보여 드립니다.'), { label: info.short }),
   });
-  if (info.examples) {
-    info.examples.forEach((ex) => {
-      const b = bots[ex.bot] || bots[0];
-      pushMessage(ch.id, { kind: 'bot', botId: b.id, name: b.name, emoji: b.emoji, role: b.role, text: ex.text });
-    });
-  } else {
-    (c.example || []).forEach((ex) => {
-      if (ex.from === 'user') {
-        pushMessage(ch.id, { kind: 'user', name: '나', text: ex.text });
-      } else {
-        const b = bots.find((x) => x.name === ex.from);
-        if (b) pushMessage(ch.id, { kind: 'bot', botId: b.id, name: b.name, emoji: b.emoji, role: b.role, text: ex.text });
-      }
-    });
-  }
+  state.currentCaseId = id;
+  state.activeChannelId = channel.id;
+  state.activeBotId = chief.id;
   state.env = 'stg';
   state.dirty = true;
-  state.activeChannelId = ch.id;
-  state.activeBotId = (bots.find((b) => b.isChief) || bots[0]).id;
   state.officeBusy = null;
   state.typingBotId = null;
-  closeWizard();
+  state.proposal = null;
+  state.runId += 1;
   renderAll(true);
-  const demo = $('#demo');
-  if (demo) demo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  toast(fmt(LN('toasts.caseApplied', '{label} 팀을 세팅했습니다 — #{channel}'), { label: info.label, channel: info.channel }));
+  setStep(2);
+  if (!opts || opts.scroll !== false) {
+    const office = $('#officeStage');
+    if (office && office.scrollIntoView) office.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  toast(fmt(LN('toasts.caseApplied', '{label} 팀을 세팅했습니다.'), { label: info.short }));
 }
 
 /* ───────────────────────── 채팅 · 오케스트레이션 ───────────────────────── */
@@ -1423,31 +1562,37 @@ function pickReply(bot, text) {
     const key = ['dev', 'content', 'research', 'chief', 'pm'].indexOf(role) >= 0 ? role : 'pm';
     return fmt(LN('replies.' + key, ''), { topic, name: bot.name });
   }
-  const head = '**결론** — ' + topic + ' 요청을 ' + bot.name + ' 기준으로 정리했습니다.';
+  const head = '**결론** — “' + topic + '” 요청을 ' + bot.name + ' 기준으로 정리했습니다.';
   if (role === 'dev') {
     return (
       head +
-      '\n\n1. 재현·범위 확인 — 영향 파일 2개, 실패 지점 1곳\n2. 수정 — `server.js` 라우팅, `public/app.js` 렌더\n3. 검증 — API 테스트 → UI 테스트 → 수동 확인\n\n**실행 명령**\n\n```\nnode tests/reset_state.js && node server.js\npython3 tests/api_test.py\n```\n\n**확인 필요** — 운영 데이터에 닿는 변경인지 먼저 알려주세요. 위험한 명령은 승인 카드를 거칩니다.\n\n_로컬 시뮬레이터 응답입니다 · 데스크톱 앱에서 CLI/API를 연결하면 실제 모델이 답합니다._'
+      '\n\n**오늘 할 일 3개**\n1. 필요한 화면·파일 두 곳 확인\n2. 초안을 오늘 안으로 완성\n3. 한 번 눌러 보고 공유\n\n' +
+      '**확인이 필요한 것** — 실제 데이터를 바꾸는 일인지 먼저 알려 주세요.\n\n_체험용 예시 응답입니다._'
     );
   }
   if (role === 'content') {
     return (
       head +
-      '\n\n**다음 주 7편 (요일 · 주제)**\n- 월 · 매일 쓰는 물건 하나를 바꾼 이야기\n- 화 · 5분 루틴이 만든 차이\n- 수 · 실패한 자동화 3가지\n- 목 · 돈 안 드는 생산성 도구\n- 금 · 이번 주 배운 것\n- 토 · 독자 질문 답변\n- 일 · 다음 주 예고\n\n**첫 3초 훅 2안**\n> “이거 하나 바꿨더니 아침이 30분 남았습니다.”\n> “매일 하던 이 일, 사실 안 해도 됩니다.”\n\n**해시태그** `#생활자동화 #1인사업 #AI툴 #루틴`\n\n_로컬 시뮬레이터 응답입니다 · 데스크톱 앱에서 CLI/API를 연결하면 실제 모델이 답합니다._'
+      '\n\n**다음 주 7편 (요일 · 주제)**\n- 월 · 매일 쓰는 물건 하나를 바꾼 이야기\n- 화 · 5분 루틴이 만든 차이\n- 수 · 실패한 자동화 3가지\n- 목 · 돈 안 드는 생산성 도구\n- 금 · 이번 주 배운 것\n- 토 · 독자 질문 답변\n- 일 · 다음 주 예고\n\n' +
+      '**첫 3초 훅 2안**\n> “이거 하나 바꿨더니 아침이 30분 남았습니다.”\n> “매일 하던 이 일, 사실 안 해도 됩니다.”\n\n' +
+      '**해시태그** `#생활자동화 #1인사업 #AI툴 #루틴`\n\n_체험용 예시 응답입니다._'
     );
   }
   if (role === 'research') {
     return (
       head +
-      '\n\n**확인된 것**\n- 공개 페이지 기준 경쟁 3곳의 가격대\n- 최근 공지 2건의 변경점\n\n**추정**\n- 전환율 차이는 채널 구성 때문일 가능성이 큼 (근거 약함)\n\n**확인 필요**\n- 최신 공시·공개 자료 원문 1건 — 링크 필요\n\n_로컬 시뮬레이터 응답입니다 · 데스크톱 앱에서 CLI/API를 연결하면 실제 모델이 답합니다._'
+      '\n\n**확인된 것**\n- 공개된 가격대 3곳\n- 최근 공지 2건의 변경점\n\n**추정**\n- 차이는 채널 구성 때문일 가능성이 큼 (근거는 아직 약함)\n\n' +
+      '**확인 필요** — 원문 링크 1건만 주시면 숫자를 맞춰 드립니다.\n\n_체험용 예시 응답입니다._'
     );
   }
   if (role === 'chief') {
-    return head + '\n\n하위 에이전트 산출물을 취합해 다음 액션 1건을 제안합니다.';
+    return head + '\n\n봇들이 만든 초안을 모아 다음 할 일 1개만 제안합니다.';
   }
   return (
     head +
-    '\n\n**범위**\n- 문제: ' + topic + '\n- 목표: 이번 주 안에 검토 가능한 초안\n- 제외: 운영 데이터 변경\n\n**3일 일정**\n1. 오늘 — 요구사항·리스크 정리\n2. 내일 — 초안 작성, 이해관계자 리뷰\n3. 모레 — 반영·체크리스트 확인\n\n**다음 액션** — 결정이 필요한 1건만 골라 주세요. 나머지는 제가 초안으로 붙여 둡니다.\n\n_로컬 시뮬레이터 응답입니다 · 데스크톱 앱에서 CLI/API를 연결하면 실제 모델이 답합니다._'
+    '\n\n**범위**\n- 문제: ' + topic + '\n- 목표: 이번 주 안에 검토할 수 있는 초안\n- 제외: 실제 데이터 변경\n\n' +
+    '**3일 일정**\n1. 오늘 — 요구사항·위험 정리\n2. 내일 — 초안 작성, 한 번 검토\n3. 모레 — 반영·체크리스트 확인\n\n' +
+    '**다음 할 일** — 결정이 필요한 1건만 골라 주세요. 나머지는 초안으로 붙여 둡니다.\n\n_체험용 예시 응답입니다._'
   );
 }
 
@@ -1535,7 +1680,7 @@ async function chiefRespond(channel, chief, text, run) {
     name: chief.name,
     emoji: chief.emoji,
     role: 'chief',
-    text: fmt(LN('orch.report', '**총괄 보고** · 🧠 {chief}\n\n목표: {goal}\n\n위임 {n}건을 진행합니다.'), {
+    text: fmt(LN('orch.report', '**팀장 봇** · 🧠 {chief}\n\n할 일: {goal}\n\n봇 {n}명에게 나눠서 맡깁니다.'), {
       chief: chief.name,
       goal: text.length > 80 ? text.slice(0, 80) + '…' : text,
       n: steps.length,
@@ -1564,38 +1709,34 @@ async function chiefRespond(channel, chief, text, run) {
   msg.busy = false;
   const topic40 = text.length > 40 ? text.slice(0, 40) + '…' : text;
   msg.summary =
-    LN('orch.summaryHeader', '**취합 결과**') + '\n' +
-    '- ' + fmt(LN('orch.summaryScope', '범위: “{topic}” 요청을 {n}개 산출물로 분해'), { topic: topic40, n: steps.length }) + '\n' +
+    LN('orch.summaryHeader', '**정리 결과**') + '\n' +
+    '- ' + fmt(LN('orch.summaryScope', '범위: “{topic}” 요청을 {n}개 결과물로 나눴습니다.'), { topic: topic40, n: steps.length }) + '\n' +
     '- ' + (steps[0]
-      ? fmt(LN('orch.summaryNext', '다음 액션: {agent}의 초안을 확인하고, 결정이 필요한 1건만 골라 주세요'), { agent: steps[0].name })
-      : LN('orch.summaryNextEmpty', '할 일을 하나 정해 주세요')) + '\n' +
-    '- ' + LN('orch.summaryCheck', '확인 필요: 실제 수치·고객사 정보는 아직 검증 전입니다(로컬 규칙 기반 취합)') + '\n\n' +
-    LN('orch.summaryFoot', '_하위 에이전트 산출물을 취합한 요약입니다 · 총괄 모드_');
+      ? fmt(LN('orch.summaryNext', '다음 할 일: {agent} 결과부터 확인하세요.'), { agent: steps[0].name })
+      : LN('orch.summaryNextEmpty', '할 일을 하나 정해 주세요.')) + '\n' +
+    '- ' + LN('orch.summaryCheck', '확인 필요: 실제 숫자·고객 정보는 아직 검증 전입니다.') + '\n\n' +
+    LN('orch.summaryFoot', '_체험용 요약입니다. 실제 작업은 앱에서 이어집니다._');
 
   if (!state.proposal && channel.id === state.activeChannelId) {
     const reportName = LANG === 'ko' ? '주간 리포트 봇' : (u('reportBot') || 'Weekly report bot');
     const hasReport = state.bots.some((b) => b.name === reportName || /리포트|report|报表|レポート/i.test(b.name));
-    const proposal = hasReport
-      ? {
-          kind: 'rule',
-          title: LN('orch.proposalRuleTitle', '읽기 전용 명령 자동 승인 규칙을 추가할까요?'),
-          body: LN('orch.proposalRuleBody', 'ls · cat · wc · pwd 같은 읽기 전용 명령은 승인 카드 없이 바로 실행됩니다. 쓰기·위험 명령은 그대로 승인 카드를 거칩니다.'),
-        }
-      : {
-          kind: 'bot',
-          bot: reportName,
-          title: LN('orch.proposalBotTitle', '주간 리포트 요약 봇을 팀에 붙일까요?'),
-          body: LN('orch.proposalBotBody', '매주 금요일 지표·진행률을 한 장으로 정리해 총괄에게 보고하는 에이전트입니다.'),
-        };
-    msg.proposal = Object.assign({ status: 'pending' }, proposal);
-    state.proposal = msg.proposal;
+    if (!hasReport) {
+      const proposal = {
+        kind: 'bot',
+        bot: reportName,
+        title: LN('orch.proposalBotTitle', '주간 리포트 봇을 팀에 붙일까요?'),
+        body: LN('orch.proposalBotBody', '매주 금요일 진행 상황을 한 장으로 정리해 보고하는 봇입니다.'),
+      };
+      msg.proposal = Object.assign({ status: 'pending' }, proposal);
+      state.proposal = msg.proposal;
+    }
   }
   renderMessages(true);
 }
 
 function sendMessage(text) {
   if (isProd()) {
-    toast(LN('orch.readOnly', 'PROD는 읽기 전용입니다 — STG에서 변경하고 Release Manager로 승격하세요.'));
+    toast(LN('orch.readOnly', '이 팀은 읽기 전용입니다.'));
     return;
   }
   const t = String(text || '').trim();
@@ -1616,7 +1757,7 @@ function handleProposal(action, btn) {
     pushMessage(state.activeChannelId, {
       kind: 'system',
       name: 'MOA Hive',
-      text: LN('orch.ruleApplied', '✓ **읽기 전용 명령 자동 승인 규칙**을 추가했습니다 — `ls` · `cat` · `wc` · `pwd`. 쓰기·위험 명령은 그대로 승인 카드를 거칩니다.'),
+      text: LN('orch.ruleApplied', '✓ 규칙을 추가했습니다.'),
     });
     toast(LN('toasts.ruleAdded', '읽기 전용 명령 자동 승인 규칙을 추가했습니다.'));
   } else if (action === 'ok') {
@@ -1637,7 +1778,7 @@ function handleProposal(action, btn) {
     pushMessage(state.activeChannelId, {
       kind: 'system',
       name: 'MOA Hive',
-      text: fmt(LN('orch.botApplied', '✓ **{name}**을(를) STG 팀에 반영했습니다. 이제 #{channel}에서 호출할 수 있습니다.'), {
+      text: fmt(LN('orch.botApplied', '✓ **{name}**을(를) 팀에 붙였습니다.'), {
         name,
         channel: channelLabel(currentChannel()),
       }),
@@ -1696,19 +1837,23 @@ function bindDemo() {
       const bot = currentBot();
       if (!bot) return;
       if (isProd()) {
-        toast(LN('orch.readOnly', 'PROD는 읽기 전용입니다.'));
+        toast(LN('orch.readOnly', 'PROD는 읽기 전용입니다 — STG에서 변경하세요.'));
         return;
       }
       const task = taskBtn.getAttribute('data-task');
+      closeBot();
       sendMessage('@' + bot.name + ' ' + task);
+      return;
+    }
+    const quickBtn = e.target.closest('[data-quick]');
+    if (quickBtn) {
+      if (isProd()) return;
+      sendMessage(quickBtn.getAttribute('data-quick'));
       return;
     }
     const officeBtn = e.target.closest('[data-office-bot]');
     if (officeBtn) {
-      state.activeBotId = officeBtn.getAttribute('data-office-bot');
-      const ctx = $('#tabContext');
-      if (ctx) ctx.click();
-      renderAll(false);
+      openBot(officeBtn.getAttribute('data-office-bot'));
       return;
     }
     const propBtn = e.target.closest('[data-prop]');
@@ -1799,6 +1944,29 @@ function bindDemo() {
     });
   }
 
+  /__* 3단계 바 · 봇 카드 · 세팅 팩 CTA __*/
+  const stepsBar = $('#demoSteps');
+  if (stepsBar) {
+    stepsBar.addEventListener('click', (e) => {
+      const b = e.target.closest('.d-gstep');
+      if (!b) return;
+      setStep(Number(b.getAttribute('data-step')), { scroll: true });
+    });
+  }
+  const closeBotBtn = $('#closeBot');
+  if (closeBotBtn) closeBotBtn.addEventListener('click', closeBot);
+  const botSheet = $('#botSheet');
+  if (botSheet) {
+    botSheet.addEventListener('click', (e) => { if (e.target === botSheet) closeBot(); });
+  }
+  const packCtaBtn = $('#packCta');
+  if (packCtaBtn) {
+    packCtaBtn.addEventListener('click', () => {
+      setStep(3);
+      openPack({ name: $('#currentTeam') ? $('#currentTeam').textContent : '', bots: state.bots.map((b) => ({ emoji: b.emoji, name: b.name })) });
+    });
+  }
+
   const wizardBtn = $('#wizardBtn');
   if (wizardBtn) wizardBtn.addEventListener('click', openWizard);
   const close = $('#closeWizard');
@@ -1884,7 +2052,10 @@ function bindDemo() {
     packSheet.addEventListener('click', (e) => { if (e.target === packSheet) closePack(); });
   }
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && packSheet && !packSheet.hidden) closePack();
+    if (e.key !== 'Escape') return;
+    if (packSheet && !packSheet.hidden) closePack();
+    const botSheetEl = $('#botSheet');
+    if (botSheetEl && !botSheetEl.hidden) closeBot();
   });
 
   /* 언어 선택기 */
@@ -1900,8 +2071,10 @@ function bindDemo() {
       wizardPlan = null;
       wizardRole = null;
       closeWizard();
+      closeBot();
+      setStep(1);
       renderAll(true);
-      toast(LN('toasts.reset', '데모를 초기 상태로 되돌렸습니다.'));
+      toast(LN('toasts.reset', '처음 상태로 되돌렸습니다.'));
     });
   }
 
@@ -1969,9 +2142,11 @@ function boot() {
   setupInstall();
   registerServiceWorker();
   renderCaseGallery();
+  initOffice();
   bindDemo();
   applyAdminMode();
   renderAll(false);
+  setStep(1);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

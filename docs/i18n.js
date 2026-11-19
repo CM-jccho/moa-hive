@@ -10,8 +10,8 @@ window.MOA_I18N = {
       "영업-파이프라인": "sales-pipeline"
     },
     seed: {
-      system: "Local harness ready. This conversation stays in this browser tab.",
-      greeting: "I'm **MOA Chief**. Tell me what you need — I'll split it across 💡 Prototyper (ideas), 🔨 Builder (build), 🧹 Sweeper (tidy up), 🌱 Grower (growth) and 🛡️ Maintainer (operations), and report back with the result.\n\n- Just talk normally and the team divides the work\n- To task one bot only, call it like `@Builder`",
+      system: "Demo ready. This conversation stays in this browser tab — nothing is uploaded.",
+      greeting: "Hi, I’m **MOA Chief**, the team lead.\n\n1. Pick **your business** above\n2. Tap one **big button** below\n\nThe team splits the rest. You only read the result.",
       channelTopics: {
         ch_all: "The base channel for all six characters — say it and the work is divided",
         ch_b2b: "B2B planning, build and growth",
@@ -20,7 +20,7 @@ window.MOA_I18N = {
     },
     cases: {
       store: {
-        label: "Local shop", tagline: "Promo posts, review replies, regulars’ events, weekly sales",
+        label: "Local shop", short: "Local shop", quick: ["🎪 Plan a regulars’ event for this week", "📣 Write 3 promo posts for this week", "⭐ Draft replies to new reviews"], tagline: "Promo posts, review replies, regulars’ events, weekly sales",
         channel: "shop-marketing",
         names: ["Event planner", "Promo writer", "Review care", "Sales keeper"],
         starter: "Draft three promo posts for this week, a regulars’ event message and replies to new reviews.",
@@ -30,7 +30,7 @@ window.MOA_I18N = {
         ]
       },
       office: {
-        label: "Office team", tagline: "Meeting notes in three lines, weekly report, email drafts, calendar",
+        label: "Office team", short: "Office team", quick: ["📝 Summarize meeting notes in 3 lines", "📊 Draft the weekly report", "✉️ Draft 2 email replies"], tagline: "Meeting notes in three lines, weekly report, email drafts, calendar",
         channel: "team-ops",
         names: ["Notes bot", "Report bot", "Mail bot", "Calendar bot"],
         starter: "Summarize today’s meeting notes in three lines, then draft this week’s report and two email replies.",
@@ -40,7 +40,7 @@ window.MOA_I18N = {
         ]
       },
       seller: {
-        label: "Online store seller", tagline: "Product copy, CS replies, promotions, review analysis",
+        label: "Online store seller", short: "Online store", quick: ["🖼️ Write 3 product-page copy options", "💬 Create 5 CS reply templates", "🎁 Plan this week’s promotion"], tagline: "Product copy, CS replies, promotions, review analysis",
         channel: "store-ops",
         names: ["Product page", "CS replies", "Promotions", "Review analysis"],
         starter: "Plan this week’s promotion, then create five CS reply templates and three product-page copy options.",
@@ -50,7 +50,7 @@ window.MOA_I18N = {
         ]
       },
       creator: {
-        label: "Solo creator", tagline: "Ideas, Shorts scripts, comment replies, digital products",
+        label: "Solo creator", short: "Solo creator", quick: ["🔭 Give me 10 content ideas for next week", "🎞️ Write 3 Shorts scripts", "💌 Draft replies to comments"], tagline: "Ideas, Shorts scripts, comment replies, digital products",
         channel: "content-plan",
         names: ["Idea scout", "Script writer", "Comment care", "Digital products"],
         starter: "Give me ten content ideas for next week, three Shorts scripts, comment replies and three digital product ideas.",
@@ -60,7 +60,7 @@ window.MOA_I18N = {
         ]
       },
       freelancer: {
-        label: "Freelancer", tagline: "Proposals, quotes, deadline reminders, portfolio",
+        label: "Freelancer", short: "Freelancer", quick: ["📄 Draft a client proposal", "🧮 Build 3 quote options", "⏰ Write deadline reminder emails"], tagline: "Proposals, quotes, deadline reminders, portfolio",
         channel: "work-pipeline",
         names: ["Proposal bot", "Quote bot", "Reminder bot", "Portfolio bot"],
         starter: "Draft a proposal and three quote options for a new client this week, plus deadline reminders for work in progress.",
@@ -70,7 +70,7 @@ window.MOA_I18N = {
         ]
       },
       product: {
-        label: "Product startup", tagline: "Prototype → build → sweep → grow → maintain",
+        label: "Product startup", short: "Product team", quick: ["🧭 Set the 2-week MVP scope", "💡 Give me 3 new concepts", "🔨 Build the first screen"], tagline: "Prototype → build → sweep → grow → maintain",
         channel: "product-squad",
         names: ["MOA Chief", "Prototyper", "Builder", "Sweeper"],
         starter: "Set the MVP scope for the next two weeks, then move through prototype → build → tidy → first-100 test → ops check.",
@@ -153,39 +153,39 @@ window.MOA_I18N = {
       sweeper: "Cleanup and simplification", grower: "Channels, metrics and growth", maintainer: "Stability, security and speed"
     },
     orch: {
-      report: "**Chief report** · 🧠 MOA Chief\n\nGoal: {goal}\n\nDelegating {n} tasks.",
+      report: "**Team lead** · 🧠 MOA Chief\n\nJob: {goal}\n\nSplitting it across {n} bots.",
       goalFallback: "this request",
-      summaryHeader: "**Combined result**",
-      summaryScope: "Scope: broke “{topic}” into {n} deliverables",
-      summaryNext: "Next: review {agent}’s draft and pick the one decision you need to make",
-      summaryNextEmpty: "Next: pick one thing to do",
-      summaryCheck: "Needs checking: figures and client details are not verified yet (rule-based browser demo)",
-      summaryFoot: "_A summary of sub-agent outputs · chief mode_",
-      proposalRuleTitle: "Add an auto-approve rule for read-only commands?",
-      proposalRuleBody: "Commands like ls, cat, wc and pwd run without an approval card. Write and risky commands still ask.",
+      summaryHeader: "**Result**",
+      summaryScope: "Scope: split “{topic}” into {n} pieces of work.",
+      summaryNext: "Next: check {agent}’s draft first.",
+      summaryNextEmpty: "Next: pick one thing to do.",
+      summaryCheck: "To verify: real numbers and customer details are not checked yet.",
+      summaryFoot: "_Demo summary. The real work continues in the app._",
+      proposalRuleTitle: "",
+      proposalRuleBody: "",
       proposalBotTitle: "Add a weekly report bot to the team?",
-      proposalBotBody: "An agent that summarizes metrics and progress every Friday and reports to the chief.",
-      designCreated: "**Chief orchestrator team created** — 🧠 MOA Chief + {n} agents\n\nGoal: {goal}\n\n{why}",
-      designReady: "Ready. I’ll split work across the agents below and combine the results.\n\n- {agents}\n\nTell me what you need. e.g. “{goal}”",
-      caseCreated: "**{label}** is set up — {n} bots · #{channel}. Continue with the sample conversation below.",
-      caseStarterNote: "\n\n_Tap a recommended task in the role card on the right._",
+      proposalBotBody: "It summarizes progress on one page every Friday.",
+      designCreated: "",
+      designReady: "",
+      caseCreated: "**{label}** is ready — {n} bots.",
+      caseStarterNote: "",
       proposalDone: "✓ Added to the team.",
       proposalPassed: "· Passed. Only recorded.",
-      ruleApplied: "✓ **Auto-approve rule for read-only commands** added — `ls` · `cat` · `wc` · `pwd`. Writes still go through an approval card.",
-      botApplied: "✓ **{name}** was added to the STG team. You can call it in #{channel} now.",
-      prodPromoted: "🚀 **PROD v0.3.0 promoted** — bots, channels and settings from STG are now live. PROD is read-only again.",
-      readOnly: "PROD is read-only — change in STG and promote with the Release Manager."
+      ruleApplied: "",
+      botApplied: "✓ **{name}** is on the team now.",
+      prodPromoted: "",
+      readOnly: "This team is read-only."
     },
     replies: {
-      dev: "**Bottom line** — I scoped “{topic}” as a build task.\n\n1. Reproduce and scope — two files affected, one failure point\n2. Fix — routing in `server.js`, render in `public/app.js`\n3. Verify — API test → UI test → manual check\n\n**Commands**\n\n```\nnode tests/reset_state.js && node server.js\npython3 tests/api_test.py\n```\n\n**Needs a check** — tell me first whether this touches live data. Risky commands go through an approval card.\n\n_Browser simulator reply · connect a CLI or API in the desktop app for real model answers._",
-      content: "**Bottom line** — planned “{topic}” as a week of content.\n\n**Next week, seven posts (day · topic)**\n- Mon · One thing I changed in my daily routine\n- Tue · What a 5-minute routine changed\n- Wed · Three automations that failed\n- Thu · Free productivity tools\n- Fri · What I learned this week\n- Sat · Reply to a reader’s question\n- Sun · Preview of next week\n\n**Two first-3-second hooks**\n> “I changed this one thing and got 30 minutes back.”\n> “This daily task? You can skip it.”\n\n**Hashtags** `#lifeautomation #solobusiness #aitools #routine`\n\n_Browser simulator reply · connect a CLI or API in the desktop app for real model answers._",
-      research: "**Bottom line** — checked the facts behind “{topic}”.\n\n**Confirmed**\n- Public pricing of three competitors\n- Changes in the last two announcements\n\n**Assumed**\n- The conversion gap probably comes from channel mix (weak evidence)\n\n**Needs checking**\n- One primary source for the latest figures — a link would help\n\n_Browser simulator reply · connect a CLI or API in the desktop app for real model answers._",
-      chief: "**Bottom line** — “{topic}” is ready to be divided among the agents.\n\nI’ll combine their outputs and suggest one next action.",
-      pm: "**Bottom line** — “{topic}” is scoped for a review this week.\n\n**Scope**\n- Problem: {topic}\n- Goal: a draft you can review this week\n- Out of scope: changes to live data\n\n**3-day plan**\n1. Today — requirements and risks\n2. Tomorrow — draft and stakeholder review\n3. The day after — apply and check the list\n\n**Next action** — pick the one decision you need to make. I’ll draft the rest.\n\n_Browser simulator reply · connect a CLI or API in the desktop app for real model answers._"
+      dev: "**Bottom line** — scoped “{topic}” as this bot’s work.\n\n**Three things for today**\n1. Check the two screens or files involved\n2. Finish the draft today\n3. Click through once and share it\n\n**Needs a check** — tell me first if this touches real data.\n\n_Demo reply._",
+      content: "**Bottom line** — planned “{topic}” as a week of content.\n\n**Next week, seven posts (day · topic)**\n- Mon · One thing I changed in my routine\n- Tue · What a 5-minute routine changed\n- Wed · Three automations that failed\n- Thu · Free productivity tools\n- Fri · What I learned this week\n- Sat · Reply to a reader\n- Sun · Preview of next week\n\n**Two first-3-second hooks**\n> “I changed this one thing and got 30 minutes back.”\n> “This daily task? You can skip it.”\n\n**Hashtags** `#lifeautomation #solobusiness #aitools #routine`\n\n_Demo reply._",
+      research: "**Bottom line** — checked the facts behind “{topic}”.\n\n**Confirmed**\n- Public pricing at three places\n- What changed in the last two announcements\n\n**Assumed**\n- The gap probably comes from channel mix (weak evidence)\n\n**Needs checking** — one source link and I’ll match the numbers.\n\n_Demo reply._",
+      chief: "**Bottom line** — “{topic}” is ready to share with the bots.\n\nI’ll combine their drafts and suggest one next step.",
+      pm: "**Bottom line** — “{topic}” is scoped for a review this week.\n\n**Scope**\n- Problem: {topic}\n- Goal: a draft you can review this week\n- Out of scope: real data changes\n\n**3-day plan**\n1. Today — requirements and risks\n2. Tomorrow — draft and one review\n3. The day after — apply and check\n\n**Next step** — pick the one decision you need to make; I’ll draft the rest.\n\n_Demo reply._"
     },
     toasts: {
       teamCreated: "Team created in STG — #{channel}",
-      caseApplied: "{label} team is set — #{channel}",
+      caseApplied: "“{label}” team is ready.",
       reset: "Demo reset to its initial state.",
       adminOn: "Admin mode — STG/PROD and the Release panel are visible.",
       adminOff: "Normal mode — admin tools are hidden.",
@@ -200,21 +200,25 @@ window.MOA_I18N = {
       listening: "Listening — speak in the language you selected."
     },
     demo: {
-      engine: "Browser simulator",
+      engine: "Browser demo",
       stateIdle: "✨ Idle", stateWorking: "⚡ Working",
-      chiefBadge: "Chief", workingBadge: "⚡ Working",
-      noActivity: "· No activity yet. Ask for something.",
-      officeLounge: "Growth · Ops",
-      officeHint: "{chief} + {n} agents",
-      bubbleDelegating: "Delegating…", bubbleWorking: "Working…",
+      chiefBadge: "Lead", workingBadge: "⚡ Working",
+      noActivity: "· Nothing yet. Give it a job.",
+      officeHint: "{chief} lead · {n} bots",
+      bubbleDelegating: "Assigning…", bubbleWorking: "Working…",
+      zoneMeeting: "Meeting room", zoneMaker: "Maker zone", zoneLounge: "Lounge",
+      timeDay: "Day", timeSunset: "Sunset", timeNight: "Night",
+      teamDefault: "My AI team",
+      teamChip: "{label} · {n} bots",
+      teamReady: "**{label} team** is ready — {n} bots walked into the office.\n\nNow tap one big button in **step 2**.",
+      teamHello: "Great — leave **{label}** work to us.\n\nTap a button below and I’ll split it across the bots, then report only the result.",
+      quickDefault: ["🗂️ Sort this week's to-dos", "🎯 Set this week's priorities", "✅ Pick my next action"],
       stepDone: "Done", stepWorking: "Working", stepWaiting: "Waiting",
       typing: "typing",
       autoRoute: "Auto", mentionRoute: "@mention",
-      prodTopic: "PROD · read-only — ",
-      workspace: "./workspace",
-      inputProd: "PROD is read-only",
-      packTeamLabel: "This team",
-      localOnly: "this tab only"
+      prodTopic: "Read-only — ", workspace: "./workspace", inputProd: "Read-only",
+      packTeamLabel: "This team", localOnly: "this tab only",
+      proposalOk: "Add it", proposalPass: "No thanks"
     },
     pack: {
       title: "🎁 Use this team in your ChatGPT · Claude",
@@ -242,7 +246,7 @@ window.MOA_I18N = {
     },
     seed: {
       system: "本地环境已就绪。这段对话只保存在当前浏览器标签页里。",
-      greeting: "我是 **MOA Chief**。告诉我你想做什么，我会拆给 💡 Prototyper（发散）、🔨 Builder（实现）、🧹 Sweeper（整理）、🌱 Grower（增长）、🛡️ Maintainer（运维），最后只把结果汇总给你。\n\n- 直接说就行，团队会自己分工\n- 只想找某个人，可以像 `@Builder` 这样点名",
+      greeting: "你好，我是队长机器人 **MOA Chief**。\n\n1. 在上面选**你的行业**\n2. 点下面一个**大按钮**\n\n剩下的团队会分着做，您只看结果就好。",
       channelTopics: {
         ch_all: "六个角色都在这里的基础频道 — 说出来，工作自动分工",
         ch_b2b: "B2B 业务的策划、实现与增长",
@@ -251,7 +255,7 @@ window.MOA_I18N = {
     },
     cases: {
       store: {
-        label: "个体小店", tagline: "宣传文案、评价回复、老客活动、每周营业额",
+        label: "个体小店", short: "小店", quick: ["🎪 策划本周老客活动", "📣 写 3 篇本周宣传文", "⭐ 起草新评价回复"], tagline: "宣传文案、评价回复、老客活动、每周营业额",
         channel: "门店-营销",
         names: ["活动策划", "宣传文案", "评价维护", "营业额整理"],
         starter: "帮我准备这周三条宣传文案、老客活动文案，以及新评价的回复草稿。",
@@ -261,7 +265,7 @@ window.MOA_I18N = {
         ]
       },
       office: {
-        label: "职场人·团队", tagline: "会议记录三行摘要、周报、邮件草稿、日程",
+        label: "职场人·团队", short: "职场人", quick: ["📝 把会议记录总结成 3 行", "📊 起草周报", "✉️ 整理 2 封回信"], tagline: "会议记录三行摘要、周报、邮件草稿、日程",
         channel: "团队-事务",
         names: ["会议记录", "周报", "邮件", "日程"],
         starter: "把今天的会议记录缩成三行，再准备这周的周报草稿和两封回信。",
@@ -271,7 +275,7 @@ window.MOA_I18N = {
         ]
       },
       seller: {
-        label: "网店卖家", tagline: "详情页文案、客服回复、促销、评价分析",
+        label: "网店卖家", short: "网店", quick: ["🖼️ 写 3 个详情页文案", "💬 做 5 条客服回复模板", "🎁 策划本周促销"], tagline: "详情页文案、客服回复、促销、评价分析",
         channel: "店铺-运营",
         names: ["详情页", "客服回复", "促销策划", "评价分析"],
         starter: "策划这周的促销，再做五条客服回复模板和三个详情页文案版本。",
@@ -281,7 +285,7 @@ window.MOA_I18N = {
         ]
       },
       creator: {
-        label: "个人创作者", tagline: "选题、短视频脚本、评论互动、数字商品",
+        label: "个人创作者", short: "个人创作者", quick: ["🔭 给出下周 10 个选题", "🎞️ 写 3 篇短视频脚本", "💌 起草评论回复"], tagline: "选题、短视频脚本、评论互动、数字商品",
         channel: "内容-策划",
         names: ["选题发现", "脚本撰写", "评论互动", "数字商品"],
         starter: "给我下周十个内容选题、三条短视频脚本、评论回复草稿和三个数字商品方向。",
@@ -291,7 +295,7 @@ window.MOA_I18N = {
         ]
       },
       freelancer: {
-        label: "自由职业者", tagline: "提案、报价、截止提醒、作品集",
+        label: "自由职业者", short: "自由职业", quick: ["📄 起草客户提案", "🧮 做 3 个报价方案", "⏰ 写截止提醒邮件"], tagline: "提案、报价、截止提醒、作品集",
         channel: "接单-流程",
         names: ["提案", "报价", "提醒", "作品集"],
         starter: "准备这周新客户的提案初稿和三个报价方案，再写进行中项目的截止提醒邮件。",
@@ -301,7 +305,7 @@ window.MOA_I18N = {
         ]
       },
       product: {
-        label: "产品·创业团队", tagline: "原型 → 实现 → 整理 → 增长 → 运维",
+        label: "产品·创业团队", short: "产品团队", quick: ["🧭 定下 2 周 MVP 范围", "💡 给 3 个新点子", "🔨 先做出第一个页面"], tagline: "原型 → 实现 → 整理 → 增长 → 运维",
         channel: "产品-小队",
         names: ["MOA Chief", "Prototyper", "Builder", "Sweeper"],
         starter: "先定两周内要上线的 MVP 范围，再按原型 → 实现 → 整理 → 首批 100 人实验 → 运维检查推进。",
@@ -384,39 +388,39 @@ window.MOA_I18N = {
       sweeper: "清理与简化", grower: "渠道、指标与增长", maintainer: "稳定、安全与速度"
     },
     orch: {
-      report: "**总管汇报** · 🧠 MOA Chief\n\n目标：{goal}\n\n正在分派 {n} 项任务。",
+      report: "**队长报告** · 🧠 MOA Chief\n\n任务：{goal}\n\n分给 {n} 个机器人来做。",
       goalFallback: "这个请求",
-      summaryHeader: "**汇总结果**",
-      summaryScope: "范围：把“{topic}”拆成 {n} 份产出",
-      summaryNext: "下一步：确认{agent}的草稿，只挑出一件需要你决定的事",
-      summaryNextEmpty: "下一步：先定一件事",
-      summaryCheck: "待确认：数字和客户信息尚未核实（浏览器规则模拟）",
-      summaryFoot: "_这是汇总各角色产出的摘要 · 总管模式_",
-      proposalRuleTitle: "要加一条只读命令自动放行规则吗？",
-      proposalRuleBody: "ls、cat、wc、pwd 这类只读命令不再弹确认卡；写入和高风险命令仍要确认。",
+      summaryHeader: "**结果**",
+      summaryScope: "范围：把“{topic}”拆成 {n} 份工作。",
+      summaryNext: "下一步：先看{agent}的草稿。",
+      summaryNextEmpty: "下一步：先定一件事。",
+      summaryCheck: "待确认：真实数字和客户信息还没有核实。",
+      summaryFoot: "_体验用摘要。真实工作会在 App 里继续。_",
+      proposalRuleTitle: "",
+      proposalRuleBody: "",
       proposalBotTitle: "要把周报机器人加进团队吗？",
-      proposalBotBody: "每周五把指标和进度整理成一页，报给总管。",
-      designCreated: "**总管编队已创建** — 🧠 MOA Chief + {n} 个机器人\n\n目标：{goal}\n\n{why}",
-      designReady: "准备好了。我会把工作分给下面的机器人，再汇总结果。\n\n- {agents}\n\n直接说要做什么。例如：“{goal}”",
-      caseCreated: "**{label}** 场景已配置 — {n} 个机器人 · #{channel}。可以直接接着下面的示例对话用。",
-      caseStarterNote: "\n\n_右侧角色卡里的推荐任务可以直接点。_",
+      proposalBotBody: "每周五把进度整理成一页报告。",
+      designCreated: "",
+      designReady: "",
+      caseCreated: "**{label}**已就位 — 机器人 {n} 个。",
+      caseStarterNote: "",
       proposalDone: "✓ 已加入团队。",
       proposalPassed: "· 已跳过，只留记录。",
-      ruleApplied: "✓ **只读命令自动放行规则**已添加 — `ls` · `cat` · `wc` · `pwd`。写入命令仍走确认卡。",
-      botApplied: "✓ **{name}** 已加入 STG 团队，现在可以在 #{channel} 里点名。",
-      prodPromoted: "🚀 **已发布 PROD v0.3.0** — STG 的机器人、频道和设置已上线。PROD 重新变为只读。",
-      readOnly: "PROD 是只读的 — 请在 STG 修改后用 Release Manager 发布。"
+      ruleApplied: "",
+      botApplied: "✓ **{name}** 已经在团队里了。",
+      prodPromoted: "",
+      readOnly: "这个团队是只读的。"
     },
     replies: {
-      dev: "**结论** — 把“{topic}”按开发任务拆好了。\n\n1. 复现与范围 — 影响 2 个文件、1 个故障点\n2. 修复 — `server.js` 路由、`public/app.js` 渲染\n3. 验证 — API 测试 → UI 测试 → 手动确认\n\n**执行命令**\n\n```\nnode tests/reset_state.js && node server.js\npython3 tests/api_test.py\n```\n\n**需要确认** — 是否涉及线上数据，请先告诉我。有风险的命令会走确认卡。\n\n_浏览器模拟回复 · 在桌面版接入 CLI 或 API 后由真实模型作答。_",
-      content: "**结论** — 把“{topic}”排成了一周的内容。\n\n**下周七条（周 · 选题）**\n- 一 · 我改掉的一个日常习惯\n- 二 · 五分钟流程带来的变化\n- 三 · 三个失败的自动化\n- 四 · 不花钱的效率工具\n- 五 · 这周学到的事\n- 六 · 回答读者提问\n- 日 · 下周预告\n\n**前 3 秒钩子两版**\n> “就改了这一件事，早上多出 30 分钟。”\n> “每天都做的这件事，其实可以不做。”\n\n**话题标签** `#生活自动化 #一人公司 #AI工具 #习惯`\n\n_浏览器模拟回复 · 在桌面版接入 CLI 或 API 后由真实模型作答。_",
-      research: "**结论** — 核对了“{topic}”背后的依据。\n\n**已确认**\n- 三家竞品的公开价格\n- 最近两次公告的变化\n\n**推测**\n- 转化差异大概来自渠道结构（依据较弱）\n\n**待确认**\n- 最新数字的一手资料一份 — 需要链接\n\n_浏览器模拟回复 · 在桌面版接入 CLI 或 API 后由真实模型作答。_",
-      chief: "**结论** — “{topic}”可以分给几个机器人了。\n\n我会汇总它们的产出，只给你一个下一步建议。",
-      pm: "**结论** — “{topic}”按本周可评审的范围整理好了。\n\n**范围**\n- 问题：{topic}\n- 目标：本周内能评审的草稿\n- 不做：改动线上数据\n\n**三天计划**\n1. 今天 — 需求与风险整理\n2. 明天 — 草稿与相关人评审\n3. 后天 — 落地并核对清单\n\n**下一步** — 只挑出需要你决定的一件事，其余我先写成草稿。\n\n_浏览器模拟回复 · 在桌面版接入 CLI 或 API 后由真实模型作答。_"
+      dev: "**结论** — 把“{topic}”按这个机器人的工作整理好了。\n\n**今天要做的三件事**\n1. 确认相关页面或文件两处\n2. 今天内完成草稿\n3. 点一遍确认后分享\n\n**需要确认** — 是否会动到真实数据，请先告诉我。\n\n_体验用回复。_",
+      content: "**结论** — 把“{topic}”排成了一周的内容。\n\n**下周七条（周 · 选题）**\n- 一 · 改掉一个日常习惯\n- 二 · 五分钟流程带来的变化\n- 三 · 三个失败的自动化\n- 四 · 不花钱的效率工具\n- 五 · 这周学到的事\n- 六 · 回答读者提问\n- 日 · 下周预告\n\n**前 3 秒钩子两版**\n> “就改了这一件事，早上多出 30 分钟。”\n> “每天做的这件事，其实可以不做。”\n\n**话题标签** `#生活自动化 #一人公司 #AI工具`\n\n_体验用回复。_",
+      research: "**结论** — 核对了“{topic}”的依据。\n\n**已确认**\n- 三处的公开价格\n- 最近两次公告的变化\n\n**推测**\n- 差异大概来自渠道结构（依据较弱）\n\n**待确认** — 给我一个原文链接，我就能把数字对上。\n\n_体验用回复。_",
+      chief: "**结论** — “{topic}”可以分给机器人了。\n\n我会汇总草稿，只给你一个下一步建议。",
+      pm: "**结论** — “{topic}”按本周可评审的范围整理好了。\n\n**范围**\n- 问题：{topic}\n- 目标：本周内能评审的草稿\n- 不做：改动真实数据\n\n**三天计划**\n1. 今天 — 需求与风险整理\n2. 明天 — 草稿与一次评审\n3. 后天 — 落地并核对\n\n**下一步** — 只挑出需要你决定的一件事，其余我先写成草稿。\n\n_体验用回复。_"
     },
     toasts: {
       teamCreated: "已在 STG 建好团队 — #{channel}",
-      caseApplied: "已配置{label}团队 — #{channel}",
+      caseApplied: "“{label}”团队已就位。",
       reset: "体验已恢复到初始状态。",
       adminOn: "管理员模式 — 显示 STG/PROD 和 Release 面板。",
       adminOff: "普通模式 — 已隐藏管理员工具。",
@@ -431,21 +435,25 @@ window.MOA_I18N = {
       listening: "正在听 — 请用你选择的语言说话。"
     },
     demo: {
-      engine: "浏览器模拟器",
+      engine: "浏览器体验版",
       stateIdle: "✨ 待机", stateWorking: "⚡ 处理中",
-      chiefBadge: "总管", workingBadge: "⚡ 处理中",
-      noActivity: "· 还没有处理记录。先派一件事试试。",
-      officeLounge: "增长 · 运维",
-      officeHint: "{chief} + {n} 个机器人",
+      chiefBadge: "队长", workingBadge: "⚡ 处理中",
+      noActivity: "· 还没有记录。给它一件事试试。",
+      officeHint: "{chief} 队长 · 机器人 {n} 个",
       bubbleDelegating: "分派中…", bubbleWorking: "处理中…",
+      zoneMeeting: "会议室", zoneMaker: "制作区", zoneLounge: "休息区",
+      timeDay: "白天", timeSunset: "黄昏", timeNight: "夜晚",
+      teamDefault: "我的 AI 团队",
+      teamChip: "{label} · 机器人 {n} 个",
+      teamReady: "**{label}团队**已就位 — {n} 个机器人进了办公室。\n\n现在到**第 2 步**点一个大按钮。",
+      teamHello: "好，**{label}**的事交给我们。\n\n点下面的按钮，我会分给机器人，只把结果整理给您。",
+      quickDefault: ["🗂️ 整理这周要做的事", "🎯 定这周的优先级", "✅ 帮我选一个下一步"],
       stepDone: "完成", stepWorking: "处理中", stepWaiting: "等待",
       typing: "正在输入",
       autoRoute: "自动", mentionRoute: "@点名",
-      prodTopic: "PROD · 只读 — ",
-      workspace: "./workspace",
-      inputProd: "PROD 为只读",
-      packTeamLabel: "这个团队",
-      localOnly: "只在这个标签页"
+      prodTopic: "只读 — ", workspace: "./workspace", inputProd: "只读",
+      packTeamLabel: "这个团队", localOnly: "只在这个标签页",
+      proposalOk: "加上", proposalPass: "不用了"
     },
     pack: {
       title: "🎁 把这个团队搬进我的 ChatGPT · Claude",
@@ -473,7 +481,7 @@ window.MOA_I18N = {
     },
     seed: {
       system: "ローカル環境の準備ができました。この会話はこのブラウザタブ内だけに保存されます。",
-      greeting: "**MOA Chief**です。やりたいことを伝えてください — 💡 Prototyper（発想）・🔨 Builder（実装）・🧹 Sweeper（整理）・🌱 Grower（成長）・🛡️ Maintainer（運用）に分けて任せ、結果だけまとめて報告します。\n\n- 普通に話せば、チームが自分で分担します\n- 一人に頼むときは `@Builder` のように呼んでください",
+      greeting: "こんにちは、リーダーの **MOA Chief** です。\n\n1. 上で**業種**を選ぶ\n2. 下の**大きなボタン**を押す\n\nあとはチームが分担します。結果だけ見てください。",
       channelTopics: {
         ch_all: "6人が集まる基本チャンネル — 話せば自動で分担します",
         ch_b2b: "B2B事業の企画・実装・成長",
@@ -482,7 +490,7 @@ window.MOA_I18N = {
     },
     cases: {
       store: {
-        label: "個人店", tagline: "宣伝文・口コミ返信・常連イベント・週次売上",
+        label: "個人店", short: "個人店", quick: ["🎪 今週の常連イベントを企画", "📣 今週の宣伝文を3本書く", "⭐ 新着レビュー返信の下書き"], tagline: "宣伝文・口コミ返信・常連イベント・週次売上",
         channel: "店舗マーケ",
         names: ["イベント企画", "宣伝ライター", "口コミケア", "売上整理"],
         starter: "今週の宣伝文3本と常連イベントの文案、新しい口コミへの返信下書きを用意してください。",
@@ -492,7 +500,7 @@ window.MOA_I18N = {
         ]
       },
       office: {
-        label: "会社員・チーム", tagline: "議事録3行要約・週報・メール下書き・日程",
+        label: "会社員・チーム", short: "会社員", quick: ["📝 議事録を3行に要約", "📊 週報の下書き", "✉️ 返信メール2通を整理"], tagline: "議事録3行要約・週報・メール下書き・日程",
         channel: "チーム業務",
         names: ["議事録", "週報", "メール", "日程"],
         starter: "今日の会議メモを3行に要約し、今週の報告書の下書きと返信メール2件を整理してください。",
@@ -502,7 +510,7 @@ window.MOA_I18N = {
         ]
       },
       seller: {
-        label: "ネットショップ", tagline: "商品ページ文案・CS返信・セール・口コミ分析",
+        label: "ネットショップ", short: "ネットショップ", quick: ["🖼️ 商品ページ文案を3案", "💬 問い合わせ返信を5種", "🎁 今週のセールを企画"], tagline: "商品ページ文案・CS返信・セール・口コミ分析",
         channel: "ストア運用",
         names: ["商品ページ", "CS返信", "セール企画", "口コミ分析"],
         starter: "今週のセールを企画し、よくあるCS問い合わせ5件の返信テンプレートと商品ページ文案3案を作ってください。",
@@ -512,7 +520,7 @@ window.MOA_I18N = {
         ]
       },
       creator: {
-        label: "個人クリエイター", tagline: "ネタ探し・ショート動画台本・コメント対応・デジタル商品",
+        label: "個人クリエイター", short: "個人クリエイター", quick: ["🔭 来週のネタを10個", "🎞️ ショート動画台本3本", "💌 コメント返信の下書き"], tagline: "ネタ探し・ショート動画台本・コメント対応・デジタル商品",
         channel: "コンテンツ企画",
         names: ["ネタ探し", "台本ライター", "コメント対応", "デジタル商品"],
         starter: "来週のコンテンツネタ10個とショート動画台本3本、コメント返信の下書き、デジタル商品アイデア3つを用意してください。",
@@ -522,7 +530,7 @@ window.MOA_I18N = {
         ]
       },
       freelancer: {
-        label: "フリーランス", tagline: "提案書・見積・締切リマインド・ポートフォリオ",
+        label: "フリーランス", short: "フリーランス", quick: ["📄 提案書の下書き", "🧮 見積3案を作る", "⏰ 締切リマインドメール"], tagline: "提案書・見積・締切リマインド・ポートフォリオ",
         channel: "案件パイプライン",
         names: ["提案書", "見積", "リマインド", "ポートフォリオ"],
         starter: "今週の新規クライアント向け提案書の下書きと見積3案、進行中案件の締切リマインドメールを用意してください。",
@@ -532,7 +540,7 @@ window.MOA_I18N = {
         ]
       },
       product: {
-        label: "プロダクト・スタートアップ", tagline: "プロトタイプ → 実装 → 整理 → 成長 → 運用",
+        label: "プロダクト・スタートアップ", short: "プロダクトチーム", quick: ["🧭 2週間のMVP範囲を決める", "💡 新コンセプトを3案", "🔨 最初の画面を作る"], tagline: "プロトタイプ → 実装 → 整理 → 成長 → 運用",
         channel: "プロダクトチーム",
         names: ["MOA Chief", "Prototyper", "Builder", "Sweeper"],
         starter: "2週間で出すMVPの範囲を決め、プロトタイプ → 実装 → 整理 → 最初の100人テスト → 運用確認の順で進めてください。",
@@ -615,39 +623,39 @@ window.MOA_I18N = {
       sweeper: "整理と単純化", grower: "チャネル・指標・成長", maintainer: "安定・安全・速度"
     },
     orch: {
-      report: "**統括レポート** · 🧠 MOA Chief\n\n目標: {goal}\n\n{n}件のタスクを分担します。",
+      report: "**リーダー報告** · 🧠 MOA Chief\n\n仕事: {goal}\n\nボット{n}名に分けて進めます。",
       goalFallback: "この依頼",
-      summaryHeader: "**まとめ結果**",
-      summaryScope: "範囲: 「{topic}」を{n}個の成果物に分解",
-      summaryNext: "次のアクション: {agent}の下書きを確認し、決めるべき1件だけを選んでください",
-      summaryNextEmpty: "次のアクション: やることを1つ決めてください",
-      summaryCheck: "確認が必要: 数値と顧客情報はまだ未検証です（ブラウザのルールベース）",
-      summaryFoot: "_各エージェントの成果をまとめた要約です · 統括モード_",
-      proposalRuleTitle: "読み取り専用コマンドの自動承認ルールを追加しますか？",
-      proposalRuleBody: "ls・cat・wc・pwd のような読み取り専用コマンドは承認カードなしで実行します。書き込みと危険なコマンドは従来どおり確認します。",
+      summaryHeader: "**結果**",
+      summaryScope: "範囲: 「{topic}」を{n}つの仕事に分けました。",
+      summaryNext: "次のアクション: まず{agent}の下書きを確認してください。",
+      summaryNextEmpty: "次のアクション: やることを1つ決めてください。",
+      summaryCheck: "確認が必要: 実際の数値と顧客情報はまだ未検証です。",
+      summaryFoot: "_体験用のまとめです。実際の作業はアプリで続きます。_",
+      proposalRuleTitle: "",
+      proposalRuleBody: "",
       proposalBotTitle: "週次レポートボットをチームに追加しますか？",
-      proposalBotBody: "毎週金曜に指標と進捗を1ページにまとめ、統括へ報告するエージェントです。",
-      designCreated: "**統括オーケストレーターチームを作成しました** — 🧠 MOA Chief + エージェント{n}名\n\n目標: {goal}\n\n{why}",
-      designReady: "準備できました。下のエージェントに仕事を分け、結果をまとめて報告します。\n\n- {agents}\n\nやりたいことをそのまま伝えてください。例:「{goal}」",
-      caseCreated: "**{label}** のケースを設定しました — ボット{n}名 · #{channel}。下の会話例から続けて使えます。",
-      caseStarterNote: "\n\n_右の役割カードの「おすすめタスク」をそのまま押せます。_",
-      proposalDone: "✓ チームに反映しました。",
+      proposalBotBody: "毎週金曜に進捗を1ページにまとめるボットです。",
+      designCreated: "",
+      designReady: "",
+      caseCreated: "**{label}** の準備ができました — ボット{n}名。",
+      caseStarterNote: "",
+      proposalDone: "✓ チームに追加しました。",
       proposalPassed: "· 見送りました。記録だけ残します。",
-      ruleApplied: "✓ **読み取り専用コマンドの自動承認ルール**を追加しました — `ls` · `cat` · `wc` · `pwd`。書き込みは承認カードを通ります。",
-      botApplied: "✓ **{name}** をSTGチームに追加しました。#{channel} で呼び出せます。",
-      prodPromoted: "🚀 **PROD v0.3.0 を反映** — STGのボット・チャンネル・設定が本番になりました。PRODは再び読み取り専用です。",
-      readOnly: "PRODは読み取り専用です — STGで変更し、Release Managerで昇格してください。"
+      ruleApplied: "",
+      botApplied: "✓ **{name}** はチームにいます。",
+      prodPromoted: "",
+      readOnly: "このチームは読み取り専用です。"
     },
     replies: {
-      dev: "**結論** — 「{topic}」を開発タスクとして整理しました。\n\n1. 再現と範囲 — 影響ファイル2つ、失敗箇所1つ\n2. 修正 — `server.js` のルーティング、`public/app.js` の描画\n3. 検証 — APIテスト → UIテスト → 手動確認\n\n**実行コマンド**\n\n```\nnode tests/reset_state.js && node server.js\npython3 tests/api_test.py\n```\n\n**確認が必要** — 本番データに触れる変更かどうか先に教えてください。危険なコマンドは承認カードを通ります。\n\n_ブラウザシミュレーターの応答です · デスクトップアプリでCLIやAPIを繋ぐと実際のモデルが答えます。_",
-      content: "**結論** — 「{topic}」を1週間分のコンテンツとして組みました。\n\n**来週7本（曜日 · テーマ）**\n- 月 · 毎日の習慣を1つ変えた話\n- 火 · 5分ルーティンで変わったこと\n- 水 · 失敗した自動化3つ\n- 木 · お金のかからない生産性ツール\n- 金 · 今週学んだこと\n- 土 · 読者の質問に回答\n- 日 · 来週の予告\n\n**最初の3秒フック2案**\n> 「これ1つ変えたら、朝が30分増えました。」\n> 「毎日やっていたこの作業、実は要りません。」\n\n**ハッシュタグ** `#生活自動化 #一人事業 #AIツール #ルーティン`\n\n_ブラウザシミュレーターの応答です · デスクトップアプリでCLIやAPIを繋ぐと実際のモデルが答えます。_",
-      research: "**結論** — 「{topic}」の根拠を確認しました。\n\n**確認できたこと**\n- 競合3社の公開価格\n- 直近2件のお知らせの変更点\n\n**推定**\n- 転換率の差はチャネル構成による可能性が高い（根拠は弱い）\n\n**確認が必要**\n- 最新数値の一次資料1件 — リンクが必要です\n\n_ブラウザシミュレーターの応答です · デスクトップアプリでCLIやAPIを繋ぐと実際のモデルが答えます。_",
-      chief: "**結論** — 「{topic}」をエージェントに分けられます。\n\n成果をまとめて、次のアクションを1つ提案します。",
-      pm: "**結論** — 「{topic}」を今週レビューできる範囲に整理しました。\n\n**範囲**\n- 問題: {topic}\n- 目標: 今週中にレビューできる下書き\n- 対象外: 本番データの変更\n\n**3日間の計画**\n1. 今日 — 要件とリスクの整理\n2. 明日 — 下書きと関係者のレビュー\n3. 明後日 — 反映とチェックリスト確認\n\n**次のアクション** — 決めるべき1件だけ選んでください。残りは下書きで用意します。\n\n_ブラウザシミュレーターの応答です · デスクトップアプリでCLIやAPIを繋ぐと実際のモデルが答えます。_"
+      dev: "**結論** — 「{topic}」をこのボットの仕事として整理しました。\n\n**今日やる3つ**\n1. 関係する画面やファイルを2つ確認\n2. 今日中に下書きを仕上げる\n3. 一度押して確認して共有\n\n**確認が必要** — 実際のデータに触れるか先に教えてください。\n\n_体験用の応答です。_",
+      content: "**結論** — 「{topic}」を1週間分のコンテンツとして組みました。\n\n**来週7本（曜日 · テーマ）**\n- 月 · 毎日の習慣を1つ変えた話\n- 火 · 5分ルーティンで変わったこと\n- 水 · 失敗した自動化3つ\n- 木 · お金のかからない生産性ツール\n- 金 · 今週学んだこと\n- 土 · 読者の質問に回答\n- 日 · 来週の予告\n\n**最初の3秒フック2案**\n> 「これ1つ変えたら、朝が30分増えました。」\n> 「毎日やっていたこの作業、実は要りません。」\n\n**ハッシュタグ** `#生活自動化 #一人事業 #AIツール`\n\n_体験用の応答です。_",
+      research: "**結論** — 「{topic}」の根拠を確認しました。\n\n**確認できたこと**\n- 3か所の公開価格\n- 直近2件のお知らせの変更点\n\n**推定**\n- 差はチャネル構成による可能性が高い（根拠は弱い）\n\n**確認が必要** — 原文リンクを1つもらえれば数字を合わせます。\n\n_体験用の応答です。_",
+      chief: "**結論** — 「{topic}」をボットに分けられます。\n\n下書きをまとめて、次のアクションを1つ提案します。",
+      pm: "**結論** — 「{topic}」を今週レビューできる範囲に整理しました。\n\n**範囲**\n- 問題: {topic}\n- 目標: 今週中にレビューできる下書き\n- 対象外: 実際のデータ変更\n\n**3日間の計画**\n1. 今日 — 要件とリスクの整理\n2. 明日 — 下書きとレビュー\n3. 明後日 — 反映と確認\n\n**次のアクション** — 決めるべき1件だけ選んでください。残りは下書きで用意します。\n\n_体験用の応答です。_"
     },
     toasts: {
       teamCreated: "STGにチームを作りました — #{channel}",
-      caseApplied: "{label}チームを設定しました — #{channel}",
+      caseApplied: "「{label}」チームを準備しました。",
       reset: "デモを初期状態に戻しました。",
       adminOn: "管理者モード — STG/PRODとReleaseパネルを表示します。",
       adminOff: "通常モード — 管理者ツールを隠しました。",
@@ -662,21 +670,25 @@ window.MOA_I18N = {
       listening: "聞き取り中 — 選んだ言語で話してください。"
     },
     demo: {
-      engine: "ブラウザシミュレーター",
+      engine: "ブラウザ体験版",
       stateIdle: "✨ 待機中", stateWorking: "⚡ 作業中",
-      chiefBadge: "統括", workingBadge: "⚡ 作業中",
-      noActivity: "· まだ処理履歴がありません。仕事を頼んでみてください。",
-      officeLounge: "グロース · 運用",
-      officeHint: "{chief} + エージェント{n}名",
+      chiefBadge: "リーダー", workingBadge: "⚡ 作業中",
+      noActivity: "· まだ記録がありません。仕事を頼んでみてください。",
+      officeHint: "{chief} リーダー · ボット{n}名",
       bubbleDelegating: "分担中…", bubbleWorking: "作業中…",
+      zoneMeeting: "会議室", zoneMaker: "メイカーゾーン", zoneLounge: "ラウンジ",
+      timeDay: "昼", timeSunset: "夕暮れ", timeNight: "夜",
+      teamDefault: "私のAIチーム",
+      teamChip: "{label} · ボット{n}名",
+      teamReady: "**{label}チーム**ができました — ボット{n}名がオフィスに入りました。\n\n**ステップ2**で大きなボタンを押してみてください。",
+      teamHello: "いいですね、**{label}**の仕事はお任せください。\n\n下のボタンを押せば、ボットに分けて結果だけまとめます。",
+      quickDefault: ["🗂️ 今週のやることを整理して", "🎯 今週の優先順位を決めて", "✅ 次のアクションを1つ選んで"],
       stepDone: "完了", stepWorking: "作業中", stepWaiting: "待機",
       typing: "入力中",
-      autoRoute: "自動", mentionRoute: "@メンション",
-      prodTopic: "PROD · 読み取り専用 — ",
-      workspace: "./workspace",
-      inputProd: "PRODは読み取り専用です",
-      packTeamLabel: "このチーム",
-      localOnly: "このタブ内だけ"
+      autoRoute: "自動", mentionRoute: "@指名",
+      prodTopic: "読み取り専用 — ", workspace: "./workspace", inputProd: "読み取り専用",
+      packTeamLabel: "このチーム", localOnly: "このタブ内だけ",
+      proposalOk: "追加する", proposalPass: "いらない"
     },
     pack: {
       title: "🎁 このチームを自分のChatGPT · Claudeで使う",

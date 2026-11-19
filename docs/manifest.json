@@ -1,7 +1,7 @@
 {
   "name": "MOA Hive — 내 PC 안에서 일하는 AI 봇 팀",
   "short_name": "MOA Hive",
-  "description": "로컬 우선 멀티 AI 봇 팀 메신저. 업종별 팀 컨설팅, MOA Chief 오케스트레이터, STG→PROD 승격. 대화·문서·API 키는 내 PC 밖으로 나가지 않습니다.",
+  "description": "브라우저에서 바로 쓰는 AI 봇 팀. 업종을 고르면 팀이 만들어지고, 2D 사무실에서 일하는 모습을 그대로 볼 수 있습니다.",
   "lang": "ko",
   "dir": "ltr",
   "start_url": "./",
@@ -19,6 +19,6 @@
   ],
   "shortcuts": [
     { "name": "라이브 체험", "short_name": "체험", "url": "./#demo", "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "다운로드", "short_name": "다운로드", "url": "./#downloads", "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "데스크톱 앱", "short_name": "데스크톱", "url": "./#advanced", "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }

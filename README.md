@@ -12,7 +12,7 @@
 > 🎁 **ChatGPT · Claude 세팅 팩** — 웹에서 고른 팀을 내 계정에 그대로 옮길 수 있습니다 (`#pack` 섹션, 래피드 판매 링크는 `docs/app.js`의 `PACK_URL`).
 > 🔒 웹 체험 데이터는 브라우저 탭 안에만 남습니다. 데스크톱 앱의 대화·자료는 내 컴퓨터에만 저장됩니다.
 > 💿 데스크톱 설치 파일(`.dmg`/`.exe`)은 서명되지 않은 개인 빌드라 페이지 하단 **고급 · 개발자** 섹션 안 접이식으로만 안내합니다 (macOS Sequoia: `완료 → 시스템 설정 > 개인정보 보호 및 보안 > 확인 없이 열기`).
-> 🏢 화면 위 **가상 오피스**에서 봇들이 일하는 모습을 보고, 캐릭터를 누르면 역할 카드가 열립니다. 기본 캐스트는 **MOA Chief + Prototyper · Builder · Sweeper · Grower · Maintainer**입니다. STG/PROD 승격 도구는 관리자 모드(`?admin=1` 또는 설정)에서만 보입니다.
+> 🏢 체험판은 **3단계**로 단순화했습니다 — ① 내 업종 고르기 → ② 큰 버튼으로 한 줄 시키기 → ③ 내 ChatGPT·Claude에 붙여넣기. 화면 위 **2D 가상 사무실**에서는 봇들이 책상을 오가며 일하고(낮·노을·밤에 따라 조명·창밖 하늘이 바뀜), 캐릭터를 누르면 역할 카드가 열립니다. 기본 캐스트는 **MOA Chief + Prototyper · Builder · Sweeper · Grower · Maintainer**입니다.
 
 <details>
 <summary>개발자용 요약 (터미널 · Node.js · Git)</summary>
@@ -324,10 +324,11 @@ moa-hive/
 `docs/`는 서버 없이 돌아가는 **랜딩 + 라이브 체험판**입니다. 같은 화면을 GitHub Pages에 자동 배포합니다.
 
 - **주소:** https://cm-jccho.github.io/moa-hive/
-- **구성:** `docs/index.html` · `docs/styles.css` · `docs/app.js` · `docs/i18n.js`(EN·中文·日本語) · `docs/manifest.json` · `docs/sw.js` · `docs/icons/`
+- **구성:** `docs/index.html` · `docs/styles.css` · `docs/app.js` · `docs/office.js`(2D 사무실 canvas) · `docs/i18n.js`(EN·中文·日本語) · `docs/manifest.json` · `docs/sw.js` · `docs/icons/`
 - **체험 범위:** 업종 케이스 6종·업종 카드 4종·자유 목적(음성 입력 포함) 팀 컨설팅 → MOA Chief 오케스트레이터 위임·취합 → 인라인 제안 카드 → 봇 역할 인스펙터 → STG/PROD 읽기 전용·승격
-- **다국어:** KO/EN/中文/日本語 (`?lang=` 쿼리·localStorage) — 랜딩·케이스·가상 오피스·체험판 문구 전환
-- **세팅 팩 퍼널:** 케이스 카드·가상 오피스·인스펙터의 “이 팀을 내 ChatGPT · Claude에 그대로 쓰기” 버튼 → 모달 → 래피드 판매 링크(`app.js` `PACK_URL`)
+- **다국어:** KO/EN/中文/日本語 (`?lang=` 쿼리·localStorage) — 랜딩·업종 카드·3단계 안내·2D 오피스 구역/시간대 라벨·말풍선까지 전환
+- **2D 오피스:** `docs/office.js` — 외부 라이브러리 없이 canvas 2D로 그립니다. 고해상도 DPR 대응, 낮/노을/밤 미리보기, 봇 보행·타이핑·말풍선, 캐릭터 클릭 → 역할 카드.
+- **세팅 팩 퍼널:** 3단계 CTA · 오피스 헤더 · 역할 카드의 버튼 → 모달 → 래피드 판매 링크(`app.js` `PACK_URL`)
 - **PWA:** 홈 화면 추가(standalone) · 오프라인 셸 캐시. 모바일 390px까지 반응형
 - **다운로드 링크:** `docs/app.js` 상단 `RELEASE`(repo · version · tag) 한 곳에서 관리합니다.
 
