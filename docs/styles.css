@@ -676,7 +676,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 
 .demo-app { display: block; height: auto; min-height: 0; }
 
-.d-block { padding: 14px 16px 16px; border-bottom: 1px solid var(--line); }
+.d-block { padding: 12px 16px 13px; border-bottom: 1px solid var(--line); }
 .d-block-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .d-block-head h3 { margin: 0; font-size: 14.5px; display: flex; align-items: center; gap: 8px; }
 .d-num {
@@ -708,7 +708,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 
 /* 2D 가상 사무실 */
 .d-office { padding: 0; border-bottom: 1px solid var(--line); background: #0a0d16; position: relative; overflow: hidden; }
-.d-office-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; }
+.d-office-head { display: flex; align-items: center; gap: 10px; padding: 8px 14px 6px; }
 .d-office-title { font-size: 12.5px; font-weight: 800; color: #dfe6f7; white-space: nowrap; }
 .d-office-hint { font-size: 10.4px; color: #97a2bb; margin-left: auto; white-space: nowrap; }
 .d-office-sub { display: none; }
@@ -718,7 +718,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 }
 .d-office-pack:hover { background: rgba(167, 139, 250, 0.22); }
 .d-office-floor { display: block; padding: 0; overflow: hidden; }
-.office-stage { position: relative; width: 100%; height: 250px; overflow: hidden; background: #0d1018; }
+.office-stage { position: relative; width: 100%; height: 214px; max-height: 230px; overflow: hidden; background: #0d1018; }
 #officeCanvas { display: block; width: 100%; height: 100%; }
 .office-overlay { position: absolute; inset: 0; pointer-events: none; }
 .office-hit {
@@ -754,7 +754,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 .office-hit.hover .office-ring, .office-hit:focus-visible .office-ring { opacity: 1; }
 .office-hit.selected .office-ring { opacity: 0.75; border-style: dashed; border-color: rgba(255, 214, 140, 0.9); }
 .office-hud {
-  position: absolute; top: 8px; right: 9px; z-index: 5;
+  position: absolute; top: 8px; right: 9px; z-index: 40;
   display: flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 999px;
   background: rgba(8, 11, 20, 0.55); border: 1px solid rgba(255, 255, 255, 0.14);
   color: #eef3ff; backdrop-filter: blur(6px);
@@ -764,7 +764,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 .office-stage[data-phase="sunset"] .office-phase { background: rgba(255, 150, 110, 0.2); color: #ffd0b8; }
 .office-stage[data-phase="night"] .office-phase { background: rgba(140, 170, 255, 0.2); color: #cfe0ff; }
 .office-times {
-  position: absolute; top: 8px; left: 9px; z-index: 5;
+  position: absolute; top: 8px; left: 9px; z-index: 40;
   display: flex; align-items: center; gap: 2px; padding: 2px; border-radius: 999px;
   background: rgba(8, 11, 20, 0.5); border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(6px);
@@ -774,13 +774,13 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
   padding: 3px 6px; border-radius: 999px; line-height: 1.25;
 }
 .office-times button.is-active { background: rgba(124, 156, 255, 0.3); color: #eaf0ff; }
-.d-office-tip { margin: 0; padding: 7px 14px 9px; font-size: 10.2px; color: #8b93a7; }
+.d-office-tip { margin: 0; padding: 5px 14px 7px; font-size: 10px; color: #8b93a7; }
 
 /* 2단계 — 큰 버튼 + 한 줄 입력 */
 .d-block-try { background: rgba(255, 255, 255, 0.015); }
-.d-quick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 10px 0 10px; }
+.d-quick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 8px 0 10px; }
 .d-quick-btn {
-  display: flex; align-items: center; gap: 9px; text-align: left; min-height: 56px;
+  display: flex; align-items: center; gap: 9px; text-align: left; min-height: 50px;
   padding: 12px 12px; border-radius: 14px; color: #e9eeff; font-size: 12.6px; font-weight: 700; line-height: 1.35;
   border: 1px solid rgba(124, 156, 255, 0.3);
   background: linear-gradient(180deg, rgba(124, 156, 255, 0.15), rgba(124, 156, 255, 0.05));
@@ -791,7 +791,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 .d-quick-btn:active { transform: translateY(0); }
 .d-quick-btn:disabled { opacity: 0.45; }
 .demo-app .d-composer { border-top: 0; padding: 0; }
-.demo-app .d-messages { min-height: 200px; max-height: 340px; padding: 14px 16px 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(3, 5, 10, 0.3); }
+.demo-app .d-messages { min-height: 168px; max-height: 260px; padding: 12px 16px 14px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(3, 5, 10, 0.3); }
 
 /* 3단계 — ChatGPT·Claude 로 */
 .d-block-pack {
@@ -815,7 +815,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 @media (max-width: 900px) {
   .d-steps { top: 58px; }
   .d-case-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .office-stage { height: 220px; }
+  .office-stage { height: 190px; }
   .d-block { padding: 12px 13px 14px; }
 }
 @media (max-width: 640px) {
@@ -833,7 +833,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
   .d-reset::before { content: "↺"; font-size: 14px; }
   .d-quick { grid-template-columns: minmax(0, 1fr); }
   .d-quick-btn { min-height: 48px; padding: 10px 12px; font-size: 12.2px; }
-  .office-stage { height: 196px; }
+  .office-stage { height: 172px; }
   .d-office-hint { font-size: 9.4px; }
   .d-block-pack { flex-direction: column; align-items: stretch; }
   .d-block-pack .btn { width: 100%; }

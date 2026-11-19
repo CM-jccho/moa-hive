@@ -64,25 +64,24 @@ window.OfficeScene = (function () {
     { x: 0.930, y: 0.420, emoji: '🖨️' }
   ];
 
+  /* 의인화된 크리터 팔레트 — 역할별 소품(prop)으로 개성 */
   var STYLE_BASE = [
-    { body: '#5b8def', hair: '#2b3350', acc: 'headset' },
-    { body: '#e08c4a', hair: '#4a3323', acc: 'helmet' },
-    { body: '#46b3a0', hair: '#274a45', acc: 'cap' },
-    { body: '#9b7bea', hair: '#4a3d6b', acc: 'antenna' },
-    { body: '#e0698b', hair: '#4a2434', acc: 'bun' },
-    { body: '#58a55c', hair: '#2f4a2e', acc: 'leaf' },
-    { body: '#7a8ca8', hair: '#2f3644', acc: 'glasses' },
-    { body: '#c2933f', hair: '#443418', acc: 'scarf' }
+    { body: '#6f8cf0', belly: '#a8b8ff', prop: 'emoji', accent: '#ffe066' },
+    { body: '#f0a15c', belly: '#ffc995', prop: 'emoji', accent: '#ffe066' },
+    { body: '#57c9b4', belly: '#9ce8da', prop: 'emoji', accent: '#ccfff6' },
+    { body: '#b18cf5', belly: '#d3bbff', prop: 'emoji', accent: '#ffe066' },
+    { body: '#ef86a4', belly: '#ffb8cb', prop: 'emoji', accent: '#ffd6e3' },
+    { body: '#6cc273', belly: '#a3e0a8', prop: 'emoji', accent: '#d6ffd9' },
+    { body: '#93a6c4', belly: '#c0cfe6', prop: 'emoji', accent: '#cfe6ff' },
+    { body: '#d3a44f', belly: '#f1cd87', prop: 'emoji', accent: '#ffe9b0' }
   ];
-
-  var SKIN = ['#f6d0ad', '#eec29c', '#f9dcc0', '#e8b58d'];
 
   var S = {
     canvas: null, ctx: null, overlay: null, stage: null, clock: null, phaseEl: null, times: null,
     w: 0, h: 0, u: 1, dpr: 1,
     bots: [], labels: {}, activeId: null, chiefId: null,
     mode: 'auto', phase: 'day', t: 0, last: 0, raf: 0, running: false,
-    visible: true, reduced: false, lastClock: ''
+    visible: true, reduced: false, lastClock: '', chatNext: 0
   };
 
   /* ─────────── 작은 유틸 ─────────── */
@@ -98,23 +97,35 @@ window.OfficeScene = (function () {
     g.closePath();
   }
   function ell(g, x, y, rx, ry) { g.beginPath(); g.ellipse(x, y, Math.max(0.4, rx), Math.max(0.4, ry), 0, 0, TAU); }
+
   function hash(str) {
     var t = String(str || '');
     var h = 2166136261;
     for (var i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); }
     return Math.abs(h);
   }
-  function styleFor(name) {
+  function styleFor(name, emoji) {
     var n = String(name || '');
-    var low = n.toLowerCase();
-    if (/chief|팀장/.test(n) || /chief/.test(low)) return { body: '#5a6ad6', hair: '#232840', acc: 'chief', tie: '#ffd479' };
-    if (/prototyper|아이디어|소재/i.test(n)) return { body: '#9b7bea', hair: '#4a3d6b', acc: 'antenna' };
-    if (/builder|구현|개발|상세페이지/i.test(n)) return { body: '#e08c4a', hair: '#4a3323', acc: 'helmet' };
-    if (/sweeper|정리|정돈/i.test(n)) return { body: '#46b3a0', hair: '#274a45', acc: 'cap' };
-    if (/grower|성장|그로스/i.test(n)) return { body: '#58a55c', hair: '#2f4a2e', acc: 'leaf' };
-    if (/maintainer|운영|보안|리뷰|분석/i.test(n)) return { body: '#7a8ca8', hair: '#2f3644', acc: 'glasses' };
-    var s = STYLE_BASE[hash(n) % STYLE_BASE.length];
-    return { body: s.body, hair: s.hair, acc: s.acc };
+    var em = String(emoji || '');
+    if (/chief|팀장/i.test(n)) return { body: '#6a7ce0', belly: '#a7b3ff', prop: 'crown', accent: '#ffd45e' };
+    if (/prototyper|아이디어|소재/i.test(n)) return { body: '#b18cf5', belly: '#d8c3ff', prop: 'bulb', accent: '#ffe066' };
+    if (/builder|구현|개발|상세페이지/i.test(n)) return { body: '#f0a15c', belly: '#ffc995', prop: 'helmet', accent: '#f7c948' };
+    if (/sweeper|정리|정돈/i.test(n)) return { body: '#57c9b4', belly: '#9ce8da', prop: 'broom', accent: '#ccfff6' };
+    if (/grower|성장|그로스/i.test(n)) return { body: '#6cc273', belly: '#a3e0a8', prop: 'sprout', accent: '#d6ffd9' };
+    if (/maintainer|운영|보안|리뷰|분석/i.test(n)) return { body: '#8d9fc0', belly: '#bccbe4', prop: 'shield', accent: '#cfe6ff' };
+    var base = STYLE_BASE[hash(n + em) % STYLE_BASE.length];
+    return { body: base.body, belly: base.belly, prop: 'emoji', accent: base.accent, emoji: em };
+  }
+
+  /* 색 밝기 조절 (그라데이션용) */
+  function shade(hex, amt) {
+    var h = String(hex).replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var num = parseInt(h, 16);
+    var r = Math.min(255, Math.max(0, ((num >> 16) & 255) + amt));
+    var g2 = Math.min(255, Math.max(0, ((num >> 8) & 255) + amt));
+    var b = Math.min(255, Math.max(0, (num & 255) + amt));
+    return 'rgb(' + Math.round(r) + ',' + Math.round(g2) + ',' + Math.round(b) + ')';
   }
 
   /* ─────────── 초기화 ─────────── */
@@ -236,12 +247,13 @@ window.OfficeScene = (function () {
           r = {
             id: b.id, x: 1.04 + (i % 3) * 0.05, y: 0.32 + i * 0.055, seat: seat, home: seat,
             stepT: Math.random() * 6, seed: Math.random() * 6, nextWander: S.t + 9 + i * 2 + Math.random() * 12,
-            away: null, linger: 0, bubble: '', style: styleFor(b.name), el: null, bubbleEl: null,
-            moving: true, speed: 0.19 + (i % 4) * 0.017
+            away: null, linger: 0, bubble: '', style: styleFor(b.name, b.emoji), el: null, bubbleEl: null,
+            moving: true, speed: 0.19 + (i % 4) * 0.017,
+            chatText: '', chatUntil: 0, doneUntil: 0, jumpT: 0, wasWorking: false
           };
         } else {
           r.id = b.id;
-          r.seat = seat; r.home = seat; r.style = styleFor(b.name);
+          r.seat = seat; r.home = seat; r.style = styleFor(b.name, b.emoji);
         }
         r.bot = b; r.name = b.name || '봇';
         next.push(r);
@@ -256,7 +268,11 @@ window.OfficeScene = (function () {
     S.bots.forEach(function (r) {
       var isChief = r.id === S.chiefId;
       r.delegating = !!(busy.chief && isChief);
+      var was = r.working;
       r.working = !!(busy.chief && isChief) || busy.agent === r.id;
+      if (was && !r.working) { r.doneUntil = S.t + 2.2; r.chatUntil = 0; }
+      if (r.working) { r.chatUntil = 0; r.chatText = ''; }
+      r.wasWorking = r.working;
       if (r.el) {
         r.el.classList.toggle('working', !!r.working);
         r.el.classList.toggle('idle', !r.working);
@@ -283,6 +299,8 @@ window.OfficeScene = (function () {
       el.addEventListener('blur', function () { el.classList.remove('hover'); });
       el.addEventListener('click', function (ev) {
         ev.stopPropagation();
+        r.jumpT = 0.001;
+        r.doneUntil = 0;
         if (S.onPick) S.onPick(r.id);
       });
       S.overlay.appendChild(el);
@@ -317,8 +335,20 @@ window.OfficeScene = (function () {
   }
   function update(dt) {
     if (S.reduced) return;
+    // 3~4초마다 한 명이 짧은 한 줄을 띄웁니다
+    if (S.t > S.chatNext) {
+      S.chatNext = S.t + 3 + Math.random() * 1.6;
+      var lines = S.labels.idle;
+      var cands = S.bots.filter(function (r) { return !r.working && !r.away; });
+      if (cands.length && lines && lines.length) {
+        var who = cands[Math.floor(Math.random() * cands.length)];
+        who.chatText = lines[Math.floor(Math.random() * lines.length)];
+        who.chatUntil = S.t + 2.8;
+      }
+    }
     S.bots.forEach(function (r) {
       r.stepT += dt;
+      if (r.jumpT > 0) { r.jumpT += dt; if (r.jumpT > 0.62) r.jumpT = 0; }
       if (r.id === S.chiefId) { /* 팀장은 자리를 지킴 */ }
       if (!r.working && !r.away && S.t > r.nextWander) {
         r.nextWander = S.t + 9 + Math.random() * 16;
@@ -350,8 +380,10 @@ window.OfficeScene = (function () {
   }
 
   function bubbleFor(r) {
-    if (r.delegating) return S.labels.delegating || '배분 중…';
-    if (r.working) return S.labels.working || '작업 중…';
+    if (r.delegating) return '🧠 ' + (S.labels.delegating || '배분 중…');
+    if (r.working) return '⚡ ' + (S.labels.working || '작업 중…');
+    if (r.chatUntil > S.t && r.chatText) return r.chatText;
+    if (r.doneUntil > S.t) return '✅ ' + (S.labels.doneShort || '끝!');
     if (r.away) return r.away.emoji || '';
     return '';
   }
@@ -367,14 +399,14 @@ window.OfficeScene = (function () {
         r.el.classList.toggle('has-bubble', !!bub);
       }
       var s = S.u;
-      var bw = Math.round(56 * s + 14);
-      var bh = Math.round(66 * s + 14);
+      var bw = Math.round(46 * s + 12);
+      var bh = Math.round(52 * s + 12);
       var x = r.x * S.w - bw / 2;
-      var y = r.y * S.h - bh + 4;
+      var y = r.y * S.h - bh + 8;
       r.el.style.width = bw + 'px';
       r.el.style.height = bh + 'px';
       r.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0)';
-      r.el.style.zIndex = String(Math.round(r.y * 1000));
+      r.el.style.zIndex = String(Math.round(r.y * 26));
       var side = r.x < 0.13 ? 'left' : r.x > 0.87 ? 'right' : '';
       r.el.setAttribute('data-side', side);
     });
@@ -412,14 +444,15 @@ window.OfficeScene = (function () {
     items.push({ y: 0.470 * S.h, f: function () { drawShelf(g, pal); } });
     items.push({ y: 0.520 * S.h, f: function () { drawPrinter(g, pal); } });
     items.push({ y: 0.450 * S.h, f: function () { drawPlant(g, 0.048 * S.w, 0.445 * S.h, 0.9, pal); } });
-    S.bots.forEach(function (r) {
-      items.push({ y: r.y * S.h + 2, f: function () { drawCharacter(g, r, pal); } });
-    });
     items.sort(function (a, b) { return a.y - b.y; });
     for (var k = 0; k < items.length; k++) items[k].f();
-    drawLamps(g, pal);
     drawZoneLabels(g, pal);
     drawVignette(g, pal);
+    S.bots.slice().sort(function (a, b) { return a.y - b.y; }).forEach(function (r) {
+      drawCharacter(g, r, pal);
+    });
+    drawLinks(g, pal);
+    drawLamps(g, pal);
   }
 
   function drawRoom(g, pal) {
@@ -584,13 +617,24 @@ window.OfficeScene = (function () {
     var mx = cx - mw / 2, my = cy - h * 0.62;
     g.fillStyle = pal.night ? '#1a2236' : '#2a3040';
     rr(g, mx - 2 * S.u, my - 2 * S.u, mw + 4 * S.u, mh + 4 * S.u, 2.5 * S.u); g.fill();
-    var glowA = (working ? 0.55 : 0.28) + pal.night * 0.35;
+    var pulse = 0.5 + 0.5 * Math.sin(S.t * (working ? 4.2 : 1.6) + seat.x * 9);
+    var glowA = (working ? 0.45 : 0.24) + pulse * (working ? 0.28 : 0.1) + pal.night * 0.3;
     var sg = g.createLinearGradient(mx, my, mx + mw, my + mh);
     sg.addColorStop(0, 'rgba(140,200,255,' + glowA + ')');
-    sg.addColorStop(1, working ? 'rgba(255,220,150,' + (glowA + 0.18) + ')' : 'rgba(110,170,235,' + glowA * 0.7 + ')');
+    sg.addColorStop(1, working ? 'rgba(255,214,140,' + (glowA + 0.18) + ')' : 'rgba(110,170,235,' + glowA * 0.7 + ')');
     g.fillStyle = sg; rr(g, mx, my, mw, mh, 1.5 * S.u); g.fill();
-    g.fillStyle = 'rgba(255,255,255,0.35)';
-    for (var i = 0; i < 3; i++) g.fillRect(mx + 2 * S.u, my + (3 + i * 3.5) * S.u, mw * (0.55 - i * 0.1), 1.2 * S.u);
+    // 화면 위를 지나가는 스캔 라인
+    g.save();
+    rr(g, mx, my, mw, mh, 1.5 * S.u); g.clip();
+    var scanX = mx + ((S.t * (working ? 0.55 : 0.3) + seat.y * 3) % 1) * mw;
+    var scanG = g.createLinearGradient(scanX - 6 * S.u, 0, scanX + 6 * S.u, 0);
+    scanG.addColorStop(0, 'rgba(255,255,255,0)');
+    scanG.addColorStop(0.5, 'rgba(255,255,255,' + (working ? 0.5 : 0.28) + ')');
+    scanG.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = scanG; g.fillRect(scanX - 6 * S.u, my, 12 * S.u, mh);
+    g.fillStyle = 'rgba(255,255,255,0.45)';
+    for (var i = 0; i < 3; i++) g.fillRect(mx + 2 * S.u, my + (3 + i * 3.5) * S.u, mw * (0.55 - i * 0.1) * (working ? 1 : 0.8), 1.2 * S.u);
+    g.restore();
     // 화면 빛 번짐
     g.save();
     g.globalCompositeOperation = 'lighter';
@@ -695,14 +739,17 @@ window.OfficeScene = (function () {
     rr(g, x + w * 0.28, y + h * 0.2, w * 0.2, w * 0.2, 1.5 * S.u); g.fill();
     g.fillStyle = 'rgba(255,255,255,0.8)';
     rr(g, x + w * 0.55, y + h * 0.24, w * 0.12, h * 0.18, 1 * S.u); g.fill();
-    // 김이 모락
-    g.strokeStyle = S.phase === 'night' ? 'rgba(220,230,255,0.45)' : 'rgba(120,120,140,0.35)';
-    g.lineWidth = 1.2 * S.u;
-    for (var i = 0; i < 2; i++) {
+    // 김이 모락모락 (3겹으로 피어오름)
+    for (var i = 0; i < 3; i++) {
+      var prog = (S.t * 0.45 + i / 3) % 1;
+      var steam = 1 - prog;
+      g.strokeStyle = 'rgba(255,255,255,' + (0.34 * steam) + ')';
+      g.lineWidth = (1.4 + prog) * S.u;
       g.beginPath();
-      var sx = x + w * (0.36 + i * 0.16);
-      g.moveTo(sx, y + h * 0.1);
-      g.quadraticCurveTo(sx + 3 * S.u, y - 4 * S.u, sx - 1 * S.u, y - 8 * S.u);
+      var sx = x + w * (0.34 + i * 0.14);
+      var sy = y + h * 0.08 - prog * 15 * S.u;
+      g.moveTo(sx, sy);
+      g.quadraticCurveTo(sx + (3 + i) * S.u * Math.sin(S.t * 2 + i), sy - 4 * S.u, sx - (1 + prog * 3) * S.u, sy - 8 * S.u);
       g.stroke();
     }
     // 컵
@@ -770,195 +817,255 @@ window.OfficeScene = (function () {
   function drawCharacter(g, r, pal) {
     var s = S.u;
     var x = r.x * S.w;
-    var y = r.y * S.h;
-    var st = r.style;
-    var walk = r.moving;
-    var ph = r.stepT * 9;
-    var bob = walk ? Math.abs(Math.sin(ph)) * 2.2 * s : Math.sin(S.t * 1.4 + r.seed) * 0.8 * s;
-    var bodyW = 19 * s, bodyH = 17 * s, legH = 9 * s, headR = 10.5 * s;
-    var feetY = y;
-    var hipY = feetY - legH;
-    var shoulderY = hipY - bodyH;
-    var headY = shoulderY - headR + 1.5 * s;
+    var groundY = r.y * S.h;
+    var st = r.style || styleFor(r.name, r.emoji);
+    var walking = r.moving;
+    var ph = r.stepT * 10;
 
-    // 그림자
-    g.fillStyle = 'rgba(25,18,40,0.20)';
-    ell(g, x, feetY + 1 * s, 13 * s, 4 * s); g.fill();
+    // 통통 튀는 이동 + 클릭 점프
+    var hop = walking ? Math.abs(Math.sin(ph)) * 4.4 * s : Math.sin(S.t * 1.5 + r.seed) * 1.1 * s;
+    var jump = r.jumpT > 0 ? Math.sin(Math.min(1, r.jumpT / 0.62) * Math.PI) * 14 * s : 0;
+    var lift = hop + jump;
+    var squashBase = walking ? Math.sin(ph) * 0.055 : Math.sin(S.t * 1.5 + r.seed) * 0.02 + (r.working ? Math.sin(S.t * 9) * 0.03 : 0);
+    var squash = 1 + squashBase - (jump > 0 ? 0.05 : 0);
+    var bw = 17 * s / Math.sqrt(Math.max(0.8, squash));
+    var bh = 15 * s * squash;
+    var cy = groundY - lift - bh;      // 몸통 중심
+    var topY = cy - bh;                // 몸통 위
 
-    // 선택 표시 링
+    // 그림자 (점프하면 작아짐)
+    g.fillStyle = 'rgba(25,18,40,' + (0.24 - (lift / (40 * s)) * 0.12) + ')';
+    ell(g, x, groundY + 1.5 * s, bw * (1 - lift / (60 * s)), 4.2 * s); g.fill();
+
+    // 선택 링
     if (r.id === S.activeId) {
-      g.strokeStyle = 'rgba(124,156,255,0.85)';
+      g.strokeStyle = 'rgba(124,156,255,0.9)';
       g.lineWidth = 1.6 * s;
       g.setLineDash([4 * s, 3 * s]);
-      ell(g, x, feetY + 1 * s, 17 * s, 6 * s); g.stroke();
+      ell(g, x, groundY + 1.5 * s, bw * 1.15, 5.6 * s); g.stroke();
       g.setLineDash([]);
     }
 
-    var swing = walk ? Math.sin(ph) * 3.2 * s : 0;
-    // 다리
-    g.fillStyle = '#3a4157';
-    rr(g, x - 5.5 * s + swing, hipY - 1 * s, 4.4 * s, legH + 1 * s, 2 * s); g.fill();
-    rr(g, x + 1.1 * s - swing, hipY - 1 * s, 4.4 * s, legH + 1 * s, 2 * s); g.fill();
-    // 신발
-    g.fillStyle = '#262b3c';
-    rr(g, x - 6.2 * s + swing, feetY - 3 * s, 5.8 * s, 3 * s, 1.4 * s); g.fill();
-    rr(g, x + 0.6 * s - swing, feetY - 3 * s, 5.8 * s, 3 * s, 1.4 * s); g.fill();
+    // 발 (통통)
+    var stepL = walking ? Math.sin(ph) * 2.6 * s : 0;
+    g.fillStyle = shade(st.body, -38);
+    ell(g, x - 7 * s + stepL, groundY - 2.2 * s, 5.2 * s, 3.4 * s); g.fill();
+    ell(g, x + 7 * s - stepL, groundY - 2.2 * s, 5.2 * s, 3.4 * s); g.fill();
 
-    var by = shoulderY - bob;
-    // 몸통
-    g.fillStyle = st.body;
-    rr(g, x - bodyW / 2, by, bodyW, bodyH + bob, 6 * s); g.fill();
-    g.fillStyle = 'rgba(255,255,255,0.16)';
-    rr(g, x - bodyW / 2 + 2 * s, by + 2 * s, bodyW - 4 * s, bodyH * 0.38, 4 * s); g.fill();
-    // 팔
-    var typing = r.working && !walk;
-    var armSwing = typing ? Math.sin(S.t * 14 + r.seed) * 2 * s : walk ? Math.sin(ph + Math.PI) * 2.4 * s : 0;
-    g.fillStyle = st.body;
-    rr(g, x - bodyW / 2 - 3.2 * s, by + 3 * s + armSwing, 4.4 * s, 11 * s, 2.2 * s); g.fill();
-    rr(g, x + bodyW / 2 - 1.2 * s, by + 3 * s - armSwing, 4.4 * s, 11 * s, 2.2 * s); g.fill();
-    // 손
-    g.fillStyle = SKIN[hash(r.id) % SKIN.length];
-    ell(g, x - bodyW / 2 - 1 * s, by + 14 * s + armSwing, 2.2 * s, 2.2 * s); g.fill();
-    ell(g, x + bodyW / 2 + 1 * s, by + 14 * s - armSwing, 2.2 * s, 2.2 * s); g.fill();
-    // 넥타이 / 배지
-    if (st.acc === 'chief') {
-      g.fillStyle = st.tie || '#ffd479';
-      g.beginPath(); g.moveTo(x, by + 2 * s); g.lineTo(x + 2.6 * s, by + 7 * s); g.lineTo(x, by + 16 * s); g.lineTo(x - 2.6 * s, by + 7 * s); g.closePath(); g.fill();
-    } else {
-      g.fillStyle = 'rgba(255,255,255,0.45)';
-      rr(g, x + bodyW * 0.12, by + bodyH * 0.52, 3 * s, 3 * s, 1 * s); g.fill();
-    }
+    // 뒤쪽 날개
+    var flap = walking ? Math.sin(ph * 2) * 0.55 : Math.sin(S.t * 2.2 + r.seed) * 0.18;
+    g.fillStyle = 'rgba(255,255,255,0.55)';
+    [1, -1].forEach(function (dir) {
+      g.save();
+      g.translate(x + dir * (bw + 1.5 * s), cy - 2 * s);
+      g.rotate(dir * (0.5 + flap));
+      ell(g, dir * 4 * s, 0, 5.5 * s, 3.2 * s); g.fill();
+      g.restore();
+    });
 
-    // 목
-    g.fillStyle = SKIN[hash(r.id) % SKIN.length];
-    g.fillRect(x - 3 * s, headY + headR - 1 * s, 6 * s, 4 * s);
+    // 몸통 (동글동글 + 그라데이션 + 배)
+    var bg = g.createLinearGradient(0, topY, 0, cy + bh);
+    bg.addColorStop(0, shade(st.body, 26));
+    bg.addColorStop(1, shade(st.body, -18));
+    g.fillStyle = bg;
+    ell(g, x, cy, bw, bh); g.fill();
+    g.fillStyle = st.belly || shade(st.body, 40);
+    ell(g, x, cy + bh * 0.3, bw * 0.62, bh * 0.54); g.fill();
+    // 광택
+    g.fillStyle = 'rgba(255,255,255,0.34)';
+    ell(g, x - bw * 0.36, cy - bh * 0.42, bw * 0.28, bh * 0.2); g.fill();
 
-    // 머리카락 뒤
-    g.fillStyle = st.hair;
-    if (st.acc === 'bun') { ell(g, x + headR * 0.9, headY - headR * 0.55, 4.4 * s, 4.4 * s); g.fill(); }
-    ell(g, x, headY + 1 * s, headR * 1.02, headR * 1.02); g.fill();
+    // 팔 (작업 중엔 빠르게 움직임)
+    var armSwing = r.working ? Math.sin(S.t * 14 + r.seed) * 1.8 * s : walking ? Math.sin(ph + Math.PI) * 1.6 * s : 0;
+    g.fillStyle = shade(st.body, -10);
+    ell(g, x - bw * 0.92, cy + 2 * s + armSwing, 4.2 * s, 3.2 * s); g.fill();
+    ell(g, x + bw * 0.92, cy + 2 * s - armSwing, 4.2 * s, 3.2 * s); g.fill();
 
-    // 얼굴
-    var skin = SKIN[hash(r.id + 's') % SKIN.length];
-    g.fillStyle = skin;
-    ell(g, x, headY + 1.4 * s, headR * 0.94, headR * 0.96); g.fill();
-    // 앞머리
-    g.fillStyle = st.hair;
-    g.beginPath();
-    g.ellipse(x, headY - headR * 0.18, headR * 1.0, headR * 0.72, 0, Math.PI, TAU);
-    g.fill();
-    g.fillRect(x - headR * 0.98, headY - headR * 0.28, headR * 0.3, headR * 0.6);
-    g.fillRect(x + headR * 0.68, headY - headR * 0.28, headR * 0.3, headR * 0.6);
-
-    // 눈 (가끔 깜빡)
-    var blink = (S.t + r.seed) % 4.6 < 0.14;
-    g.fillStyle = '#2b2f42';
+    // 얼굴 — 큰 눈 · 볼 · 입
+    var eyeY = cy - bh * 0.12;
+    var eyeR = 5.4 * s;
+    var pupil = 2.9 * s;
+    var blink = (S.t + r.seed) % 4.4 < 0.13;
+    var look = Math.sin(S.t * 0.6 + r.seed) * 0.9 * s;
     if (blink) {
-      g.fillRect(x - 4.6 * s, headY + 0.6 * s, 3 * s, 0.9 * s);
-      g.fillRect(x + 1.6 * s, headY + 0.6 * s, 3 * s, 0.9 * s);
+      g.strokeStyle = '#33304a'; g.lineWidth = 1.4 * s; g.lineCap = 'round';
+      [-1, 1].forEach(function (d) {
+        g.beginPath();
+        g.arc(x + d * 6 * s, eyeY, eyeR * 0.9, 0.15 * Math.PI, 0.85 * Math.PI);
+        g.stroke();
+      });
     } else {
-      ell(g, x - 3.1 * s, headY + 1.2 * s, 1.35 * s, 1.6 * s); g.fill();
-      ell(g, x + 3.1 * s, headY + 1.2 * s, 1.35 * s, 1.6 * s); g.fill();
-      g.fillStyle = 'rgba(255,255,255,0.85)';
-      g.fillRect(x - 3.6 * s, headY + 0.5 * s, 1.1 * s, 1.1 * s);
-      g.fillRect(x + 2.6 * s, headY + 0.5 * s, 1.1 * s, 1.1 * s);
+      [-1, 1].forEach(function (d) {
+        g.fillStyle = '#ffffff';
+        ell(g, x + d * 6 * s, eyeY, eyeR, eyeR * (r.working ? 0.9 : 1.05)); g.fill();
+        g.fillStyle = '#2c2a3e';
+        ell(g, x + d * 6 * s + look, eyeY + (r.working ? 0.6 * s : 0.2 * s), pupil, pupil * (r.working ? 1.05 : 1.15)); g.fill();
+        g.fillStyle = 'rgba(255,255,255,0.95)';
+        ell(g, x + d * 6 * s + look - 1.1 * s, eyeY - 1.2 * s, 1.1 * s, 1.1 * s); g.fill();
+      });
     }
-    // 볼 · 입
-    g.fillStyle = 'rgba(240,150,150,0.28)';
-    ell(g, x - 6.2 * s, headY + 3.6 * s, 2 * s, 1.4 * s); g.fill();
-    ell(g, x + 6.2 * s, headY + 3.6 * s, 2 * s, 1.4 * s); g.fill();
-    g.strokeStyle = '#8a4a4a'; g.lineWidth = 1 * s; g.lineCap = 'round';
+    // 집중 눈썹
+    if (r.working) {
+      g.strokeStyle = '#33304a'; g.lineWidth = 1.2 * s; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(x - 9.6 * s, eyeY - 6.2 * s); g.lineTo(x - 3.4 * s, eyeY - 7.4 * s); g.stroke();
+      g.beginPath(); g.moveTo(x + 9.6 * s, eyeY - 6.2 * s); g.lineTo(x + 3.4 * s, eyeY - 7.4 * s); g.stroke();
+    }
+    // 볼
+    g.fillStyle = 'rgba(255,140,160,0.30)';
+    ell(g, x - 11 * s, eyeY + 3.6 * s, 2.4 * s, 1.7 * s); g.fill();
+    ell(g, x + 11 * s, eyeY + 3.6 * s, 2.4 * s, 1.7 * s); g.fill();
+    // 입
+    g.strokeStyle = '#5c3a4a'; g.lineWidth = 1.15 * s; g.lineCap = 'round';
     g.beginPath();
-    if (r.working) { g.arc(x, headY + 4.4 * s, 2.2 * s, 0.15 * Math.PI, 0.85 * Math.PI); }
-    else { g.arc(x, headY + 3.8 * s, 2.2 * s, 0.2 * Math.PI, 0.8 * Math.PI); }
+    if (r.working) { g.moveTo(x - 2 * s, eyeY + 5.4 * s); g.lineTo(x + 2 * s, eyeY + 5.4 * s); }
+    else if (blink) { g.arc(x, eyeY + 4.2 * s, 2.4 * s, 0.1 * Math.PI, 0.9 * Math.PI); }
+    else {
+      g.arc(x - 1.3 * s, eyeY + 4.4 * s, 1.5 * s, 0.1 * Math.PI, 1.1 * Math.PI);
+      g.arc(x + 1.3 * s, eyeY + 4.4 * s, 1.5 * s, 0.1 * Math.PI, 1.1 * Math.PI);
+    }
     g.stroke();
 
-    // 액세서리
-    drawAccessory(g, st, x, headY, headR, s, r);
+    // 역할 소품
+    drawProp(g, st, x, topY, bw, bh, s, r);
 
-    // 타이핑 이펙트
-    if (typing) {
-      g.strokeStyle = 'rgba(255,220,140,0.85)'; g.lineWidth = 1.4 * s;
-      var tg = (S.t * 3 + r.seed) % 1;
-      for (var i = 0; i < 2; i++) {
-        var ang = -0.7 + i * 0.9;
-        g.globalAlpha = 0.7 - tg * 0.5;
+    // 작업 중 — 손끝 스파크
+    if (r.working && !walking) {
+      g.save();
+      g.globalCompositeOperation = 'lighter';
+      for (var i = 0; i < 3; i++) {
+        var tw = (S.t * 2.4 + i * 0.33 + r.seed) % 1;
+        g.fillStyle = 'rgba(255,228,150,' + (0.75 * (1 - tw)) + ')';
+        var ax = x + (i % 2 ? 1 : -1) * (bw + (2 + tw * 6) * s);
+        var ay = cy - 4 * s - tw * 8 * s;
+        g.beginPath(); g.arc(ax, ay, (2.4 - tw * 1.4) * s, 0, TAU); g.fill();
+      }
+      g.restore();
+    }
+
+    // 클릭 반짝임
+    if (r.jumpT > 0) {
+      var jp = r.jumpT / 0.62;
+      g.save();
+      g.globalCompositeOperation = 'lighter';
+      for (var sp = 0; sp < 8; sp++) {
+        var ang = -Math.PI / 2 + (sp - 3.5) * 0.4;
+        var dist = (16 + jp * 30) * s;
+        g.globalAlpha = Math.max(0, 1 - jp);
+        g.fillStyle = sp % 2 ? 'rgba(255,232,150,1)' : 'rgba(180,214,255,1)';
         g.beginPath();
-        g.moveTo(x + bodyW / 2 + 2 * s, by + 12 * s);
-        g.lineTo(x + bodyW / 2 + (5 + tg * 4) * s * Math.cos(ang), by + 12 * s + (5 + tg * 4) * s * Math.sin(ang));
-        g.stroke();
+        g.arc(x + Math.cos(ang) * dist, cy - 6 * s + Math.sin(ang) * dist * 0.9, (2.8 - jp * 1.7) * s, 0, TAU);
+        g.fill();
       }
       g.globalAlpha = 1;
+      g.restore();
     }
 
     // 이름표
     var label = String(r.name || '');
     if (label.length > 9) label = label.slice(0, 8) + '…';
-    var fs = Math.max(7.5, 8.6 * s);
+    var fs = Math.max(7, 8.2 * s);
     g.font = '700 ' + fs + 'px system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
-    var tw = g.measureText(label).width;
-    var px = x, py = feetY + 6 * s;
-    g.fillStyle = S.phase === 'night' ? 'rgba(12,16,30,0.72)' : 'rgba(28,32,52,0.68)';
-    rr(g, px - tw / 2 - 4 * s, py - fs * 0.92, tw + 8 * s, fs * 1.5, fs * 0.6); g.fill();
+    var tw2 = g.measureText(label).width;
+    var py = groundY + 11 * s;
+    g.fillStyle = S.phase === 'night' ? 'rgba(10,14,26,0.78)' : 'rgba(28,32,52,0.62)';
+    rr(g, x - tw2 / 2 - 3.5 * s, py - fs * 0.78, tw2 + 7 * s, fs * 1.45, fs * 0.7); g.fill();
     g.fillStyle = r.working ? '#ffe0a8' : 'rgba(240,244,255,0.92)';
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText(label, px, py);
+    g.fillText(label, x, py);
     g.textAlign = 'start'; g.textBaseline = 'alphabetic';
   }
 
-  function drawAccessory(g, st, x, headY, headR, s, r) {
-    var acc = st.acc;
-    if (acc === 'chief') {
-      // 헤드셋
-      g.strokeStyle = '#2f3650'; g.lineWidth = 2 * s;
-      g.beginPath(); g.arc(x, headY + 1 * s, headR * 1.14, Math.PI * 1.08, Math.PI * 1.92); g.stroke();
-      g.fillStyle = '#2f3650';
-      rr(g, x - headR * 1.24, headY - 1.5 * s, 3.4 * s, 6 * s, 1.6 * s); g.fill();
-      rr(g, x + headR * 1.02, headY - 1.5 * s, 3.4 * s, 6 * s, 1.6 * s); g.fill();
-      g.strokeStyle = '#2f3650'; g.lineWidth = 1.2 * s;
-      g.beginPath(); g.moveTo(x + headR * 1.05, headY + 2.6 * s); g.lineTo(x + headR * 0.72, headY + 6.5 * s); g.stroke();
-    } else if (acc === 'antenna') {
-      g.strokeStyle = '#4a3d6b'; g.lineWidth = 1.4 * s;
-      g.beginPath(); g.moveTo(x, headY - headR * 0.9); g.lineTo(x, headY - headR * 1.7); g.stroke();
-      var gl = 0.55 + Math.sin(S.t * 3 + r.seed) * 0.35;
-      g.fillStyle = 'rgba(255,226,130,' + gl + ')';
-      ell(g, x, headY - headR * 1.8, 2.8 * s, 2.8 * s); g.fill();
-      g.fillStyle = 'rgba(255,240,180,0.35)';
-      ell(g, x, headY - headR * 1.8, 5 * s, 5 * s); g.fill();
-    } else if (acc === 'helmet') {
-      g.fillStyle = '#f2b23e';
-      g.beginPath(); g.ellipse(x, headY - headR * 0.25, headR * 1.1, headR * 0.98, 0, Math.PI, TAU); g.fill();
-      g.fillStyle = '#d99a25';
-      rr(g, x - headR * 1.18, headY - headR * 0.34, headR * 2.36, 2.4 * s, 1.2 * s); g.fill();
-    } else if (acc === 'cap') {
-      g.fillStyle = '#2f8f80';
-      g.beginPath(); g.ellipse(x, headY - headR * 0.3, headR * 1.02, headR * 0.82, 0, Math.PI, TAU); g.fill();
-      g.fillStyle = '#237063';
-      rr(g, x - headR * 1.1, headY - headR * 0.36, headR * 1.45, 2.6 * s, 1.2 * s); g.fill();
-    } else if (acc === 'leaf') {
-      g.strokeStyle = '#2f6b3a'; g.lineWidth = 1.4 * s;
-      g.beginPath(); g.moveTo(x, headY - headR * 0.9); g.lineTo(x + 1 * s, headY - headR * 1.6); g.stroke();
-      g.fillStyle = '#6fc46f';
-      ell(g, x + 4 * s, headY - headR * 1.55, 4 * s, 2.6 * s); g.fill();
-      ell(g, x - 3 * s, headY - headR * 1.35, 3.4 * s, 2.2 * s); g.fill();
-    } else if (acc === 'glasses') {
-      g.strokeStyle = '#2b2f42'; g.lineWidth = 1.2 * s;
-      ell(g, x - 3.4 * s, headY + 1.2 * s, 2.8 * s, 2.2 * s); g.stroke();
-      ell(g, x + 3.4 * s, headY + 1.2 * s, 2.8 * s, 2.2 * s); g.stroke();
-      g.beginPath(); g.moveTo(x - 0.6 * s, headY + 1.2 * s); g.lineTo(x + 0.6 * s, headY + 1.2 * s); g.stroke();
-    } else if (acc === 'bun') {
-      g.fillStyle = st.hair;
-      ell(g, x, headY - headR * 0.86, 4.6 * s, 4 * s); g.fill();
-    } else if (acc === 'scarf') {
-      g.fillStyle = '#e07a5f';
-      rr(g, x - 6 * s, headY + headR * 0.72, 12 * s, 3.4 * s, 1.6 * s); g.fill();
+  /* 역할별 소품 — 크리터 머리 위/손에 달린 작은 물건 */
+  function drawProp(g, st, x, topY, bw, bh, s, r) {
+    var prop = st.prop || 'emoji';
+    var bob = Math.sin(S.t * 2 + r.seed) * 1.2 * s;
+    if (prop === 'crown') {
+      var cw = 15 * s, chh = 9 * s, cy0 = topY - 3 * s + bob;
+      g.fillStyle = st.accent || '#ffd45e';
+      g.beginPath();
+      g.moveTo(x - cw / 2, cy0 + chh);
+      g.lineTo(x - cw / 2, cy0 + chh * 0.35);
+      g.lineTo(x - cw / 4, cy0 + chh * 0.68);
+      g.lineTo(x, cy0);
+      g.lineTo(x + cw / 4, cy0 + chh * 0.68);
+      g.lineTo(x + cw / 2, cy0 + chh * 0.35);
+      g.lineTo(x + cw / 2, cy0 + chh);
+      g.closePath(); g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.55)';
+      g.beginPath(); g.arc(x, cy0 + chh * 0.62, 1.7 * s, 0, TAU); g.fill();
+    } else if (prop === 'bulb') {
+      g.strokeStyle = '#6b5aa0'; g.lineWidth = 1.5 * s;
+      g.beginPath(); g.moveTo(x, topY + 1 * s); g.quadraticCurveTo(x + 3 * s, topY - 5 * s, x, topY - 9 * s + bob); g.stroke();
+      var gl = 0.7 + Math.sin(S.t * 3.2 + r.seed) * 0.3;
+      g.save();
+      g.globalCompositeOperation = 'lighter';
+      var gr = g.createRadialGradient(x, topY - 12 * s + bob, 1, x, topY - 12 * s + bob, 14 * s);
+      gr.addColorStop(0, 'rgba(255,236,150,' + (0.55 * gl) + ')');
+      gr.addColorStop(1, 'rgba(255,220,120,0)');
+      g.fillStyle = gr;
+      g.fillRect(x - 16 * s, topY - 28 * s + bob, 32 * s, 32 * s);
+      g.restore();
+      g.fillStyle = '#ffe066';
+      ell(g, x, topY - 12 * s + bob, 4.4 * s, 4.8 * s); g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.8)';
+      ell(g, x - 1.3 * s, topY - 13.4 * s + bob, 1.5 * s, 1.5 * s); g.fill();
+      g.fillStyle = '#c9a227';
+      g.fillRect(x - 2.2 * s, topY - 7.4 * s + bob, 4.4 * s, 1.6 * s);
+    } else if (prop === 'helmet') {
+      g.fillStyle = st.accent || '#f7c948';
+      g.beginPath(); g.ellipse(x, topY + 1.5 * s, bw * 0.86, 11 * s, 0, Math.PI, TAU); g.fill();
+      g.fillStyle = shade(st.accent || '#f7c948', -30);
+      rr(g, x - bw * 0.95, topY + 0.2 * s, bw * 1.9, 3 * s, 1.6 * s); g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.45)';
+      rr(g, x - 2 * s, topY - 9 * s, 4 * s, 9 * s, 2 * s); g.fill();
+    } else if (prop === 'broom') {
+      g.save();
+      g.translate(x + bw * 0.95, topY + bh * 0.9);
+      g.rotate(-0.5 + Math.sin(S.t * 3 + r.seed) * 0.08);
+      g.strokeStyle = '#a9743f'; g.lineWidth = 2.2 * s; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(0, 4 * s); g.lineTo(0, -12 * s); g.stroke();
+      g.fillStyle = '#ffd45e';
+      g.beginPath(); g.moveTo(-4 * s, -12 * s); g.lineTo(4 * s, -12 * s); g.lineTo(6 * s, -18 * s); g.lineTo(-6 * s, -18 * s); g.closePath(); g.fill();
+      g.restore();
+      // 반짝이
+      for (var i = 0; i < 2; i++) {
+        var tw = (S.t * 2 + i * 0.5 + r.seed) % 1;
+        g.fillStyle = 'rgba(255,245,190,' + (0.8 * (1 - tw)) + ')';
+        g.beginPath(); g.arc(x + bw + (4 + tw * 8) * s, topY - 6 * s - tw * 8 * s, 1.6 * s, 0, TAU); g.fill();
+      }
+    } else if (prop === 'sprout') {
+      g.strokeStyle = '#3f8a4a'; g.lineWidth = 1.6 * s; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(x, topY + 2 * s); g.quadraticCurveTo(x + 2 * s, topY - 5 * s, x, topY - 8 * s + bob); g.stroke();
+      g.fillStyle = '#7ed684';
+      ell(g, x + 4.6 * s, topY - 8 * s + bob, 5 * s, 3 * s); g.fill();
+      g.fillStyle = '#5fbf67';
+      ell(g, x - 4 * s, topY - 6 * s + bob, 4.2 * s, 2.6 * s); g.fill();
+    } else if (prop === 'shield') {
+      var sy = topY + bh * 0.55;
+      g.fillStyle = st.accent || '#9fd2ff';
+      g.beginPath();
+      g.moveTo(x - bw - 4 * s, sy - 6 * s);
+      g.lineTo(x - bw + 5 * s, sy - 6 * s);
+      g.lineTo(x - bw + 5 * s, sy + 2 * s);
+      g.quadraticCurveTo(x - bw + 0.5 * s, sy + 9 * s, x - bw - 4 * s, sy + 2 * s);
+      g.closePath(); g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.65)';
+      ell(g, x - bw + 0.5 * s, sy - 1 * s, 2 * s, 2 * s); g.fill();
+      // 고글
+      g.strokeStyle = 'rgba(60,80,120,0.75)'; g.lineWidth = 1.4 * s;
+      g.beginPath(); g.arc(x, topY + 4 * s, bw * 0.86, Math.PI * 1.08, Math.PI * 1.92); g.stroke();
     } else {
-      // 기본: 헤드폰 한쪽
-      g.strokeStyle = '#2f3650'; g.lineWidth = 2 * s;
-      g.beginPath(); g.arc(x, headY + 1 * s, headR * 1.12, Math.PI * 1.1, Math.PI * 1.9); g.stroke();
-      g.fillStyle = '#2f3650';
-      rr(g, x - headR * 1.24, headY - 1 * s, 3.2 * s, 5.4 * s, 1.6 * s); g.fill();
-      rr(g, x + headR * 1.02, headY - 1 * s, 3.2 * s, 5.4 * s, 1.6 * s); g.fill();
+      // 업종 봇 — 자기 이모지를 든 채로
+      var em = st.emoji || r.emoji || '✨';
+      var by = topY + bh * 0.35 + bob;
+      g.fillStyle = 'rgba(255,255,255,0.86)';
+      ell(g, x + bw + 7 * s, by, 7.2 * s, 7.2 * s); g.fill();
+      g.fillStyle = 'rgba(90,100,140,0.12)';
+      ell(g, x + bw + 7 * s, by + 1 * s, 6.2 * s, 6.2 * s); g.fill();
+      g.font = Math.max(8, 9.6 * s) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(em, x + bw + 7 * s, by + 0.5 * s);
+      g.textAlign = 'start'; g.textBaseline = 'alphabetic';
     }
   }
 
@@ -991,6 +1098,44 @@ window.OfficeScene = (function () {
       g.fillRect(cx - 50 * u, cy - 50 * u, 100 * u, 100 * u);
     });
     g.restore();
+  }
+
+  /* 팀장 ↔ 작업 봇 사이로 날아가는 데이터 패킷 */
+  function drawLinks(g, pal) {
+    var chief = null;
+    S.bots.forEach(function (r) { if (r.id === S.chiefId) chief = r; });
+    if (!chief) return;
+    var u = S.u;
+    S.bots.forEach(function (r) {
+      if (!r.working || r.id === S.chiefId) return;
+      var x1 = chief.x * S.w, y1 = chief.y * S.h - 30 * u;
+      var x2 = r.x * S.w, y2 = r.y * S.h - 30 * u;
+      var mx = (x1 + x2) / 2, my = Math.min(y1, y2) - 34 * u;
+      g.save();
+      g.globalCompositeOperation = 'lighter';
+      g.strokeStyle = 'rgba(140,190,255,0.55)';
+      g.lineWidth = 1.5 * u;
+      g.setLineDash([3 * u, 6 * u]);
+      g.lineDashOffset = -S.t * 26;
+      g.beginPath(); g.moveTo(x1, y1); g.quadraticCurveTo(mx, my, x2, y2); g.stroke();
+      g.setLineDash([]);
+      for (var k = 0; k < 2; k++) {
+        var p = (S.t * 0.75 + k * 0.5) % 1;
+        var inv = 1 - p;
+        var px = inv * inv * x1 + 2 * inv * p * mx + p * p * x2;
+        var py = inv * inv * y1 + 2 * inv * p * my + p * p * y2;
+        var rad = 10 * u;
+        var grd = g.createRadialGradient(px, py, 0, px, py, rad);
+        grd.addColorStop(0, 'rgba(255,246,190,0.95)');
+        grd.addColorStop(0.35, 'rgba(190,220,255,0.55)');
+        grd.addColorStop(1, 'rgba(150,190,255,0)');
+        g.fillStyle = grd;
+        g.beginPath(); g.arc(px, py, rad, 0, TAU); g.fill();
+        g.fillStyle = 'rgba(255,255,255,0.95)';
+        g.beginPath(); g.arc(px, py, 2.2 * u, 0, TAU); g.fill();
+      }
+      g.restore();
+    });
   }
 
   function drawZoneLabels(g, pal) {

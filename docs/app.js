@@ -758,6 +758,11 @@ function officeLabels() {
     phaseNight: LN('demo.timeNight', '밤'),
     delegating: LN('demo.bubbleDelegating', '배분 중…'),
     working: LN('demo.bubbleWorking', '작업 중…'),
+    doneShort: LN('demo.doneShort', '끝!'),
+    idle: LN('demo.idleLines', [
+      '💡 초안 다듬는 중!', '🔍 자료 확인하고 있어요', '✍️ 답장 쓰는 중', '☕ 잠깐 커피 타고 올게요',
+      '📊 숫자 맞춰 보는 중', '🌱 좋은 흐름이에요', '🎯 이거 금방 끝나요', '⚡ 집중 중!',
+    ]),
     openRole: u('openRole') || '역할 카드 열기',
   };
 }
