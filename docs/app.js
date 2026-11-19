@@ -11,7 +11,7 @@ const RELEASE = {
 };
 
 /* 세팅 팩 판매 링크 (래피드 스페이스) — 여기 한 곳만 고치면 됩니다 */
-const PACK_URL = 'https://www.latpeed.com/spaces/0/products';
+const PACK_URL = 'https://www.latpeed.com/products/VTtxq';
 
 /* ───────────────────────── 다국어: 한국어 · English · 中文 · 日本語 ───────────────────────── */
 const LANGS = ['ko', 'en', 'zh', 'ja'];
