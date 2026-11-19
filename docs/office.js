@@ -270,7 +270,7 @@ window.OfficeScene = (function () {
       r.delegating = !!(busy.chief && isChief);
       var was = r.working;
       r.working = !!(busy.chief && isChief) || busy.agent === r.id;
-      if (was && !r.working) { r.doneUntil = S.t + 2.2; r.chatUntil = 0; }
+      if (was && !r.working) { r.doneUntil = S.t + 1.4; r.chatUntil = 0; }
       if (r.working) { r.chatUntil = 0; r.chatText = ''; }
       r.wasWorking = r.working;
       if (r.el) {
