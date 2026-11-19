@@ -1,15 +1,17 @@
 # MOA Hive 🐝
 
-**말로 시키면 AI 팀이 알아서 일하는, 내 컴퓨터 전용 AI 사무실.**
+**설치 없이 웹에서 바로 쓰는 내 AI 사무실.** 말로 시키면 AI 팀이 알아서 일합니다.
 
-## 설치 1분, 세 단계
+## 웹에서 3분, 설치 파일 없이
 
-1. **내 컴퓨터에 맞는 설치 파일 받기** — [macOS `.dmg`](https://github.com/CM-jccho/moa-hive/releases/latest) · [Windows `.exe`](https://github.com/CM-jccho/moa-hive/releases/latest)
-2. **앱 실행** — 처음 한 번만 macOS는 **우클릭 → 열기**, Windows는 **추가 정보 → 실행**을 누릅니다.
-3. **하고 싶은 일을 말로 입력** — “이번 주 할 일 정리해줘”처럼 입력하거나 🎤를 누르면 AI 사무실이 만들어집니다.
+1. **주소 열기** — https://cm-jccho.github.io/moa-hive/ (내려받을 파일도, 경고 창도 없습니다)
+2. **업종 카드를 누르거나 할 일을 말하기** — “이번 주 할 일 정리해줘”처럼 입력해도 팀이 꾸려집니다.
+3. **결과만 확인** — 봇들이 나눠 만든 초안·일정·답장 중 결정할 것만 고르면 됩니다.
 
-> 🔒 대화·자료는 내 컴퓨터에만 저장됩니다. 계정도, 클라우드도 필요 없습니다.
-> 🌐 설치 없이 둘러보기: https://cm-jccho.github.io/moa-hive/
+> 🌐 네 개 국어: 한국어 · English · 中文 · 日本語 (`?lang=en|zh|ja` 또는 상단 선택기, 선택은 localStorage에 저장)
+> 🎁 **ChatGPT · Claude 세팅 팩** — 웹에서 고른 팀을 내 계정에 그대로 옮길 수 있습니다 (`#pack` 섹션, 래피드 판매 링크는 `docs/app.js`의 `PACK_URL`).
+> 🔒 웹 체험 데이터는 브라우저 탭 안에만 남습니다. 데스크톱 앱의 대화·자료는 내 컴퓨터에만 저장됩니다.
+> 💿 데스크톱 설치 파일(`.dmg`/`.exe`)은 서명되지 않은 개인 빌드라 페이지 하단 **고급 · 개발자** 섹션 안 접이식으로만 안내합니다 (macOS Sequoia: `완료 → 시스템 설정 > 개인정보 보호 및 보안 > 확인 없이 열기`).
 > 🏢 화면 위 **가상 오피스**에서 봇들이 일하는 모습을 보고, 캐릭터를 누르면 역할 카드가 열립니다. 기본 캐스트는 **MOA Chief + Prototyper · Builder · Sweeper · Grower · Maintainer**입니다. STG/PROD 승격 도구는 관리자 모드(`?admin=1` 또는 설정)에서만 보입니다.
 
 <details>
@@ -322,8 +324,10 @@ moa-hive/
 `docs/`는 서버 없이 돌아가는 **랜딩 + 라이브 체험판**입니다. 같은 화면을 GitHub Pages에 자동 배포합니다.
 
 - **주소:** https://cm-jccho.github.io/moa-hive/
-- **구성:** `docs/index.html` · `docs/styles.css` · `docs/app.js` · `docs/manifest.json` · `docs/sw.js` · `docs/icons/`
-- **체험 범위:** 업종 카드 4종 및 자유 목적(음성 입력 포함) 팀 컨설팅 → MOA Chief 오케스트레이터 위임·취합 → 인라인 제안 카드 → 봇 역할 인스펙터 → STG/PROD 읽기 전용·승격
+- **구성:** `docs/index.html` · `docs/styles.css` · `docs/app.js` · `docs/i18n.js`(EN·中文·日本語) · `docs/manifest.json` · `docs/sw.js` · `docs/icons/`
+- **체험 범위:** 업종 케이스 6종·업종 카드 4종·자유 목적(음성 입력 포함) 팀 컨설팅 → MOA Chief 오케스트레이터 위임·취합 → 인라인 제안 카드 → 봇 역할 인스펙터 → STG/PROD 읽기 전용·승격
+- **다국어:** KO/EN/中文/日本語 (`?lang=` 쿼리·localStorage) — 랜딩·케이스·가상 오피스·체험판 문구 전환
+- **세팅 팩 퍼널:** 케이스 카드·가상 오피스·인스펙터의 “이 팀을 내 ChatGPT · Claude에 그대로 쓰기” 버튼 → 모달 → 래피드 판매 링크(`app.js` `PACK_URL`)
 - **PWA:** 홈 화면 추가(standalone) · 오프라인 셸 캐시. 모바일 390px까지 반응형
 - **다운로드 링크:** `docs/app.js` 상단 `RELEASE`(repo · version · tag) 한 곳에서 관리합니다.
 

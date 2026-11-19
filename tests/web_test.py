@@ -54,6 +54,67 @@ def fetch_json(url):
         return r.status, json.loads(r.read().decode())
 
 
+def languages(pw):
+    print("\n[4개 국어 전환 KO · EN · 中文 · 日本語]")
+    browser = pw.chromium.launch()
+    ctx = browser.new_context(viewport={"width": 1440, "height": 900}, locale="ko-KR")
+    page = ctx.new_page()
+    errors = []
+    attach_logs(page, errors)
+    page.goto(BASE, wait_until="networkidle")
+
+    check("언어 선택기 4개", page.locator(".lang-switch [data-lang]").count() == 4,
+          str(page.locator(".lang-switch [data-lang]").count()))
+    check("기본 언어 한국어", page.inner_text("h1").startswith("설치 없이"))
+    check("한국어 업종 카드", "자영업·동네 매장" in page.inner_text("#caseGallery"))
+
+    # EN
+    page.click('.lang-switch [data-lang="en"]')
+    page.wait_for_timeout(400)
+    check("EN 히어로 전환", "No install" in page.inner_text("h1"), page.inner_text("h1"))
+    check("EN 내비게이션", "Use cases" in page.inner_text(".site-nav") and "Pro pack" in page.inner_text(".site-nav"))
+    check("EN 업종 카드", "Local shop" in page.inner_text("#caseGallery"))
+    check("EN 가상 오피스", "Virtual office" in page.inner_text(".d-office"))
+    check("EN 오피스 인원", "agents" in page.inner_text("#officeHint"), page.inner_text("#officeHint"))
+    check("EN 인스펙터 버튼", "ChatGPT" in page.inner_text("#inspPackBtn"))
+    check("EN URL 파라미터", "lang=en" in page.url, page.url)
+    check("EN localStorage", page.evaluate("() => localStorage.getItem('moa_lang')") == "en")
+    page.screenshot(path=os.path.join(SHOTS, "web-en-hero.png"))
+
+    # 中文
+    page.click('.lang-switch [data-lang="zh"]')
+    page.wait_for_timeout(400)
+    zh_h1 = page.inner_text("h1")
+    check("中文 히어로 전환", "无需安装" in zh_h1, zh_h1)
+    check("中文 업종 카드", "个体小店" in page.inner_text("#caseGallery"))
+    check("中文 가상 오피스", "虚拟办公室" in page.inner_text(".d-office"))
+    check("中文 인스펙터", "配置包" in page.inner_text("#inspPackBtn"), page.inner_text("#inspPackBtn"))
+    check("中文 html lang", page.get_attribute("html", "lang") == "zh-CN", page.get_attribute("html", "lang"))
+
+    # 日本語
+    page.click('.lang-switch [data-lang="ja"]')
+    page.wait_for_timeout(400)
+    ja_h1 = page.inner_text("h1")
+    check("日本語 히어로 전환", "インストール不要" in ja_h1, ja_h1)
+    check("日本語 업종 카드", "個人店" in page.inner_text("#caseGallery"))
+    check("日本語 가상 오피스", "バーチャルオフィス" in page.inner_text(".d-office"))
+    check("日本語 인스펙터", "セットアップパック" in page.inner_text("#inspPackBtn"), page.inner_text("#inspPackBtn"))
+
+    # 직접 링크 (?lang=zh — 새 방문)
+    page2 = ctx.new_page()
+    page2.goto(BASE + "/?lang=zh", wait_until="networkidle")
+    check("?lang=zh 직접 접속", "无需安装" in page2.inner_text("h1"), page2.inner_text("h1"))
+    page2.close()
+
+    # 한국어 복귀
+    page.click('.lang-switch [data-lang="ko"]')
+    page.wait_for_timeout(400)
+    check("한국어 복귀", page.inner_text("h1").startswith("설치 없이"), page.inner_text("h1"))
+    check("언어 전환 콘솔/페이지 에러 0건", len(errors) == 0, " | ".join(errors[:3]))
+    ctx.close()
+    browser.close()
+
+
 def desktop(pw):
     print("\n[데스크톱 1440×900]")
     browser = pw.chromium.launch()
@@ -63,24 +124,42 @@ def desktop(pw):
     attach_logs(page, errors)
     page.goto(BASE, wait_until="networkidle")
 
-    # 랜딩
+    # 랜딩 — 웹 중심
     check("브랜드 표시", "MOA Hive" in page.inner_text(".site-head"))
     hero = page.inner_text(".hero")
-    check("로컬 프라이버시 강조", "내 컴퓨터 안에만 저장" in hero and "AI 팀이 알아서" in page.inner_text("h1"))
-    check("3단계 설치 안내", page.locator(".quick-steps li").count() == 3, str(page.locator(".quick-steps li").count()))
-    check("macOS·Windows 다운로드 카드", page.locator(".dl-card.mac").count() == 1 and page.locator(".dl-card.win").count() == 1)
-    mac = page.get_attribute('[data-dl="mac-universal"]', "href")
-    win = page.get_attribute('[data-dl="win-setup"]', "href")
-    check("mac .dmg 자산 링크", "/releases/download/v0.3.4/" in mac and ".dmg" in mac, str(mac))
-    check("win .exe 자산 링크", "/releases/download/v0.3.4/" in win and ".exe" in win, str(win))
+    check("웹 중심 히어로", "설치 없이" in page.inner_text("h1") and "내 AI 사무실" in page.inner_text("h1"))
+    check("히어로 무설치 문구", "웹에서 바로" in hero and "악성 경고 없음" in hero and "API 키 없음" in hero)
+    check("메인 CTA 체험", "지금 바로 가상 사무실 체험하기" in page.inner_text(".hero-actions"))
+    check("메인 CTA 프로 팩", "ChatGPT/Claude 프로 팩 보기" in page.inner_text(".hero-actions"))
+    check("체험 CTA → #demo", page.get_attribute('.hero-actions a[href="#demo"]', "href") == "#demo")
+    check("팩 CTA → #pack", page.get_attribute('.hero-actions a[href="#pack"]', "href") == "#pack")
+    check("히어로 무료 배지", "설치 0분" in hero and "서버비 0원" in hero)
+    check("웹 시작 3단계", page.locator(".quick-steps li").count() == 3)
+    check("다운로드 섹션 없음", page.locator("#downloads").count() == 0)
+    check("설치 파일은 고급 섹션 접이식", page.locator("#advanced [data-dl=\"mac-universal\"]").count() == 1 and page.is_hidden("text=Mac용 내려받기"))
+    check("mac .dmg 자산 링크", "/releases/download/v0.3.4/" in page.get_attribute('[data-dl="mac-universal"]', "href")
+          and ".dmg" in page.get_attribute('[data-dl="mac-universal"]', "href"))
+    check("win .exe 자산 링크", "/releases/download/v0.3.4/" in page.get_attribute('[data-dl="win-setup"]', "href")
+          and ".exe" in page.get_attribute('[data-dl="win-setup"]', "href"))
     check("start.command 링크", "start.command" in page.get_attribute('[data-dl="mac-script"]', "href"))
-    check("start.bat 링크", "start.bat" in page.get_attribute('[data-dl="win-script"]', "href"))
 
-    # 설치 탭
+    # 고급 섹션 열기 — Sequoia 안내 · 설치 탭
+    page.locator("#desktopApp summary").click()
+    page.wait_for_timeout(300)
+    advanced = page.inner_text("#desktopApp")
+    check("macOS Sequoia 안내 최신화", "시스템 설정 > 개인정보 보호 및 보안" in advanced and "확인 없이 열기" in advanced, advanced[:160])
+    check("Windows 경고 안내", "추가 정보 → 실행" in advanced)
     page.click('[data-guide="win"]')
     check("Windows 설치 안내", "MOA-Hive-Setup-0.3.4.exe" in page.inner_text('[data-pane="win"]'))
     page.click('[data-guide="mac"]')
-    check("개발자용 안내 접이식", page.locator("details.pro").count() >= 1 and "node server.js" in page.locator("details.pro").first.text_content())
+    check("개발자용 안내 접이식", page.locator("details.pro").count() >= 2
+          and "node server.js" in page.locator("#devSetup").text_content())
+
+    # 프로 팩 섹션
+    check("프로 팩 섹션", page.locator("#pack .pack-card").count() == 3)
+    pack_href = page.get_attribute("#packBuyTop", "href")
+    check("래피드 판매 링크", "latpeed.com" in pack_href, pack_href)
+    check("팩 가격 표시", "14,900" in page.inner_text("#pack") and "24,900" in page.inner_text("#pack"))
 
     # PWA
     href = page.get_attribute('link[rel="manifest"]', "href")
@@ -96,7 +175,7 @@ def desktop(pw):
     check("서비스 워커 등록", reg == "ok", reg)
     check("모바일 뷰포트 메타", "width=device-width" in page.get_attribute('meta[name="viewport"]', "content"))
 
-    # 데모 초기 상태 — 일반 모드에서는 관리자 도구 숨김, 가상 오피스 표시
+    # 데모 초기 상태
     check("일반 모드 STG/PROD 숨김", page.is_hidden(".d-env"))
     check("일반 모드 Release 탭 숨김", page.is_hidden("#tabRelease"))
     check("가상 오피스 표시", page.is_visible("#officeFloor"))
@@ -106,7 +185,19 @@ def desktop(pw):
     page.wait_for_timeout(300)
     check("오피스 캐릭터 → 인스펙터", page.is_visible("#contextPane") and page.inner_text("#inspName") != "")
 
-    # 관리자 모드 켜기
+    # 세팅 팩 퍼널 — 인스펙터
+    page.click("#inspPackBtn")
+    page.wait_for_selector("#packSheet:not([hidden])")
+    check("인스펙터 → 팩 모달", page.is_visible("#packSheet"))
+    check("모달 팀 구성", page.locator("#packTeam .pack-chip").count() >= 3,
+          str(page.locator("#packTeam .pack-chip").count()))
+    check("모달 래피드 링크", "latpeed.com" in page.get_attribute("#packBuy", "href"))
+    page.screenshot(path=os.path.join(SHOTS, "web-desktop-pack.png"))
+    page.click("#closePack")
+    page.wait_for_timeout(200)
+    check("팩 모달 닫기", page.is_hidden("#packSheet"))
+
+    # 관리자 모드
     page.click("#adminToggle")
     page.wait_for_timeout(300)
     check("관리자 모드 STG/PROD 표시", page.is_visible(".d-env"))
@@ -172,18 +263,22 @@ def desktop(pw):
     check("승격 버튼 초기 비활성", page.is_disabled("#promoteBtn"))
     page.check("#promoteAck")
     check("확인 체크 후 활성", page.is_enabled("#promoteBtn"))
-    page.screenshot(path=os.path.join(SHOTS, "web-desktop-release.png"))
     page.fill("#relNote", "웹 데모 · 오케스트레이터 반영")
     page.click("#promoteBtn")
     page.wait_for_timeout(400)
     check("PROD 승격 v0.3.0", "v0.3.0" in page.inner_text("#relProd"), page.inner_text("#relProd"))
     check("히스토리 기록", "웹 데모" in page.inner_text("#historyList"))
 
-    # 활용 케이스 갤러리 → 1클릭 적용
+    # 활용 케이스 갤러리 → 1클릭 적용 · 팩 모달
     page.locator("#cases").scroll_into_view_if_needed()
     check("케이스 카드 6개", page.locator("[data-testid=case-tile]").count() == 6,
           str(page.locator("[data-testid=case-tile]").count()))
     check("케이스 적용 버튼", page.locator("[data-apply-case]").count() == 6)
+    check("케이스 팩 버튼", page.locator("[data-pack-case]").count() == 6)
+    page.click('[data-pack-case="office"]')
+    page.wait_for_selector("#packSheet:not([hidden])")
+    check("케이스 → 팩 모달", "직장인" in page.inner_text("#packTeam"), page.inner_text("#packTeam")[:80])
+    page.click("#closePack")
     page.click('[data-apply-case="store"]')
     page.wait_for_timeout(600)
     check("케이스 적용 → 채널", page.inner_text("#demoChannelName") == "#매장-마케팅", page.inner_text("#demoChannelName"))
@@ -208,9 +303,10 @@ def mobile(pw):
     attach_logs(page, errors)
     page.goto(BASE, wait_until="networkidle")
 
-    check("모바일 히어로 표시", "AI 팀이 알아서" in page.inner_text("h1"))
+    check("모바일 히어로 표시", "내 AI 사무실" in page.inner_text("h1"))
     check("모바일 랜딩 가로 오버플로 없음", overflow(page) <= 0, str(overflow(page)))
     check("모바일 체험 CTA", page.locator('a[href="#demo"]').count() >= 1)
+    check("모바일 언어 선택기", page.locator(".lang-switch [data-lang]").count() == 4)
     check("모바일 가상 오피스", page.is_visible("#officeFloor"))
     page.locator("[data-testid=office-char]").first.click()
     page.wait_for_timeout(300)
@@ -236,6 +332,13 @@ def mobile(pw):
     check("모바일 업무 3가지", page.locator("[data-task]").count() == 3)
     check("모바일 전송 버튼 터치 영역", page.evaluate("() => { const r = document.querySelector('#demoSend').getBoundingClientRect(); return r.width >= 36 && r.height >= 36; }"))
 
+    # 모바일 팩 모달
+    page.click("#officePackBtn")
+    page.wait_for_selector("#packSheet:not([hidden])")
+    check("모바일 팩 모달", page.is_visible("#packSheet"))
+    check("모바일 팩 모달 오버플로 없음", overflow(page) <= 0, str(overflow(page)))
+    page.click("#closePack")
+
     box = page.evaluate("() => { const r = document.querySelector('#demoInput').getBoundingClientRect(); return r.width > 0 && r.height > 0; }")
     check("모바일 입력창 표시", box)
     check("모바일 가로 오버플로 없음", overflow(page) <= 0, str(overflow(page)))
@@ -248,6 +351,7 @@ def mobile(pw):
 def main():
     print(f"\nMOA Hive 웹 테스트 — {BASE}")
     with sync_playwright() as pw:
+        languages(pw)
         desktop(pw)
         mobile(pw)
     print(f"\n결과: {len(passed)} 통과 / {len(failed)} 실패")

@@ -10,6 +10,67 @@ const RELEASE = {
   tag: 'v0.3.4',
 };
 
+/* 세팅 팩 판매 링크 (래피드 스페이스) — 여기 한 곳만 고치면 됩니다 */
+const PACK_URL = 'https://www.latpeed.com/spaces/0/products';
+
+/* ───────────────────────── 다국어: 한국어 · English · 中文 · 日本語 ───────────────────────── */
+const LANGS = ['ko', 'en', 'zh', 'ja'];
+const LANG_KEY = 'moa_lang';
+function detectLang() {
+  let q = null;
+  try { q = new URLSearchParams(location.search).get('lang'); } catch (e) {}
+  if (q && LANGS.indexOf(q) >= 0) return q;
+  let s = null;
+  try { s = localStorage.getItem(LANG_KEY); } catch (e) {}
+  return LANGS.indexOf(s) >= 0 ? s : 'ko';
+}
+let LANG = detectLang();
+const DICT = () => (LANG !== 'ko' && window.MOA_I18N ? window.MOA_I18N[LANG] : null);
+function LN(path, fallback) {
+  const d = DICT();
+  if (!d) return fallback;
+  const v = String(path).split('.').reduce((o, k) => (o == null ? o : o[k]), d);
+  return v == null || v === '' ? fallback : v;
+}
+function fmt(str, vars) {
+  return String(str).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] != null ? vars[k] : m));
+}
+/* 화면에 바로 그려지는 짧은 문구 — 사전(i18n.js)에 넣기 애매한 함수형 라벨 */
+const U = {
+  en: {
+    designTitle: (n) => '🧠 MOA Chief + ' + n + ' agents — proposed team',
+    purpose: 'Goal', apply: 'Create this team in STG', redo: 'Design again',
+    openRole: 'Open role card', packCta: 'Get the setup pack on Latpeed →',
+    applyCase: 'Apply this case', packBtn: '🎁 Setup pack', reportBot: 'Weekly report bot',
+    adminOn: 'Admin mode', adminOff: 'Admin off',
+    briefSteps: ['Take the goal, lock the scope', 'Delegate to three agents', 'Combine outputs and report'],
+    roleSummary: { pm: 'Keeps requirements, schedule and reports in writing.', dev: 'Builds, checks and tidies the actual work.', content: 'Writes and plans the things you publish.', research: 'Checks the facts and marks what still needs checking.', chief: 'Splits the work and reports only the result.' },
+  },
+  zh: {
+    designTitle: (n) => '🧠 MOA Chief + ' + n + ' 个机器人 — 团队方案',
+    purpose: '目标', apply: '在 STG 里建这个团队', redo: '重新设计',
+    openRole: '打开角色卡', packCta: '在 Latpeed 购买配置包 →',
+    applyCase: '应用这个场景', packBtn: '🎁 配置包', reportBot: '周报机器人',
+    adminOn: '管理员模式', adminOff: '关闭管理员',
+    briefSteps: ['接收目标、确定范围', '分派给三个机器人', '汇总产出并汇报'],
+    roleSummary: { pm: '把需求、日程和汇报都整理成文档。', dev: '实际动手做、验证和整理。', content: '写和策划要发布的内容。', research: '核对依据，并标出待确认项。', chief: '分工并把结果汇总报告。' },
+  },
+  ja: {
+    designTitle: (n) => '🧠 MOA Chief + エージェント' + n + '名 — チーム案',
+    purpose: '目標', apply: 'このチームをSTGに作る', redo: 'もう一度設計',
+    openRole: '役割カードを開く', packCta: 'Latpeedでセットアップパックを購入 →',
+    applyCase: 'この事例を使う', packBtn: '🎁 セットアップパック', reportBot: '週次レポート',
+    adminOn: '管理者モード', adminOff: '管理者オフ',
+    briefSteps: ['目的を受け取り範囲を確定', '3つのエージェントに委任', '成果をまとめて報告'],
+    roleSummary: { pm: '要件・日程・レポートを文書に残します。', dev: '実際に作り、検証し、整理します。', content: '公開するものを書いて企画します。', research: '根拠を確認し、未確認の項目を明示します。', chief: '仕事を分けて結果だけを報告します。' },
+  },
+};
+function u(key, arg) {
+  const d = U[LANG];
+  if (!d || d[key] == null) return null;
+  return typeof d[key] === 'function' ? d[key](arg) : d[key];
+}
+
 /* ───────────────────────── 공통 유틸 ───────────────────────── */
 const $ = (sel, root) => (root || document).querySelector(sel);
 const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
@@ -90,6 +151,120 @@ function toast(message) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
 }
 
+/* ───────────────────────── 언어 전환 (URL ?lang= · localStorage) ───────────────────────── */
+function captureKoText() {
+  $$('[data-en]').forEach((el) => { if (!el.hasAttribute('data-ko')) el.setAttribute('data-ko', el.textContent); });
+  $$('[data-en-html]').forEach((el) => { if (!el.hasAttribute('data-ko-html')) el.setAttribute('data-ko-html', el.innerHTML); });
+  $$('[data-en-placeholder]').forEach((el) => { if (!el.hasAttribute('data-ko-placeholder')) el.setAttribute('data-ko-placeholder', el.getAttribute('placeholder') || ''); });
+}
+
+function applyDomLang() {
+  $$('[data-en]').forEach((el) => {
+    const ko = el.getAttribute('data-ko');
+    const v = LANG === 'ko' ? ko : (el.getAttribute('data-' + LANG) || ko);
+    if (v != null) el.textContent = v;
+  });
+  $$('[data-en-html]').forEach((el) => {
+    const ko = el.getAttribute('data-ko-html');
+    const v = LANG === 'ko' ? ko : (el.getAttribute('data-' + LANG + '-html') || ko);
+    if (v != null) el.innerHTML = v;
+  });
+  $$('[data-en-placeholder]').forEach((el) => {
+    const ko = el.getAttribute('data-ko-placeholder');
+    const v = LANG === 'ko' ? ko : (el.getAttribute('data-' + LANG + '-placeholder') || ko);
+    if (v != null) el.setAttribute('placeholder', v);
+  });
+  document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : LANG;
+}
+
+function syncLangButtons() {
+  $$('.lang-switch [data-lang]').forEach((b) => {
+    const on = b.getAttribute('data-lang') === LANG;
+    b.classList.toggle('is-active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+
+function setLang(lang) {
+  if (LANGS.indexOf(lang) < 0) lang = 'ko';
+  if (lang === LANG) return;
+  LANG = lang;
+  try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+  try {
+    const url = new URL(location.href);
+    if (lang === 'ko') url.searchParams.delete('lang'); else url.searchParams.set('lang', lang);
+    history.replaceState(null, '', url.pathname + url.search + url.hash);
+  } catch (e) {}
+  applyDomLang();
+  syncLangButtons();
+  if (!state.dirty) state = seedState();
+  renderCaseGallery();
+  renderAll(false);
+  renderPack();
+  updatePackLinks();
+}
+
+/* ───────────────────────── 세팅 팩 모달 (퍼널 CTA) ───────────────────────── */
+let packContext = null;
+
+function updatePackLinks() {
+  $$('[data-pack-link]').forEach((a) => { a.href = PACK_URL; });
+}
+
+function openPack(ctx) {
+  packContext = ctx || { title: '', bots: [] };
+  const sheet = $('#packSheet');
+  if (!sheet) return;
+  sheet.hidden = false;
+  document.body.classList.add('no-scroll');
+  renderPack();
+  const close = $('#closePack');
+  if (close) close.focus();
+}
+
+function closePack() {
+  const sheet = $('#packSheet');
+  if (sheet) sheet.hidden = true;
+  document.body.classList.remove('no-scroll');
+}
+
+function packCta() {
+  const d = DICT();
+  return (d && d.pack && d.pack.cta) || u('packCta') || '래피드에서 세팅 팩 받기 →';
+}
+
+function renderPack() {
+  const sheet = $('#packSheet');
+  if (!sheet || sheet.hidden) return;
+  const d = DICT();
+  const p = (d && d.pack) || null;
+  const ctx = packContext || { bots: [] };
+  const set = (id, text) => { const el = $('#' + id); if (el) el.textContent = text; };
+  set('packTitle', (p && p.title) || '🎁 이 팀을 내 ChatGPT · Claude에 그대로 쓰기');
+  set('packSub', (p && p.sub) || '세팅 팩 — 한 번 붙여넣으면 3분 만에 준비됩니다.');
+  set('packBuy', packCta());
+  set('packPrice', (p && p.price) || '얼리버드 14,900원 · 번들 24,900원');
+  set('packNote', (p && p.note) || '웹 체험은 계속 무료입니다. 세팅 팩은 이미 쓰는 도구에 같은 팀을 옮기고 싶은 분을 위한 선택 상품입니다.');
+  const label = $('.pack-team-label');
+  if (label) label.textContent = (p && p.teamLabel) || '이 팀 구성';
+  const team = $('#packTeam');
+  if (team) {
+    const bots = ctx.bots || [];
+    team.innerHTML = (ctx.name ? '<div class="pack-team-name">' + esc(ctx.name) + '</div>' : '') +
+      bots.map((b) => '<span class="pack-chip">' + esc(b.emoji || '🤖') + ' ' + esc(b.name) + '</span>').join('');
+  }
+  const steps = $('#packSteps');
+  if (steps) {
+    const rows = (p && p.steps) || [
+      ['업종 팩 파일 열기', '세팅 팩에는 같은 역할·업무 설명·바로 쓰는 프롬프트 5개가 들어 있습니다.'],
+      ['ChatGPT(Custom GPT·Projects) 또는 Claude(Projects)에 붙여넣기', '팀당 지침 블록 하나입니다. 한·영 지침이 함께 들어 있습니다.'],
+      ['프롬프트 5개로 바로 시작', '각 프롬프트는 오늘 바로 보낼 수 있는 초안을 만듭니다.'],
+    ];
+    steps.innerHTML = rows.map((r) => '<li><b>' + esc(r[0]) + '</b><span>' + esc(r[1]) + '</span></li>').join('');
+  }
+  updatePackLinks();
+}
+
 /* ───────────────────────── 다운로드 링크 · 설치 탭 · PWA ───────────────────────── */
 function assetUrl(name) {
   return 'https://github.com/' + RELEASE.repo + '/releases/download/' + RELEASE.tag + '/' + encodeURIComponent(name);
@@ -151,7 +326,7 @@ function setupInstall() {
   });
   const ask = async () => {
     if (!deferred) {
-      toast('브라우저 메뉴에서 “홈 화면에 추가” 또는 “앱 설치”를 선택해 주세요.');
+      toast(LN('toasts.installHint', '브라우저 메뉴에서 “홈 화면에 추가” 또는 “앱 설치”를 선택해 주세요.'));
       return;
     }
     deferred.prompt();
@@ -167,7 +342,7 @@ function setupInstall() {
   window.addEventListener('appinstalled', () => {
     if (btn) btn.hidden = true;
     if (fab) fab.classList.remove('show');
-    toast('홈 화면에 추가되었습니다.');
+    toast(LN('toasts.installed', '홈 화면에 추가되었습니다.'));
   });
   if (window.matchMedia('(display-mode: standalone)').matches) {
     if (btn) btn.hidden = true;
@@ -415,49 +590,51 @@ function makeBot(spec, extra) {
 function seedState() {
   const chief = makeBot({
     id: 'bot_chief', name: 'MOA Chief', emoji: '🧠', role: 'chief', isChief: true,
-    summary: '차분하고 명쾌한 팀장 — 사용자와 단독으로 소통하고, 다섯 명에게 일을 나눠 맡긴 뒤 산출물만 취합해 보고합니다.',
+    summary: LN('roles.chief', '차분하고 명쾌한 팀장 — 사용자와 단독으로 소통하고, 다섯 명에게 일을 나눠 맡긴 뒤 산출물만 취합해 보고합니다.'),
     keywords: ['총괄', '팀', '전체', '요약', '진행', '보고'],
     activity: ['오늘의 팀 우선순위 정리', '다섯 명의 산출물 취합', '다음 액션 1건 보고'],
   });
   const proto = makeBot({
     id: 'bot_prototyper', name: 'Prototyper', emoji: '💡', role: 'content',
-    summary: '아이디어를 끊임없이 쏟아내는 발산형 — 가능성을 먼저 열고 빠르게 여러 안을 만듭니다.',
+    summary: LN('roles.prototyper', '아이디어를 끊임없이 쏟아내는 발산형 — 가능성을 먼저 열고 빠르게 여러 안을 만듭니다.'),
     keywords: ['아이디어', '발산', '컨셉', '가능성', '실험', '기획'],
     activity: ['새 컨셉 10안 발산', '가능성 시나리오 3개', '실험 후보 5개 정리'],
   });
   const builder = makeBot({
     id: 'bot_builder', name: 'Builder', emoji: '🔨', role: 'dev',
-    summary: '아이디어를 진짜 제품과 화면으로 바꾸는 실행형 — 오늘 바로 만들고 붙입니다.',
+    summary: LN('roles.builder', '아이디어를 진짜 제품과 화면으로 바꾸는 실행형 — 오늘 바로 만들고 붙입니다.'),
     keywords: ['만들', '구현', '화면', '프로토타입', '제품', '기능', '배포'],
     activity: ['프로토타입 화면 2개 구현', '실행 순서·명령 정리', '제품 형태로 연결'],
   });
   const sweeper = makeBot({
     id: 'bot_sweeper', name: 'Sweeper', emoji: '🧹', role: 'dev',
-    summary: '화면과 코드를 깔끔하게 정리하는 정돈형 — 군더더기를 과감히 빼고 흐름을 단순하게 만듭니다.',
+    summary: LN('roles.sweeper', '화면과 코드를 깔끔하게 정리하는 정돈형 — 군더더기를 과감히 빼고 흐름을 단순하게 만듭니다.'),
     keywords: ['정리', '리팩터', '중복', '군더더기', '단순화', '버그'],
     activity: ['중복 화면 3곳 정리', '불필요한 단계 4개 제거', '정리 체크리스트 작성'],
   });
   const grower = makeBot({
     id: 'bot_grower', name: 'Grower', emoji: '🌱', role: 'content',
-    summary: '제품을 계속 다듬어 사람들이 실제로 찾게 키우는 성장형 — 지표와 채널 실험으로 다음 성장을 만듭니다.',
+    summary: LN('roles.grower', '제품을 계속 다듬어 사람들이 실제로 찾게 키우는 성장형 — 지표와 채널 실험으로 다음 성장을 만듭니다.'),
     keywords: ['성장', '유입', '지표', '채널', '마케팅', '리텐션', '수익'],
     activity: ['첫 100명 유입 실험 2안', '주간 지표 리포트 작성', '수익화 후보 3건 비교'],
   });
   const maintainer = makeBot({
     id: 'bot_maintainer', name: 'Maintainer', emoji: '🛡️', role: 'dev',
-    summary: '커진 서비스를 안전하고 빠르게 지키는 수호형 — 장애·보안·속도를 먼저 살핍니다.',
+    summary: LN('roles.maintainer', '커진 서비스를 안전하고 빠르게 지키는 수호형 — 장애·보안·속도를 먼저 살핍니다.'),
     keywords: ['안정', '모니터링', '보안', '백업', '장애', '속도', '운영'],
     activity: ['장애 위험 지점 3곳 점검', '모니터링·백업 계획 정리', '느린 구간 2곳 표시'],
   });
 
   const bots = [chief, proto, builder, sweeper, grower, maintainer];
+  if (LANG !== 'ko') bots.forEach((b) => { b.activity = []; });
   const channels = [
-    { id: 'ch_all', name: '전체-팀', mode: 'auto', topic: '여섯 캐릭터가 모이는 기본 채널 — 말하면 알아서 나눠 일합니다', members: bots.map((b) => b.id) },
-    { id: 'ch_b2b', name: 'B2B-업무', mode: 'auto', topic: 'B2B 사업 기획·구현·성장', members: ['bot_prototyper', 'bot_builder', 'bot_grower'] },
-    { id: 'ch_side', name: '사이드-수익화', mode: 'mention', botId: 'bot_grower', topic: '성장·수익 실험 — @이름으로 지정 호출', members: ['bot_grower', 'bot_prototyper', 'bot_maintainer'] },
+    { id: 'ch_all', name: '전체-팀', mode: 'auto', topic: LN('seed.channelTopics.ch_all', '여섯 캐릭터가 모이는 기본 채널 — 말하면 알아서 나눠 일합니다'), members: bots.map((b) => b.id) },
+    { id: 'ch_b2b', name: 'B2B-업무', mode: 'auto', topic: LN('seed.channelTopics.ch_b2b', 'B2B 사업 기획·구현·성장'), members: ['bot_prototyper', 'bot_builder', 'bot_grower'] },
+    { id: 'ch_side', name: '사이드-수익화', mode: 'mention', botId: 'bot_grower', topic: LN('seed.channelTopics.ch_side', '성장·수익 실험 — @이름으로 지정 호출'), members: ['bot_grower', 'bot_prototyper', 'bot_maintainer'] },
   ];
 
   return {
+    dirty: false,
     env: 'stg',
     runId: 0,
     stgVersion: '0.3.0-rc',
@@ -467,7 +644,7 @@ function seedState() {
     channels,
     messages: {
       ch_all: [
-        { id: uid('msg'), kind: 'system', name: 'MOA Hive', text: '로컬 하네스 준비 완료. 이 대화는 이 PC의 ./data/에만 저장됩니다.' },
+        { id: uid('msg'), kind: 'system', name: 'MOA Hive', text: LN('seed.system', '로컬 하네스 준비 완료. 이 대화는 이 PC의 ./data/에만 저장됩니다.') },
         {
           id: uid('msg'),
           kind: 'bot',
@@ -475,7 +652,7 @@ function seedState() {
           name: 'MOA Chief',
           emoji: '🧠',
           role: 'chief',
-          text: '**MOA Chief**입니다. 하고 싶은 일을 말해 주세요 — 💡 Prototyper(발산) · 🔨 Builder(구현) · 🧹 Sweeper(정돈) · 🌱 Grower(성장) · 🛡️ Maintainer(운영)에게 나눠 맡기고 결과만 정리해 드립니다.\n\n- 그냥 말하면 팀이 알아서 나눠 일합니다\n- 한 사람에게만 시키려면 `@Builder`처럼 불러 주세요',
+          text: LN('seed.greeting', '**MOA Chief**입니다. 하고 싶은 일을 말해 주세요 — 💡 Prototyper(발산) · 🔨 Builder(구현) · 🧹 Sweeper(정돈) · 🌱 Grower(성장) · 🛡️ Maintainer(운영)에게 나눠 맡기고 결과만 정리해 드립니다.\n\n- 그냥 말하면 팀이 알아서 나눠 일합니다\n- 한 사람에게만 시키려면 `@Builder`처럼 불러 주세요'),
         },
       ],
       ch_b2b: [],
@@ -519,7 +696,7 @@ function applyAdminMode() {
     if (ctx && !ctx.classList.contains('is-active')) ctx.click();
   }
   const btn = $('#adminToggle');
-  if (btn) btn.textContent = adminMode ? '🔒 관리자 모드 끄기' : '🔧 관리자 모드';
+  if (btn) btn.textContent = adminMode ? '🔒 ' + (u('adminOff') || '관리자 모드 끄기') : '🔧 ' + (u('adminOn') || '관리자 모드');
 }
 
 function setAdmin(on) {
@@ -527,7 +704,7 @@ function setAdmin(on) {
   try { localStorage.setItem('moa_admin', adminMode ? '1' : '0'); } catch (e) {}
   applyAdminMode();
   renderAll(false);
-  toast(adminMode ? '관리자 모드 — STG/PROD·Release 패널이 표시됩니다.' : '일반 모드 — 관리자 도구를 숨겼습니다.');
+  toast(adminMode ? LN('toasts.adminOn', '관리자 모드 — STG/PROD·Release 패널이 표시됩니다.') : LN('toasts.adminOff', '일반 모드 — 관리자 도구를 숨겼습니다.'));
 }
 
 function characterClass(name) {
@@ -541,7 +718,7 @@ function characterClass(name) {
 }
 
 function officeChar(b, working, bubble) {
-  return '<button type="button" class="d-office-char ' + characterClass(b.name) + ' ' + (working ? 'working' : 'idle') + '" data-office-bot="' + esc(b.id) + '" data-testid="office-char" title="' + esc(b.name) + ' 역할 카드 열기">' +
+  return '<button type="button" class="d-office-char ' + characterClass(b.name) + ' ' + (working ? 'working' : 'idle') + '" data-office-bot="' + esc(b.id) + '" data-testid="office-char" title="' + esc(u('openRole') || '역할 카드 열기') + '">' +
     '<span class="d-char-bubble">' + esc(bubble || '') + '</span>' +
     '<span class="d-char-avatar">' + esc(b.emoji || '🤖') + '</span>' +
     '<span class="d-char-desk"></span>' +
@@ -556,14 +733,16 @@ function renderOffice() {
   const rest = state.bots.filter((b) => b !== chief);
   const busy = state.officeBusy || {};
   const working = (b) => b.id === state.typingBotId || (busy.chief && b === chief) || busy.agent === b.id;
-  const bubble = (b) => (busy.chief && b === chief ? '위임 중…' : working(b) ? '작업 중…' : '');
+  const delegating = LN('demo.bubbleDelegating', '위임 중…');
+  const workingLabel = LN('demo.bubbleWorking', '작업 중…');
+  const bubble = (b) => (busy.chief && b === chief ? delegating : working(b) ? workingLabel : '');
   const groups = [];
   if (chief) groups.push(officeChar(chief, working(chief), bubble(chief)));
   rest.slice(0, 3).forEach((b) => groups.push(officeChar(b, working(b), bubble(b))));
   const lounge = rest.slice(3, 5).map((b) => officeChar(b, working(b), bubble(b)));
-  floor.innerHTML = groups.join('') + (lounge.length ? '<span class="d-office-lounge">그로스 · 운영</span>' + lounge.join('') : '');
+  floor.innerHTML = groups.join('') + (lounge.length ? '<span class="d-office-lounge">' + esc(LN('demo.officeLounge', '그로스 · 운영')) + '</span>' + lounge.join('') : '');
   const hint = $('#officeHint');
-  if (hint) hint.textContent = chief ? chief.name + ' + 에이전트 ' + rest.length + '명' : '';
+  if (hint) hint.textContent = chief ? fmt(LN('demo.officeHint', '{chief} + 에이전트 {n}명'), { chief: chief.name, n: rest.length }) : '';
 }
 
 /* ───────────────────────── 환경 · 패널 렌더 ───────────────────────── */
@@ -572,6 +751,23 @@ const isProd = () => state.env === 'prod';
 
 function currentChannel() {
   return state.channels.find((c) => c.id === state.activeChannelId) || state.channels[0];
+}
+
+function channelLabel(ch) {
+  if (!ch) return '';
+  const d = DICT();
+  return (d && d.channels && d.channels[ch.name]) || ch.name;
+}
+
+function botTasks(bot) {
+  const d = DICT();
+  if (d) {
+    const byName = d.characterTasks && d.characterTasks[bot.name];
+    const byRole = d.roleTasks && d.roleTasks[bot.role];
+    if (byName) return byName.slice(0, 3);
+    if (byRole) return byRole.slice(0, 3);
+  }
+  return (bot.tasks || []).slice(0, 3);
 }
 
 function currentBot() {
@@ -593,7 +789,10 @@ function renderEnv() {
   const banner = $('#demoReadonly');
   if (input) {
     input.disabled = isProd();
-    input.placeholder = isProd() ? 'PROD는 읽기 전용입니다' : '메시지 입력 — @봇이름 호출, “이번 주 할 일 정리해줘”';
+    const ph = isProd()
+      ? LN('demo.inputProd', 'PROD는 읽기 전용입니다')
+      : (LANG === 'ko' ? '메시지 입력 — @봇이름 호출, “이번 주 할 일 정리해줘”' : input.getAttribute('data-' + LANG + '-placeholder') || LN('demo.inputProd', ''));
+    input.placeholder = ph;
   }
   if (banner) banner.hidden = !isProd();
   const send = $('#demoSend');
@@ -613,7 +812,7 @@ function renderChannels() {
         '" data-channel="' +
         esc(c.id) +
         '"><span class="hash">#</span><span class="nm">' +
-        esc(c.name) +
+        esc(channelLabel(c)) +
         '</span>' +
         (c.orchestrator ? '<span class="d-bot-state">🧠</span>' : '') +
         '</button>'
@@ -637,9 +836,9 @@ function renderBots() {
         esc(b.name) +
         '</span>' +
         (b.id === state.typingBotId
-          ? '<span class="d-bot-state working">⚡ 작업 중</span>'
+          ? '<span class="d-bot-state working">' + esc(LN('demo.workingBadge', '⚡ 작업 중')) + '</span>'
           : b.isChief
-          ? '<span class="d-bot-state">총괄</span>'
+          ? '<span class="d-bot-state">' + esc(LN('demo.chiefBadge', '총괄')) + '</span>'
           : '') +
         '</button>'
     )
@@ -664,13 +863,12 @@ function renderInspector() {
   const st = $('#inspState');
   if (st) {
     const working = bot.id === state.typingBotId;
-    st.textContent = working ? '⚡ 작업 중' : '✨ 대기 중';
+    st.textContent = working ? LN('demo.stateWorking', '⚡ 작업 중') : LN('demo.stateIdle', '✨ 대기 중');
     st.classList.toggle('working', working);
   }
   const tasks = $('#taskList');
   if (tasks) {
-    tasks.innerHTML = (bot.tasks || [])
-      .slice(0, 3)
+    tasks.innerHTML = botTasks(bot)
       .map((t) => '<button type="button" class="d-task" data-task="' + esc(t) + '">' + esc(t) + '</button>')
       .join('');
   }
@@ -679,9 +877,9 @@ function renderInspector() {
     const rows = (bot.activity || []).slice(0, 3);
     acts.innerHTML = rows.length
       ? rows.map((a) => '<div class="d-act">· ' + esc(a) + '</div>').join('')
-      : '<div class="d-act muted">· 아직 처리 내역이 없습니다. 업무를 요청해 보세요.</div>';
+      : '<div class="d-act muted">' + esc(LN('demo.noActivity', '· 아직 처리 내역이 없습니다. 업무를 요청해 보세요.')) + '</div>';
   }
-  set('inspEngine', bot.engine || '로컬 시뮬레이터');
+  set('inspEngine', DICT() ? LN('demo.engine', '로컬 시뮬레이터') : (bot.engine || '로컬 시뮬레이터'));
   set('inspCwd', bot.cwd || './workspace');
 }
 
@@ -746,9 +944,9 @@ function renderHeader() {
   const name = $('#demoChannelName');
   const topic = $('#demoTopic');
   const mode = $('#demoMode');
-  if (name) name.textContent = '#' + (ch ? ch.name : '전체-팀');
-  if (topic) topic.textContent = (isProd() ? 'PROD · 읽기 전용 — ' : '') + (ch ? ch.topic || '' : '');
-  if (mode) mode.textContent = ch && ch.mode === 'mention' ? '@멘션 호출' : 'Auto';
+  if (name) name.textContent = '#' + (ch ? channelLabel(ch) : '전체-팀');
+  if (topic) topic.textContent = (isProd() ? LN('demo.prodTopic', 'PROD · 읽기 전용 — ') : '') + (ch ? ch.topic || '' : '');
+  if (mode) mode.textContent = ch && ch.mode === 'mention' ? LN('demo.mentionRoute', '@멘션 호출') : LN('demo.autoRoute', 'Auto');
 }
 
 function messageHtml(msg) {
@@ -781,7 +979,7 @@ function messageHtml(msg) {
         '</span><span class="task">' +
         esc(s.task) +
         '</span><span class="st">' +
-        (s.status === 'done' ? '완료' : s.status === 'working' ? '작업 중' : '대기') +
+        (s.status === 'done' ? LN('demo.stepDone', '완료') : s.status === 'working' ? LN('demo.stepWorking', '작업 중') : LN('demo.stepWaiting', '대기')) +
         '</span></div>';
     });
     inner += '</div>';
@@ -811,7 +1009,7 @@ function messageHtml(msg) {
     '</div><div class="d-body"><div class="d-author"><b>' +
     esc(msg.name || '봇') +
     '</b>' +
-    (isChief ? '<span class="pill blue" style="font-size:9.5px;padding:1px 7px">총괄</span>' : '') +
+    (isChief ? '<span class="pill blue" style="font-size:9.5px;padding:1px 7px">' + esc(LN('demo.chiefBadge', '총괄')) + '</span>' : '') +
     '<span class="d-time">' +
     (msg.time || nowLabel()) +
     '</span></div>' +
@@ -856,10 +1054,10 @@ function renderAll(forceScroll) {
 function analyzePurpose(text) {
   const t = String(text || '');
   const rules = [
-    { id: 'b2b', re: /(제안서|영업|거래처|고객사|계약|견적|미팅|정산|매출)/, agents: ['proposal', 'billing', 'followup'], channel: '영업-오케스트라', why: '영업은 한 건을 끝까지 끌고 가는 일입니다. 제안·정산·팔로업을 나눠 들면 대표는 미팅과 결정에만 집중할 수 있습니다.' },
-    { id: 'content', re: /(인스타|스레드|릴스|콘텐츠|SNS|팔로워|카드뉴스|블로그)/, agents: ['content', 'copy', 'analysis'], channel: '콘텐츠-오케스트라', why: '콘텐츠는 기획·카피·분석이 돌아가야 끊기지 않습니다. 세 에이전트가 주간 리듬을 만들고 총괄이 결과만 보고합니다.' },
-    { id: 'build', re: /(앱|서비스|개발|자동화|스크립트|코드|MVP|출시)/, agents: ['planning', 'build', 'qa', 'ops'], channel: '빌드-오케스트라', why: '만드는 일은 범위·구현·검증이 붙어야 끝납니다. 총괄이 순서를 잡고 각 에이전트가 자기 산출물만 냅니다.' },
-    { id: 'plan', re: /(기획|일정|회의|보고|리포트|정리)/, agents: ['planning', 'research', 'analysis'], channel: '기획-오케스트라', why: '기획은 흩어진 요청을 문서와 일정으로 바꾸는 일입니다. 정리·근거·리포트를 나눠 맡깁니다.' },
+    { id: 'b2b', re: /(제안서|영업|거래처|고객사|계약|견적|미팅|정산|매출|proposal|sales|client|quote|invoice|settlement|提案|営業|見積|請求|精算|提案书|销售|客户|报价|结算)/i, agents: ['proposal', 'billing', 'followup'], channel: '영업-오케스트라', why: '영업은 한 건을 끝까지 끌고 가는 일입니다. 제안·정산·팔로업을 나눠 들면 대표는 미팅과 결정에만 집중할 수 있습니다.' },
+    { id: 'content', re: /(인스타|스레드|릴스|콘텐츠|SNS|팔로워|카드뉴스|블로그|instagram|threads|reels|content|followers|blog|内容|粉丝|帖|インスタ|コンテンツ|フォロワー|投稿|ブログ)/i, agents: ['content', 'copy', 'analysis'], channel: '콘텐츠-오케스트라', why: '콘텐츠는 기획·카피·분석이 돌아가야 끊기지 않습니다. 세 에이전트가 주간 리듬을 만들고 총괄이 결과만 보고합니다.' },
+    { id: 'build', re: /(앱|서비스|개발|자동화|스크립트|코드|MVP|출시|app|service|develop|automation|script|code|launch|アプリ|開発|自動化|スクリプト|コード|应用|开发|自动化|上线|小程序)/i, agents: ['planning', 'build', 'qa', 'ops'], channel: '빌드-오케스트라', why: '만드는 일은 범위·구현·검증이 붙어야 끝납니다. 총괄이 순서를 잡고 각 에이전트가 자기 산출물만 냅니다.' },
+    { id: 'plan', re: /(기획|일정|회의|보고|리포트|정리|plan|schedule|meeting|report|会議|議事録|スケジュール|企画|計画|レポート|会议|计划|报告|整理)/i, agents: ['planning', 'research', 'analysis'], channel: '기획-오케스트라', why: '기획은 흩어진 요청을 문서와 일정으로 바꾸는 일입니다. 정리·근거·리포트를 나눠 맡깁니다.' },
   ];
   let hit = rules.find((r) => r.re.test(t));
   if (!hit) {
@@ -867,29 +1065,64 @@ function analyzePurpose(text) {
   }
   const agents = hit.agents
     .slice(0, 3)
-    .map((k) => AGENT_LIB[k])
+    .map((k) => {
+      const a = AGENT_LIB[k];
+      if (!a) return null;
+      const d = DICT();
+      const loc = d && d.agents && d.agents[k];
+      return Object.assign({ key: k }, a, loc || {});
+    })
     .filter(Boolean);
+  const chMap = (DICT() && DICT().channels) || {};
   return {
     id: hit.id,
     goal: t.trim().slice(0, 300),
-    why: hit.why,
-    channel: hit.channel,
+    why: (RULE_WHY[LANG] && RULE_WHY[LANG][hit.id]) || hit.why,
+    channel: chMap[hit.channel] || hit.channel,
     agents,
     steps: ['목적 접수·범위 확정', '하위 에이전트 3종에 위임', '산출물 취합·최종 보고'],
     chief: CHIEF,
   };
 }
 
+const RULE_WHY = {
+  en: {
+    b2b: 'Sales is won by carrying one deal to the end. Proposal, settlement and follow-up sit with separate agents, so the owner can focus on meetings and decisions.',
+    content: 'Content only keeps going when planning, copy and analysis all turn. Three agents build the weekly rhythm and the chief reports the result.',
+    build: 'Building needs scope, implementation and checks together. The chief sets the order and each agent delivers only its own piece.',
+    plan: 'Planning turns scattered requests into documents and schedules. Tidying, evidence and reporting are split across agents.',
+    general: 'The goal is still broad. Scope it, check the evidence, then turn repetition into automation candidates — in that order.'
+  },
+  zh: {
+    b2b: '销售拼的是把一个单子跟到底。提案、结算、跟进分别交给不同机器人，负责人只管见客户和拍板。',
+    content: '内容要策划、文案、分析一起转才不断更。三个机器人搭每周节奏，总管只汇报结果。',
+    build: '做产品要范围、实现、验证三件事一起。总管排顺序，每个机器人只交自己的产出。',
+    plan: '策划是把零散的请求变成文档和日程。整理、依据、汇报分开交给机器人。',
+    general: '目标还比较宽。先定范围，再核对依据，最后把重复工作变成自动化候选，这个顺序最稳。'
+  },
+  ja: {
+    b2b: '営業は1件を最後まで運ぶ力が勝負です。提案・精算・フォローを別々のエージェントに任せ、担当者は商談と判断に集中できます。',
+    content: 'コンテンツは企画・コピー・分析が回って初めて続きます。3体が週次のリズムを作り、統括が結果だけを報告します。',
+    build: '作る仕事は範囲・実装・検証が揃って初めて終わります。統括が順番を決め、各エージェントは自分の成果だけを出します。',
+    plan: '企画は散らばった依頼を文書と日程に変える仕事です。整理・根拠・レポートを分けて任せます。',
+    general: '目的がまだ広い状態です。まず範囲を決め、根拠を確認し、繰り返し業務を自動化候補に変える順が安全です。'
+  }
+};
+
 function planFromRole(role) {
   const c = CONSULT.find((r) => r.id === role);
   if (!c) return null;
+  const d = DICT();
+  const loc = d && d.consult && d.consult[role];
+  const src = (loc && loc.agents) || c.agents;
+  const agents = c.agents.map((a, i) => Object.assign({}, a, src[i] || {}));
   return {
     id: c.id,
-    goal: c.tagline,
-    why: c.why,
-    channel: c.channel,
-    agents: c.agents.slice(0, 3),
-    allAgents: c.agents,
+    goal: (loc && loc.tagline) || c.tagline,
+    why: (loc && loc.why) || c.why,
+    channel: ((d && d.channels) || {})[c.channel] || c.channel,
+    agents: agents.slice(0, 3),
+    allAgents: agents,
     steps: ['목적 접수·범위 확정', '역할별 에이전트에 위임', '산출물 취합·최종 보고'],
     chief: CHIEF,
   };
@@ -898,6 +1131,7 @@ function planFromRole(role) {
 function renderRoles() {
   const box = $('#roleCards');
   if (!box) return;
+  const d = DICT();
   box.innerHTML = CONSULT.map(
     (r) =>
       '<button type="button" class="d-role' +
@@ -907,9 +1141,9 @@ function renderRoles() {
       '"><span class="em">' +
       esc(r.emoji) +
       '</span><b>' +
-      esc(r.label) +
+      esc((d && d.consult && d.consult[r.id] && d.consult[r.id].label) || r.label) +
       '</b><span>' +
-      esc(r.tagline) +
+      esc((d && d.consult && d.consult[r.id] && d.consult[r.id].tagline) || r.tagline) +
       '</span></button>'
   ).join('');
 }
@@ -924,10 +1158,10 @@ function renderDesign() {
   const p = wizardPlan;
   const agents = p.agents || [];
   box.innerHTML =
-    '<div class="d-design"><h4>🧠 MOA Chief + 에이전트 ' +
-    agents.length +
-    '명 설계안</h4>' +
-    '<p><b>목적</b> · ' +
+    '<div class="d-design"><h4>' +
+    esc(u('designTitle', agents.length) || ('🧠 MOA Chief + 에이전트 ' + agents.length + '명 설계안')) +
+    '</h4>' +
+    '<p><b>' + esc(u('purpose') || '목적') + '</b> · ' +
     esc(p.goal || '—') +
     '</p>' +
     '<div class="agents">' +
@@ -945,7 +1179,7 @@ function renderDesign() {
       .join('') +
     '</div>' +
     '<div class="flow">' +
-    (p.steps || [])
+    ((LANG !== 'ko' && u('briefSteps')) || p.steps || [])
       .map((s) => '<span>' + esc(s) + '</span>')
       .join('<span>→</span>') +
     '<span>#' +
@@ -954,7 +1188,11 @@ function renderDesign() {
     '<div class="why">💡 ' +
     esc(p.why || '') +
     '</div>' +
-    '<div class="d-sheet-actions"><button class="btn btn-primary btn-sm" id="applyDesignBtn" type="button">이 팀을 STG에 만들기</button><button class="btn btn-ghost btn-sm" id="redoDesign" type="button">다시 설계</button></div></div>';
+    '<div class="d-sheet-actions"><button class="btn btn-primary btn-sm" id="applyDesignBtn" type="button">' +
+    esc(u('apply') || '이 팀을 STG에 만들기') +
+    '</button><button class="btn btn-ghost btn-sm" id="redoDesign" type="button">' +
+    esc(u('redo') || '다시 설계') +
+    '</button></div></div>';
 }
 
 function openWizard() {
@@ -983,7 +1221,7 @@ function designTeam() {
   } else if (wizardRole) {
     wizardPlan = planFromRole(wizardRole);
   } else {
-    toast('업종을 고르거나, 하고 싶은 일을 한 줄 적어 주세요.');
+    toast(LN('toasts.needDesign', '업종을 고르거나, 하고 싶은 일을 한 줄 적어 주세요.'));
     return;
   }
   renderDesign();
@@ -1010,10 +1248,10 @@ function applyPlan() {
         name: a.name,
         emoji: a.emoji,
         role: a.role,
-        summary: a.persona || a.task || '',
+        summary: a.summary || a.persona || a.task || '',
         keywords: a.keywords,
       });
-      bot.activity = [a.summary || '초기 산출물 준비 완료'];
+      bot.activity = LANG === 'ko' ? [a.summary || '초기 산출물 준비 완료'] : [];
       state.bots.push(bot);
     }
     agents.push(bot);
@@ -1023,17 +1261,18 @@ function applyPlan() {
     name: plan.channel || '총괄-오케스트라',
     mode: 'mention',
     botId: chief.id,
-    topic: '총괄 오케스트레이터 1:1 — ' + (plan.goal || '팀 목표'),
+    topic: (LANG === 'ko' ? '총괄 오케스트레이터 1:1 — ' : '') + (plan.goal || '팀 목표'),
     members: [chief.id].concat(agents.map((a) => a.id)),
     orchestrator: true,
   };
   state.channels.push(channel);
+  const goal = plan.goal || LN('orch.goalFallback', '팀 목표');
   state.messages[channel.id] = [
     {
       id: uid('msg'),
       kind: 'system',
-      name: 'MOA Hive 컨설턴트',
-      text: '**총괄 오케스트레이터 팀을 만들었습니다** — 🧠 MOA Chief + 에이전트 ' + agents.length + '명\n\n목적: ' + (plan.goal || '—') + '\n\n' + (plan.why || ''),
+      name: 'MOA Hive',
+      text: fmt(LN('orch.designCreated', '**총괄 오케스트레이터 팀을 만들었습니다** — 🧠 MOA Chief + 에이전트 {n}명\n\n목적: {goal}\n\n{why}'), { n: agents.length, goal, why: plan.why || '' }),
     },
     {
       id: uid('msg'),
@@ -1042,33 +1281,51 @@ function applyPlan() {
       name: chief.name,
       emoji: chief.emoji,
       role: 'chief',
-      text:
-        '준비됐습니다. 아래 에이전트에게 일을 나눠 맡기고, 제가 결과만 취합해 보고합니다.\n\n- ' +
-        agents.map((a) => a.emoji + ' ' + a.name).join('\n- ') +
-        '\n\n하고 싶은 일을 그대로 말해 주세요. 예: “' + (plan.goal || '이번 주 할 일 정리해줘') + '”',
+      text: fmt(LN('orch.designReady', '준비됐습니다. 아래 에이전트에게 일을 나눠 맡기고, 제가 결과만 취합해 보고합니다.\n\n- {agents}\n\n하고 싶은 일을 그대로 말해 주세요. 예: “{goal}”'), {
+        agents: agents.map((a) => a.emoji + ' ' + a.name).join('\n- '),
+        goal,
+      }),
     },
   ];
   state.activeChannelId = channel.id;
   state.activeBotId = chief.id;
+  state.dirty = true;
   wizardPlan = null;
   closeWizard();
   renderAll(true);
-  toast('STG에 팀을 만들었습니다 — #' + channel.name);
+  toast(fmt(LN('toasts.teamCreated', 'STG에 팀을 만들었습니다 — #{channel}'), { channel: channelLabel(channel) }));
 }
 
 /* ───────────────────────── 활용 케이스 갤러리 ───────────────────────── */
+function caseInfo(c) {
+  const d = DICT();
+  const l = d && d.cases && d.cases[c.id];
+  return {
+    label: (l && l.label) || c.label,
+    tagline: (l && l.tagline) || c.tagline,
+    channel: (l && l.channel) || c.channel,
+    names: (l && l.names) || c.bots.map((b) => b.name),
+    starter: (l && l.starter) || c.starter,
+    examples: (l && l.examples) || null,
+  };
+}
+
 function renderCaseGallery() {
   const box = $('#caseGallery');
   if (!box) return;
   box.innerHTML = CASES.map((c) => {
-    const names = c.bots.map((b) => b.emoji + ' ' + b.name).join(' · ');
-    const quote = (c.example || []).find((e) => e.from !== 'user');
-    const q = quote ? String(quote.text).split('\n')[0].slice(0, 72) : '';
+    const info = caseInfo(c);
+    const names = c.bots.map((b, i) => b.emoji + ' ' + (info.names[i] || b.name)).join(' · ');
+    const sample = info.examples ? info.examples[0] && info.examples[0].text : ((c.example || []).find((e) => e.from !== 'user') || {}).text;
+    const q = sample ? String(sample).replace(/[*_`]/g, '').replace(/\s+/g, ' ').trim().slice(0, 72) : '';
     return '<article class="case-tile" data-case-id="' + esc(c.id) + '" data-testid="case-tile">' +
-      '<div class="ct-top"><span class="ct-emoji">' + esc(c.emoji) + '</span><div><b>' + esc(c.label) + '</b><span>' + esc(c.tagline) + '</span></div></div>' +
+      '<div class="ct-top"><span class="ct-emoji">' + esc(c.emoji) + '</span><div><b>' + esc(info.label) + '</b><span>' + esc(info.tagline) + '</span></div></div>' +
       '<div class="ct-bots">' + esc(names) + '</div>' +
       (q ? '<div class="ct-quote">“' + esc(q) + (q.length >= 72 ? '…' : '') + '”</div>' : '') +
-      '<button class="btn btn-sm btn-primary" type="button" data-apply-case="' + esc(c.id) + '">이 케이스 바로 적용</button>' +
+      '<div class="ct-actions">' +
+      '<button class="btn btn-sm btn-primary" type="button" data-apply-case="' + esc(c.id) + '">' + esc(u('applyCase') || '이 케이스 바로 적용') + '</button>' +
+      '<button class="btn btn-sm btn-ghost" type="button" data-pack-case="' + esc(c.id) + '">' + esc(u('packBtn') || '🎁 세팅 팩') + '</button>' +
+      '</div>' +
       '</article>';
   }).join('');
 }
@@ -1076,17 +1333,27 @@ function renderCaseGallery() {
 function applyCase(id) {
   const c = CASES.find((x) => x.id === id);
   if (!c) return;
-  const bots = c.bots.map((spec) => {
-    let bot = state.bots.find((b) => b.name === spec.name);
+  const info = caseInfo(c);
+  const localized = LANG !== 'ko';
+  const bots = c.bots.map((spec, i) => {
+    const name = info.names[i] || spec.name;
+    let bot = state.bots.find((b) => b.name === name);
     if (bot) return bot;
-    bot = makeBot(Object.assign({ id: uid('bot') }, spec));
-    if (spec.tasks) bot.tasks = spec.tasks.slice();
+    bot = makeBot({
+      id: uid('bot'),
+      name,
+      emoji: spec.emoji,
+      role: spec.role,
+      isChief: spec.isChief,
+      summary: localized ? ((u('roleSummary') || {})[spec.role] || spec.summary) : spec.summary,
+      tasks: localized ? undefined : spec.tasks,
+    });
     state.bots.push(bot);
     return bot;
   });
   let ch = state.channels.find((x) => x.name === c.channel);
   if (!ch) {
-    ch = { id: uid('ch'), name: c.channel, mode: 'auto', topic: c.tagline, members: [], orchestrator: bots.some((b) => b.isChief) };
+    ch = { id: uid('ch'), name: c.channel, mode: 'auto', topic: info.tagline, members: [], orchestrator: bots.some((b) => b.isChief) };
     state.channels.push(ch);
     state.messages[ch.id] = [];
   }
@@ -1094,7 +1361,7 @@ function applyCase(id) {
   pushMessage(ch.id, {
     kind: 'system',
     name: 'MOA Hive',
-    text: '**' + c.label + '** 케이스를 세팅했습니다 — 봇 ' + bots.length + '명 · #' + c.channel + '. 아래 예시 대화를 그대로 이어서 써 보세요.',
+    text: fmt(LN('orch.caseCreated', '**{label}** 케이스를 세팅했습니다 — 봇 {n}명 · #{channel}. 아래 예시 대화를 그대로 이어서 써 보세요.'), { label: info.label, n: bots.length, channel: info.channel }),
   });
   pushMessage(ch.id, {
     kind: 'bot',
@@ -1102,17 +1369,25 @@ function applyCase(id) {
     name: bots[0].name,
     emoji: bots[0].emoji,
     role: bots[0].role,
-    text: c.starter + '\n\n_추천 업무는 오른쪽 역할 카드에서 바로 누를 수 있습니다._',
+    text: info.starter + LN('orch.caseStarterNote', '\n\n_추천 업무는 오른쪽 역할 카드에서 바로 누를 수 있습니다._'),
   });
-  (c.example || []).forEach((ex) => {
-    if (ex.from === 'user') {
-      pushMessage(ch.id, { kind: 'user', name: '나', text: ex.text });
-    } else {
-      const b = bots.find((x) => x.name === ex.from);
-      if (b) pushMessage(ch.id, { kind: 'bot', botId: b.id, name: b.name, emoji: b.emoji, role: b.role, text: ex.text });
-    }
-  });
+  if (info.examples) {
+    info.examples.forEach((ex) => {
+      const b = bots[ex.bot] || bots[0];
+      pushMessage(ch.id, { kind: 'bot', botId: b.id, name: b.name, emoji: b.emoji, role: b.role, text: ex.text });
+    });
+  } else {
+    (c.example || []).forEach((ex) => {
+      if (ex.from === 'user') {
+        pushMessage(ch.id, { kind: 'user', name: '나', text: ex.text });
+      } else {
+        const b = bots.find((x) => x.name === ex.from);
+        if (b) pushMessage(ch.id, { kind: 'bot', botId: b.id, name: b.name, emoji: b.emoji, role: b.role, text: ex.text });
+      }
+    });
+  }
   state.env = 'stg';
+  state.dirty = true;
   state.activeChannelId = ch.id;
   state.activeBotId = (bots.find((b) => b.isChief) || bots[0]).id;
   state.officeBusy = null;
@@ -1121,7 +1396,7 @@ function applyCase(id) {
   renderAll(true);
   const demo = $('#demo');
   if (demo) demo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  toast(c.label + ' 팀을 세팅했습니다 — #' + c.channel);
+  toast(fmt(LN('toasts.caseApplied', '{label} 팀을 세팅했습니다 — #{channel}'), { label: info.label, channel: info.channel }));
 }
 
 /* ───────────────────────── 채팅 · 오케스트레이션 ───────────────────────── */
@@ -1135,6 +1410,10 @@ function pushMessage(channelId, msg) {
 function pickReply(bot, text) {
   const role = bot.role || 'pm';
   const topic = text.length > 60 ? text.slice(0, 60) + '…' : text;
+  if (LANG !== 'ko') {
+    const key = ['dev', 'content', 'research', 'chief', 'pm'].indexOf(role) >= 0 ? role : 'pm';
+    return fmt(LN('replies.' + key, ''), { topic, name: bot.name });
+  }
   const head = '**결론** — ' + topic + ' 요청을 ' + bot.name + ' 기준으로 정리했습니다.';
   if (role === 'dev') {
     return (
@@ -1234,8 +1513,8 @@ async function chiefRespond(channel, chief, text, run) {
       id: a.id,
       name: a.name,
       emoji: a.emoji,
-      task: (meta && meta.task) || a.name + ' 담당 업무',
-      summary: (meta && meta.summary) || '초안 정리 완료',
+      task: (meta && meta.task) || (botTasks(a)[0] || a.name),
+      summary: (meta && meta.summary) || '',
       status: i === 0 ? 'working' : '',
     };
   });
@@ -1247,8 +1526,11 @@ async function chiefRespond(channel, chief, text, run) {
     name: chief.name,
     emoji: chief.emoji,
     role: 'chief',
-    text:
-      '**총괄 보고** · 🧠 ' + chief.name + '\n\n목표: ' + (text.length > 80 ? text.slice(0, 80) + '…' : text) + '\n\n위임 ' + steps.length + '건을 진행합니다.',
+    text: fmt(LN('orch.report', '**총괄 보고** · 🧠 {chief}\n\n목표: {goal}\n\n위임 {n}건을 진행합니다.'), {
+      chief: chief.name,
+      goal: text.length > 80 ? text.slice(0, 80) + '…' : text,
+      n: steps.length,
+    }),
     steps,
     busy: true,
   });
@@ -1271,22 +1553,30 @@ async function chiefRespond(channel, chief, text, run) {
 
   state.officeBusy = null;
   msg.busy = false;
+  const topic40 = text.length > 40 ? text.slice(0, 40) + '…' : text;
   msg.summary =
-    '**취합 결과**\n- 범위: “' + (text.length > 40 ? text.slice(0, 40) + '…' : text) + '” 요청을 ' + steps.length + '개 산출물로 분해\n- 다음 액션: ' + (steps[0] ? steps[0].name + '의 초안을 확인하고, 결정이 필요한 1건만 골라 주세요' : '할 일을 하나 정해 주세요') + '\n- 확인 필요: 실제 수치·고객사 정보는 아직 검증 전입니다(로컬 규칙 기반 취합)\n\n_하위 에이전트 산출물을 취합한 요약입니다 · 총괄 모드_';
+    LN('orch.summaryHeader', '**취합 결과**') + '\n' +
+    '- ' + fmt(LN('orch.summaryScope', '범위: “{topic}” 요청을 {n}개 산출물로 분해'), { topic: topic40, n: steps.length }) + '\n' +
+    '- ' + (steps[0]
+      ? fmt(LN('orch.summaryNext', '다음 액션: {agent}의 초안을 확인하고, 결정이 필요한 1건만 골라 주세요'), { agent: steps[0].name })
+      : LN('orch.summaryNextEmpty', '할 일을 하나 정해 주세요')) + '\n' +
+    '- ' + LN('orch.summaryCheck', '확인 필요: 실제 수치·고객사 정보는 아직 검증 전입니다(로컬 규칙 기반 취합)') + '\n\n' +
+    LN('orch.summaryFoot', '_하위 에이전트 산출물을 취합한 요약입니다 · 총괄 모드_');
 
   if (!state.proposal && channel.id === state.activeChannelId) {
-    const hasReport = state.bots.some((b) => /리포트/.test(b.name));
+    const reportName = LANG === 'ko' ? '주간 리포트 봇' : (u('reportBot') || 'Weekly report bot');
+    const hasReport = state.bots.some((b) => b.name === reportName || /리포트|report|报表|レポート/i.test(b.name));
     const proposal = hasReport
       ? {
           kind: 'rule',
-          title: '읽기 전용 명령 자동 승인 규칙을 추가할까요?',
-          body: 'ls · cat · wc · pwd 같은 읽기 전용 명령은 승인 카드 없이 바로 실행됩니다. 쓰기·위험 명령은 그대로 승인 카드를 거칩니다.',
+          title: LN('orch.proposalRuleTitle', '읽기 전용 명령 자동 승인 규칙을 추가할까요?'),
+          body: LN('orch.proposalRuleBody', 'ls · cat · wc · pwd 같은 읽기 전용 명령은 승인 카드 없이 바로 실행됩니다. 쓰기·위험 명령은 그대로 승인 카드를 거칩니다.'),
         }
       : {
           kind: 'bot',
-          bot: '주간 리포트 봇',
-          title: '주간 리포트 요약 봇을 팀에 붙일까요?',
-          body: '매주 금요일 지표·진행률을 한 장으로 정리해 총괄에게 보고하는 에이전트입니다.',
+          bot: reportName,
+          title: LN('orch.proposalBotTitle', '주간 리포트 요약 봇을 팀에 붙일까요?'),
+          body: LN('orch.proposalBotBody', '매주 금요일 지표·진행률을 한 장으로 정리해 총괄에게 보고하는 에이전트입니다.'),
         };
     msg.proposal = Object.assign({ status: 'pending' }, proposal);
     state.proposal = msg.proposal;
@@ -1296,38 +1586,40 @@ async function chiefRespond(channel, chief, text, run) {
 
 function sendMessage(text) {
   if (isProd()) {
-    toast('PROD는 읽기 전용입니다 — STG에서 변경하고 Release Manager로 승격하세요.');
+    toast(LN('orch.readOnly', 'PROD는 읽기 전용입니다 — STG에서 변경하고 Release Manager로 승격하세요.'));
     return;
   }
   const t = String(text || '').trim();
   if (!t) return;
   const channel = currentChannel();
   if (!channel) return;
-  pushMessage(channel.id, { kind: 'user', name: '나', text: t });
+  pushMessage(channel.id, { kind: 'user', name: LANG === 'ko' ? '나' : 'You', text: t });
+  state.dirty = true;
   renderMessages(true);
   respond(channel, t);
 }
 
 function handleProposal(action, btn) {
   if (!state.proposal) return;
+  const reportName = LANG === 'ko' ? '주간 리포트 봇' : (u('reportBot') || 'Weekly report bot');
   state.proposal.status = action === 'ok' ? 'ok' : 'pass';
   if (action === 'ok' && state.proposal.kind === 'rule') {
     pushMessage(state.activeChannelId, {
       kind: 'system',
       name: 'MOA Hive',
-      text: '✓ **읽기 전용 명령 자동 승인 규칙**을 추가했습니다 — `ls` · `cat` · `wc` · `pwd`. 쓰기·위험 명령은 그대로 승인 카드를 거칩니다.',
+      text: LN('orch.ruleApplied', '✓ **읽기 전용 명령 자동 승인 규칙**을 추가했습니다 — `ls` · `cat` · `wc` · `pwd`. 쓰기·위험 명령은 그대로 승인 카드를 거칩니다.'),
     });
-    toast('읽기 전용 명령 자동 승인 규칙을 추가했습니다.');
+    toast(LN('toasts.ruleAdded', '읽기 전용 명령 자동 승인 규칙을 추가했습니다.'));
   } else if (action === 'ok') {
-    const name = state.proposal.bot || '주간 리포트 봇';
+    const name = state.proposal.bot || reportName;
     if (!state.bots.some((b) => b.name === name)) {
       const bot = makeBot({
         id: uid('bot'),
         name,
         emoji: '📊',
         role: 'research',
-        summary: '주간 지표와 진행률을 한 장 리포트로 정리합니다. 숫자에는 기준일과 출처를 붙입니다.',
-        activity: ['주간 리포트 초안 생성'],
+        summary: LANG === 'ko' ? '주간 지표와 진행률을 한 장 리포트로 정리합니다. 숫자에는 기준일과 출처를 붙입니다.' : ((u('roleSummary') || {}).research || ''),
+        activity: LANG === 'ko' ? ['주간 리포트 초안 생성'] : [],
       });
       state.bots.push(bot);
       const ch = currentChannel();
@@ -1336,16 +1628,20 @@ function handleProposal(action, btn) {
     pushMessage(state.activeChannelId, {
       kind: 'system',
       name: 'MOA Hive',
-      text: '✓ **' + name + '**을(를) STG 팀에 반영했습니다. 이제 #' + (currentChannel() ? currentChannel().name : '전체-팀') + '에서 호출할 수 있습니다.',
+      text: fmt(LN('orch.botApplied', '✓ **{name}**을(를) STG 팀에 반영했습니다. 이제 #{channel}에서 호출할 수 있습니다.'), {
+        name,
+        channel: channelLabel(currentChannel()),
+      }),
     });
-    toast(name + '을(를) 팀에 붙였습니다.');
+    toast(fmt(LN('toasts.botAdded', '{name}을(를) 팀에 붙였습니다.'), { name }));
   } else {
-    pushMessage(state.activeChannelId, { kind: 'system', name: 'MOA Hive', text: '· 제안을 패스했습니다. 기록만 남습니다.' });
+    pushMessage(state.activeChannelId, { kind: 'system', name: 'MOA Hive', text: LN('orch.proposalPassed', '· 제안을 패스했습니다. 기록만 남습니다.') });
   }
   if (btn && btn.closest) {
     const wrap = btn.closest('.d-proposal');
-    if (wrap) wrap.innerHTML = '<div class="done">' + (action === 'ok' ? '✓ 팀에 반영되었습니다.' : '· 기록되었습니다.') + '</div>';
+    if (wrap) wrap.innerHTML = '<div class="done">' + (action === 'ok' ? LN('orch.proposalDone', '✓ 팀에 반영되었습니다.') : LN('orch.proposalPassed', '· 기록되었습니다.')) + '</div>';
   }
+  state.dirty = true;
   renderAll(true);
 }
 
@@ -1391,7 +1687,7 @@ function bindDemo() {
       const bot = currentBot();
       if (!bot) return;
       if (isProd()) {
-        toast('PROD는 읽기 전용입니다.');
+        toast(LN('orch.readOnly', 'PROD는 읽기 전용입니다.'));
         return;
       }
       const task = taskBtn.getAttribute('data-task');
@@ -1490,7 +1786,7 @@ function bindDemo() {
         text: '🚀 **PROD v0.3.0 반영 완료** — STG의 봇·채널·설정이 운영 버전으로 승격되었습니다. PROD는 다시 읽기 전용입니다.',
       });
       renderAll(true);
-      toast('PROD v0.3.0 반영 완료 — 버전 히스토리에 기록했습니다.');
+      toast(LN('toasts.promoted', 'PROD v0.3.0 반영 완료 — 버전 히스토리에 기록했습니다.'));
     });
   }
 
@@ -1542,12 +1838,50 @@ function bindDemo() {
   const gallery = $('#caseGallery');
   if (gallery) {
     gallery.addEventListener('click', (e) => {
+      const packBtn = e.target.closest('[data-pack-case]');
+      if (packBtn) {
+        const c = CASES.find((x) => x.id === packBtn.getAttribute('data-pack-case'));
+        if (c) {
+          const info = caseInfo(c);
+          openPack({ name: info.label, bots: c.bots.map((b, i) => ({ emoji: b.emoji, name: info.names[i] || b.name })) });
+        }
+        return;
+      }
       const btn = e.target.closest('[data-apply-case]');
       const tile = e.target.closest('[data-case-id]');
       if (btn) applyCase(btn.getAttribute('data-apply-case'));
       else if (tile) applyCase(tile.getAttribute('data-case-id'));
     });
   }
+
+  /* 세팅 팩 퍼널 — 업종 카드 · 가상 오피스 · 봇 인스펙터 */
+  const packTriggers = ['#inspPackBtn', '#officePackBtn', '#demoPackLink'];
+  packTriggers.forEach((sel) => {
+    const el = $(sel);
+    if (!el) return;
+    el.addEventListener('click', (e) => {
+      if (sel === '#demoPackLink') return; /* 앵커는 #pack 섹로 이동 */
+      e.preventDefault();
+      const ch = currentChannel();
+      const members = channelMembers(ch);
+      const bots = (members.length ? members : state.bots).map((b) => ({ emoji: b.emoji, name: b.name }));
+      openPack({ name: ch ? '#' + channelLabel(ch) : '', bots });
+    });
+  });
+  const closePackBtn = $('#closePack');
+  if (closePackBtn) closePackBtn.addEventListener('click', closePack);
+  const packSheet = $('#packSheet');
+  if (packSheet) {
+    packSheet.addEventListener('click', (e) => { if (e.target === packSheet) closePack(); });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && packSheet && !packSheet.hidden) closePack();
+  });
+
+  /* 언어 선택기 */
+  $$('.lang-switch [data-lang]').forEach((b) => {
+    b.addEventListener('click', () => setLang(b.getAttribute('data-lang')));
+  });
   const adminBtn = $('#adminToggle');
   if (adminBtn) adminBtn.addEventListener('click', () => setAdmin(!adminMode));
   const reset = $('#resetDemo');
@@ -1558,7 +1892,7 @@ function bindDemo() {
       wizardRole = null;
       closeWizard();
       renderAll(true);
-      toast('데모를 초기 상태로 되돌렸습니다.');
+      toast(LN('toasts.reset', '데모를 초기 상태로 되돌렸습니다.'));
     });
   }
 
@@ -1577,7 +1911,7 @@ function setupVoice(btn, target) {
   if (!btn || !target) return;
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
-    btn.addEventListener('click', () => toast('이 브라우저는 음성 입력을 지원하지 않습니다 — Chrome·Edge·Safari 최신을 쓰거나 아래에 입력해 주세요.'));
+    btn.addEventListener('click', () => toast(LN('toasts.voiceUnsupported', '이 브라우저는 음성 입력을 지원하지 않습니다 — Chrome·Edge·Safari 최신을 쓰거나 아래에 입력해 주세요.')));
     return;
   }
   let rec = null;
@@ -1601,13 +1935,13 @@ function setupVoice(btn, target) {
     };
     rec.onerror = () => {
       btn.classList.remove('listening');
-      toast('음성 입력을 시작하지 못했습니다. 마이크 권한을 확인해 주세요.');
+      toast(LN('toasts.voiceFailed', '음성 입력을 시작하지 못했습니다. 마이크 권한을 확인해 주세요.'));
     };
     rec.onend = () => btn.classList.remove('listening');
     try {
       rec.start();
       btn.classList.add('listening');
-      toast('듣고 있습니다 — 한국어로 말씀하세요.');
+      toast(LN('toasts.listening', '듣고 있습니다 — 한국어로 말씀하세요.'));
     } catch (_) {
       btn.classList.remove('listening');
     }
@@ -1617,6 +1951,10 @@ function setupVoice(btn, target) {
 /* ───────────────────────── 시작 ───────────────────────── */
 function boot() {
   adminMode = adminFromEnv();
+  captureKoText();
+  applyDomLang();
+  syncLangButtons();
+  updatePackLinks();
   applyReleaseLinks();
   setupGuideTabs();
   setupInstall();
