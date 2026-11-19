@@ -44,7 +44,20 @@ def desktop(pw):
     page.goto(BASE, wait_until="networkidle")
     page.wait_for_selector("[data-testid=message-list]", state="visible")
 
+    # 기본(일반 사용자) 화면: 관리자 도구는 숨김, 가상 오피스는 표시
+    check("일반 모드 STG/PROD 숨김", page.is_hidden("[data-testid=env-switch]"))
+    check("일반 모드 Release 탭 숨김", page.is_hidden("[data-testid=tab-release]"))
+    check("가상 오피스 표시", page.is_visible("[data-testid=office]"))
+    check("오피스 캐릭터 렌더", page.locator("[data-testid=office-char]").count() >= 4,
+          str(page.locator("[data-testid=office-char]").count()))
+
+    # 관리자 모드 URL로 전환
+    page.goto(BASE + "?admin=1", wait_until="networkidle")
+    page.wait_for_selector("[data-testid=message-list]", state="visible")
+
     # 온보딩 + 신뢰 배지
+    check("관리자 모드 STG/PROD 표시", page.is_visible("[data-testid=env-switch]"))
+    check("관리자 모드 Release 탭 표시", page.is_visible("[data-testid=tab-release]"))
     check("온보딩 모달 표시", page.is_visible("[data-testid=onboard-modal]"))
     trust = page.inner_text("[data-testid=trust-bar]")
     check("신뢰 배지: 로컬 실행", "100% 내 PC 로컬 실행" in trust, trust)
@@ -276,7 +289,7 @@ def mobile(pw):
     page = ctx.new_page()
     errors = []
     attach_logs(page, errors)
-    page.goto(BASE, wait_until="networkidle")
+    page.goto(BASE + "?admin=1", wait_until="networkidle")
     page.wait_for_selector("[data-testid=message-list]", state="visible")
 
     check("모바일 온보딩 표시", page.is_visible("[data-testid=onboard-modal]"))
@@ -320,6 +333,14 @@ def mobile(pw):
     page.click("[data-testid=tab-release]")
     page.wait_for_timeout(600)
     check("모바일 릴리즈 패널", page.is_visible("[data-testid=release-pane]"))
+    page.click("#closeRight")
+    page.wait_for_timeout(400)
+
+    # 가상 오피스 캐릭터 → 역할 인스펙터
+    check("모바일 가상 오피스", page.is_visible("[data-testid=office]"))
+    page.locator("[data-testid=office-char]").first.click()
+    page.wait_for_timeout(500)
+    check("오피스 캐릭터 → 인스펙터", page.is_visible("[data-testid=inspector]"))
     page.click("#closeRight")
     page.wait_for_timeout(400)
 

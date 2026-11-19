@@ -1,6 +1,6 @@
 {
   "name": "moa-hive",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "private": true,
   "description": "MOA Hive — 로컬 우선 멀티 AI 봇 팀 메신저 (의존성 0)",
   "main": "electron/main.js",

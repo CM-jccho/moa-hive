@@ -81,7 +81,7 @@ def main():
     call("/settings", "PATCH", {"apiKeys": {"anthropic": ""}})
 
     print("\n[4] 메시지 · Auto 라우팅 · 승인 브로커")
-    ch = next(c for c in st["channels"] if c["name"] == "폰기프트-업무")
+    ch = next(c for c in st["channels"] if c["name"] == "B2B-업무")
     s, r = call("/messages", "POST", {"channelId": ch["id"], "text": "PRD 초안 파일 만들어줘"})
     check("메시지 전송(200)", s == 200, str(s))
     check("Auto 라우팅 봇 배정", bool(r.get("routedTo")), str(r.get("routedTo")))

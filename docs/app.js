@@ -6,8 +6,8 @@
 /* ───────────────────────── 릴리스 설정 (여기 한 곳만 고치면 됩니다) ───────────────────────── */
 const RELEASE = {
   repo: 'CM-jccho/moa-hive',
-  version: '0.3.0',
-  tag: 'v0.3.0',
+  version: '0.3.2',
+  tag: 'v0.3.2',
 };
 
 /* ───────────────────────── 공통 유틸 ───────────────────────── */
@@ -279,9 +279,18 @@ const ROLE_TASKS = {
 
 const ROLE_LABEL = { pm: '기획·PM', dev: '개발·검증', content: '콘텐츠', research: '리서치', chief: '총괄' };
 
+const CHARACTER_TASKS = {
+  'MOA Chief': ['이번 주 팀 우선순위 정리', '다섯 명의 산출물 취합 보고', '내가 결정할 것만 골라주기'],
+  Prototyper: ['새 아이디어 10개 발산해줘', '이 기능의 가능성 시나리오 그려줘', '새로운 컨셉 3안 제안해줘'],
+  Builder: ['이 화면 실제로 만들어줘', '구현 순서와 실행 명령 정리해줘', '프로토타입을 제품 형태로 붙여줘'],
+  Sweeper: ['중복 코드·화면 정리해줘', '이 흐름에서 군더더기 빼줘', '릴리즈 전 정리 체크리스트 만들어줘'],
+  Grower: ['첫 100명 유입 실험 설계해줘', '사람들이 찾게 만드는 채널 정리해줘', '지표 보고 다음 실험 골라줘'],
+  Maintainer: ['장애 나기 쉬운 지점 점검해줘', '모니터링·백업 계획 세워줘', '느린 부분과 보안 위험 정리해줘'],
+};
+
 function makeBot(spec, extra) {
   const role = spec.role || 'pm';
-  const tasks = (spec.tasks || ROLE_TASKS[role] || ROLE_TASKS.pm).slice();
+  const tasks = (spec.tasks || CHARACTER_TASKS[spec.name] || ROLE_TASKS[role] || ROLE_TASKS.pm).slice();
   return Object.assign(
     {
       id: spec.id || uid('bot'),
@@ -301,48 +310,48 @@ function makeBot(spec, extra) {
 }
 
 function seedState() {
-  const pm = makeBot({
-    id: 'bot_pm',
-    name: '기획PM 봇',
-    emoji: '🧭',
-    role: 'pm',
-    summary: '요구사항을 PRD·유저스토리·일정으로 쪼개고 리스크를 먼저 짚습니다.',
-    keywords: ['기획', '요구사항', 'PRD', '일정', '우선순위', 'PM', 'QA'],
-    activity: ['이번 주 목표 → 3일 일정 초안 작성', '회의록 액션 6건 정리', '릴리즈 체크리스트 12항목 생성'],
+  const chief = makeBot({
+    id: 'bot_chief', name: 'MOA Chief', emoji: '🧠', role: 'chief', isChief: true,
+    summary: '차분하고 명쾌한 팀장 — 사용자와 단독으로 소통하고, 다섯 명에게 일을 나눠 맡긴 뒤 산출물만 취합해 보고합니다.',
+    keywords: ['총괄', '팀', '전체', '요약', '진행', '보고'],
+    activity: ['오늘의 팀 우선순위 정리', '다섯 명의 산출물 취합', '다음 액션 1건 보고'],
   });
-  const dev = makeBot({
-    id: 'bot_dev',
-    name: '풀스택 개발 봇',
-    emoji: '🛠️',
-    role: 'dev',
-    summary: '구현 가능성·파일 구조·실행 명령을 구체적으로 제시하고, 위험한 변경은 먼저 승인 카드를 띄웁니다.',
-    keywords: ['코드', '개발', 'API', '버그', '배포', 'Node', '테스트', 'GitHub'],
-    activity: ['로컬 서버 로그 원인 2건 정리', '테스트 3종 실행 계획 제안', '빌드 스크립트 점검'],
+  const proto = makeBot({
+    id: 'bot_prototyper', name: 'Prototyper', emoji: '💡', role: 'content',
+    summary: '아이디어를 끊임없이 쏟아내는 발산형 — 가능성을 먼저 열고 빠르게 여러 안을 만듭니다.',
+    keywords: ['아이디어', '발산', '컨셉', '가능성', '실험', '기획'],
+    activity: ['새 컨셉 10안 발산', '가능성 시나리오 3개', '실험 후보 5개 정리'],
   });
-  const content = makeBot({
-    id: 'bot_content',
-    name: '인스타·콘텐츠 봇',
-    emoji: '📸',
-    role: 'content',
-    summary: '훅 → 본문 → CTA 구조의 캡션, 해시태그, 7일 발행 캘린더를 만듭니다.',
-    keywords: ['인스타', '릴스', '캡션', '해시태그', '스레드', '콘텐츠', '팔로워'],
-    activity: ['주간 발행 7편 캘린더 작성', '릴스 훅 2안 비교', '스레드용 캡션 변환'],
+  const builder = makeBot({
+    id: 'bot_builder', name: 'Builder', emoji: '🔨', role: 'dev',
+    summary: '아이디어를 진짜 제품과 화면으로 바꾸는 실행형 — 오늘 바로 만들고 붙입니다.',
+    keywords: ['만들', '구현', '화면', '프로토타입', '제품', '기능', '배포'],
+    activity: ['프로토타입 화면 2개 구현', '실행 순서·명령 정리', '제품 형태로 연결'],
   });
-  const research = makeBot({
-    id: 'bot_research',
-    name: '리서치 봇',
-    emoji: '🔎',
-    role: 'research',
-    summary: '시장·경쟁사를 조사하고 출처와 확인 날짜를 붙입니다. 추정과 사실을 구분합니다.',
-    keywords: ['리서치', '시장', '경쟁사', '조사', '트렌드', '벤치마크', '출처'],
-    activity: ['경쟁 3곳 가격대 표 정리', '공개 자료 원문 2건 확인', '추정 항목 3건 표시'],
+  const sweeper = makeBot({
+    id: 'bot_sweeper', name: 'Sweeper', emoji: '🧹', role: 'dev',
+    summary: '화면과 코드를 깔끔하게 정리하는 정돈형 — 군더더기를 과감히 빼고 흐름을 단순하게 만듭니다.',
+    keywords: ['정리', '리팩터', '중복', '군더더기', '단순화', '버그'],
+    activity: ['중복 화면 3곳 정리', '불필요한 단계 4개 제거', '정리 체크리스트 작성'],
+  });
+  const grower = makeBot({
+    id: 'bot_grower', name: 'Grower', emoji: '🌱', role: 'content',
+    summary: '제품을 계속 다듬어 사람들이 실제로 찾게 키우는 성장형 — 지표와 채널 실험으로 다음 성장을 만듭니다.',
+    keywords: ['성장', '유입', '지표', '채널', '마케팅', '리텐션', '수익'],
+    activity: ['첫 100명 유입 실험 2안', '주간 지표 리포트 작성', '수익화 후보 3건 비교'],
+  });
+  const maintainer = makeBot({
+    id: 'bot_maintainer', name: 'Maintainer', emoji: '🛡️', role: 'dev',
+    summary: '커진 서비스를 안전하고 빠르게 지키는 수호형 — 장애·보안·속도를 먼저 살핍니다.',
+    keywords: ['안정', '모니터링', '보안', '백업', '장애', '속도', '운영'],
+    activity: ['장애 위험 지점 3곳 점검', '모니터링·백업 계획 정리', '느린 구간 2곳 표시'],
   });
 
-  const bots = [pm, dev, content, research];
+  const bots = [chief, proto, builder, sweeper, grower, maintainer];
   const channels = [
-    { id: 'ch_all', name: '전체-팀', mode: 'auto', topic: '모든 봇이 참여하는 기본 채널 — Auto 라우팅', members: bots.map((b) => b.id) },
-    { id: 'ch_pongift', name: '폰기프트-업무', mode: 'auto', topic: '상품권 사업 기획·QA·일정', members: ['bot_pm', 'bot_dev', 'bot_research'] },
-    { id: 'ch_side', name: '사이드-수익화', mode: 'mention', botId: 'bot_content', topic: '@봇이름 멘션으로 지정 호출', members: ['bot_content', 'bot_pm', 'bot_research'] },
+    { id: 'ch_all', name: '전체-팀', mode: 'auto', topic: '여섯 캐릭터가 모이는 기본 채널 — 말하면 알아서 나눠 일합니다', members: bots.map((b) => b.id) },
+    { id: 'ch_b2b', name: 'B2B-업무', mode: 'auto', topic: 'B2B 사업 기획·구현·성장', members: ['bot_prototyper', 'bot_builder', 'bot_grower'] },
+    { id: 'ch_side', name: '사이드-수익화', mode: 'mention', botId: 'bot_grower', topic: '성장·수익 실험 — @이름으로 지정 호출', members: ['bot_grower', 'bot_prototyper', 'bot_maintainer'] },
   ];
 
   return {
@@ -359,19 +368,20 @@ function seedState() {
         {
           id: uid('msg'),
           kind: 'bot',
-          botId: 'bot_pm',
-          name: '기획PM 봇',
-          emoji: '🧭',
-          role: 'pm',
-          text: '**기획PM 봇** 준비됐습니다. 이번 주 목표를 알려주시면 PRD 초안과 3일 일정으로 쪼개 드릴게요.\n\n- 채널 모드가 `Auto`라서 키워드에 따라 다른 봇이 자동으로 답합니다\n- 특정 봇만 부르려면 `@풀스택 개발 봇`처럼 멘션하세요\n- 팀 전체가 필요하면 **🧭 팀 컨설팅**에서 MOA Chief를 붙이세요',
+          botId: 'bot_chief',
+          name: 'MOA Chief',
+          emoji: '🧠',
+          role: 'chief',
+          text: '**MOA Chief**입니다. 하고 싶은 일을 말해 주세요 — 💡 Prototyper(발산) · 🔨 Builder(구현) · 🧹 Sweeper(정돈) · 🌱 Grower(성장) · 🛡️ Maintainer(운영)에게 나눠 맡기고 결과만 정리해 드립니다.\n\n- 그냥 말하면 팀이 알아서 나눠 일합니다\n- 한 사람에게만 시키려면 `@Builder`처럼 불러 주세요',
         },
       ],
-      ch_pongift: [],
+      ch_b2b: [],
       ch_side: [],
     },
     activeChannelId: 'ch_all',
-    activeBotId: 'bot_pm',
+    activeBotId: 'bot_chief',
     typingBotId: null,
+    officeBusy: null,
     proposal: null,
     history: [
       { version: '0.3.0-rc', env: 'stg', title: 'STG 후보 — 오케스트레이터 · 팀 컨설팅 · 웹 데모', at: '2026-11-19' },
@@ -383,6 +393,75 @@ function seedState() {
 let state = seedState();
 let wizardPlan = null;
 let wizardRole = null;
+let adminMode = false;
+
+/* ───────────────────────── 관리자 모드 · 가상 오피스 ───────────────────────── */
+function adminFromEnv() {
+  let q = null;
+  try { q = new URLSearchParams(location.search).get('admin'); } catch (e) {}
+  if (q === '1') return true;
+  if (q === '0') return false;
+  try { return localStorage.getItem('moa_admin') === '1'; } catch (e) { return false; }
+}
+
+function applyAdminMode() {
+  document.body.classList.toggle('demo-admin', adminMode);
+  $$('.admin-only').forEach((el) => { el.hidden = !adminMode; });
+  if (!adminMode && state.env === 'prod') {
+    state.env = 'stg';
+    state.activeChannelId = state.channels[0] ? state.channels[0].id : state.activeChannelId;
+  }
+  if (!adminMode) {
+    const ctx = $('#tabContext');
+    if (ctx && !ctx.classList.contains('is-active')) ctx.click();
+  }
+  const btn = $('#adminToggle');
+  if (btn) btn.textContent = adminMode ? '🔒 관리자 모드 끄기' : '🔧 관리자 모드';
+}
+
+function setAdmin(on) {
+  adminMode = !!on;
+  try { localStorage.setItem('moa_admin', adminMode ? '1' : '0'); } catch (e) {}
+  applyAdminMode();
+  renderAll(false);
+  toast(adminMode ? '관리자 모드 — STG/PROD·Release 패널이 표시됩니다.' : '일반 모드 — 관리자 도구를 숨겼습니다.');
+}
+
+function characterClass(name) {
+  if (/Chief/i.test(name)) return 'char-chief';
+  if (/Prototyper/i.test(name)) return 'char-proto';
+  if (/Builder/i.test(name)) return 'char-builder';
+  if (/Sweeper/i.test(name)) return 'char-sweeper';
+  if (/Grower/i.test(name)) return 'char-grower';
+  if (/Maintainer/i.test(name)) return 'char-maint';
+  return '';
+}
+
+function officeChar(b, working, bubble) {
+  return '<button type="button" class="d-office-char ' + characterClass(b.name) + ' ' + (working ? 'working' : 'idle') + '" data-office-bot="' + esc(b.id) + '" data-testid="office-char" title="' + esc(b.name) + ' 역할 카드 열기">' +
+    '<span class="d-char-bubble">' + esc(bubble || '') + '</span>' +
+    '<span class="d-char-avatar">' + esc(b.emoji || '🤖') + '</span>' +
+    '<span class="d-char-desk"></span>' +
+    '<span class="d-char-name">' + esc(b.name) + '</span>' +
+    '</button>';
+}
+
+function renderOffice() {
+  const floor = $('#officeFloor');
+  if (!floor) return;
+  const chief = state.bots.find((b) => b.isChief);
+  const rest = state.bots.filter((b) => b !== chief);
+  const busy = state.officeBusy || {};
+  const working = (b) => b.id === state.typingBotId || (busy.chief && b === chief) || busy.agent === b.id;
+  const bubble = (b) => (busy.chief && b === chief ? '위임 중…' : working(b) ? '작업 중…' : '');
+  const groups = [];
+  if (chief) groups.push(officeChar(chief, working(chief), bubble(chief)));
+  rest.slice(0, 3).forEach((b) => groups.push(officeChar(b, working(b), bubble(b))));
+  const lounge = rest.slice(3, 5).map((b) => officeChar(b, working(b), bubble(b)));
+  floor.innerHTML = groups.join('') + (lounge.length ? '<span class="d-office-lounge">그로스 · 운영</span>' + lounge.join('') : '');
+  const hint = $('#officeHint');
+  if (hint) hint.textContent = chief ? chief.name + ' + 에이전트 ' + rest.length + '명' : '';
+}
 
 /* ───────────────────────── 환경 · 패널 렌더 ───────────────────────── */
 const envBadge = () => $('#envBadge');
@@ -639,6 +718,7 @@ function messageHtml(msg) {
 }
 
 function renderMessages(forceScroll) {
+  renderOffice();
   const box = $('#demoMessages');
   if (!box) return;
   const list = state.messages[state.activeChannelId] || [];
@@ -658,6 +738,8 @@ function renderMessages(forceScroll) {
 }
 
 function renderAll(forceScroll) {
+  applyAdminMode();
+  renderOffice();
   renderEnv();
   renderChannels();
   renderBots();
@@ -919,9 +1001,12 @@ function routeBot(channel, text) {
     const fixed = members.find((b) => b.id === channel.botId);
     if (fixed) return fixed;
   }
-  let best = members[0];
+  const chief = members.find((b) => b.isChief);
+  if (chief) return chief;
+  const candidates = members.filter((b) => !b.isChief);
+  let best = candidates[0] || members[0];
   let bestScore = 0;
-  members.forEach((b) => {
+  candidates.forEach((b) => {
     const score = (b.keywords || []).reduce((acc, k) => (text.toLowerCase().includes(String(k).toLowerCase()) ? acc + 1 : acc), 0);
     if (score > bestScore) {
       bestScore = score;
@@ -944,6 +1029,10 @@ async function respond(channel, text) {
   }
   const bot = routeBot(channel, text);
   if (!bot) return;
+  if (bot.isChief) {
+    await chiefRespond(channel, bot, text, run);
+    return;
+  }
   state.activeBotId = bot.id;
   state.typingBotId = bot.id;
   renderBots();
@@ -980,6 +1069,7 @@ async function chiefRespond(channel, chief, text, run) {
     };
   });
   state.activeBotId = chief.id;
+  state.officeBusy = { chief: true, agent: steps[0] ? steps[0].id : null };
   const msg = pushMessage(channel.id, {
     kind: 'bot',
     botId: chief.id,
@@ -996,6 +1086,7 @@ async function chiefRespond(channel, chief, text, run) {
   for (let i = 0; i < steps.length; i++) {
     if (i > 0) {
       steps[i].status = 'working';
+      state.officeBusy = { chief: true, agent: steps[i].id };
       renderMessages(false);
     }
     await sleep(460);
@@ -1007,6 +1098,7 @@ async function chiefRespond(channel, chief, text, run) {
   await sleep(320);
   if (run !== state.runId) return;
 
+  state.officeBusy = null;
   msg.busy = false;
   msg.summary =
     '**취합 결과**\n- 범위: “' + (text.length > 40 ? text.slice(0, 40) + '…' : text) + '” 요청을 ' + steps.length + '개 산출물로 분해\n- 다음 액션: ' + (steps[0] ? steps[0].name + '의 초안을 확인하고, 결정이 필요한 1건만 골라 주세요' : '할 일을 하나 정해 주세요') + '\n- 확인 필요: 실제 수치·고객사 정보는 아직 검증 전입니다(로컬 규칙 기반 취합)\n\n_하위 에이전트 산출물을 취합한 요약입니다 · 총괄 모드_';
@@ -1133,6 +1225,14 @@ function bindDemo() {
       }
       const task = taskBtn.getAttribute('data-task');
       sendMessage('@' + bot.name + ' ' + task);
+      return;
+    }
+    const officeBtn = e.target.closest('[data-office-bot]');
+    if (officeBtn) {
+      state.activeBotId = officeBtn.getAttribute('data-office-bot');
+      const ctx = $('#tabContext');
+      if (ctx) ctx.click();
+      renderAll(false);
       return;
     }
     const propBtn = e.target.closest('[data-prop]');
@@ -1268,6 +1368,8 @@ function bindDemo() {
     });
   }
 
+  const adminBtn = $('#adminToggle');
+  if (adminBtn) adminBtn.addEventListener('click', () => setAdmin(!adminMode));
   const reset = $('#resetDemo');
   if (reset) {
     reset.addEventListener('click', () => {
@@ -1334,11 +1436,13 @@ function setupVoice(btn, target) {
 
 /* ───────────────────────── 시작 ───────────────────────── */
 function boot() {
+  adminMode = adminFromEnv();
   applyReleaseLinks();
   setupGuideTabs();
   setupInstall();
   registerServiceWorker();
   bindDemo();
+  applyAdminMode();
   renderAll(false);
 }
 

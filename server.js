@@ -253,28 +253,40 @@ function seedStg() {
   const ws = WORKSPACE_DIR;
   const bots = [
     {
-      id: 'bot_pm', name: '기획PM 봇', emoji: '🧭', role: 'pm', model: 'claude-sonnet-4-5',
-      persona: '플랫포스 폰기프트 사업을 총괄하는 기획·PM. 요구사항을 PRD·유저스토리·일정으로 쪼개고, 리스크와 의사결정 지점을 먼저 짚는다. 답은 결론 → 근거 → 다음 액션 순서로 짧게.',
-      cwd: ws, pinned: true, color: '#7c9cff',
-      keywords: ['기획', '요구사항', 'PRD', '일정', '로드맵', '스프린트', '우선순위', 'PM', '정책', 'QA'],
+      id: 'bot_chief', name: 'MOA Chief', emoji: '🧠', role: 'chief', model: 'claude-sonnet-4-5', isChief: true,
+      persona: '차분하고 명쾌한 팀장 — 사용자와 단독으로 소통하고, 다섯 명에게 일을 나눠 맡긴 뒤 산출물만 취합해 보고한다. 결정할 것과 확인할 것을 구분한다.',
+      cwd: ws, pinned: true, color: '#a78bfa',
+      keywords: ['총괄', '팀', '전체', '요약', '진행', '보고'],
     },
     {
-      id: 'bot_dev', name: '풀스택 개발 봇', emoji: '🛠️', role: 'dev', model: 'claude-sonnet-4-5',
-      persona: 'Node.js·TypeScript 풀스택 엔지니어. 구현 가능성, 파일 구조, 실행 명령을 구체적으로 제시하고 위험한 변경은 먼저 승인 카드로 물어본다.',
+      id: 'bot_prototyper', name: 'Prototyper', emoji: '💡', role: 'content', model: 'claude-sonnet-4-5',
+      persona: '아이디어를 끊임없이 쏟아내는 발산형 — 가능성을 먼저 열고, 빠르게 여러 안을 만든다. 판단은 미루고 선택지를 넓힌다.',
+      cwd: ws, pinned: true, color: '#ffd166',
+      keywords: ['아이디어', '발산', '컨셉', '가능성', '실험', '브레인스토밍', '기획'],
+    },
+    {
+      id: 'bot_builder', name: 'Builder', emoji: '🔨', role: 'dev', model: 'claude-sonnet-4-5',
+      persona: '아이디어를 진짜 제품과 화면으로 바꾸는 실행형 — 오늘 바로 만들고 붙인다. 구현 순서와 실행 명령을 구체적으로 제시한다.',
       cwd: ws, pinned: true, color: '#5ee0b0',
-      keywords: ['코드', '개발', 'API', '버그', '배포', 'Node', 'Jira', '스크립트', '리팩터', '테스트', 'GitHub'],
+      keywords: ['만들', '구현', '화면', '프로토타입', '제품', '기능', '코드', '배포', '버그'],
     },
     {
-      id: 'bot_content', name: '인스타·콘텐츠 봇', emoji: '📸', role: 'content', model: 'claude-haiku-4-5',
-      persona: '인스타그램 @moa_daily80 운영을 맡은 콘텐츠 에디터. 훅 → 본문 → CTA 구조의 캡션, 해시태그 세트, 7일 발행 캘린더를 제안한다. 말투는 담백하고 실용적.',
+      id: 'bot_sweeper', name: 'Sweeper', emoji: '🧹', role: 'dev', model: 'claude-sonnet-4-5',
+      persona: '화면과 코드를 깔끔하게 정리하는 정돈형 — 군더더기를 과감히 빼고 흐름을 단순하게 만든다. 중복과 예외를 먼저 찾는다.',
+      cwd: ws, pinned: false, color: '#7ad7f0',
+      keywords: ['정리', '리팩터', '중복', '군더더기', '단순화', '버그', 'QA'],
+    },
+    {
+      id: 'bot_grower', name: 'Grower', emoji: '🌱', role: 'content', model: 'claude-sonnet-4-5',
+      persona: '제품을 계속 다듬어 사람들이 실제로 찾게 키우는 성장형 — 지표와 채널 실험으로 다음 성장을 만든다. 수익 기회도 함께 본다.',
       cwd: ws, pinned: false, color: '#ff8fb1',
-      keywords: ['인스타', '릴스', '캡션', '해시태그', '스레드', '콘텐츠', '바이럴', '팔로워', '카드뉴스'],
+      keywords: ['성장', '유입', '지표', '채널', '마케팅', '리텐션', '수익', '기회'],
     },
     {
-      id: 'bot_research', name: '리서치 봇', emoji: '🔎', role: 'research', model: 'claude-sonnet-4-5',
-      persona: '시장·경쟁사 리서처. 출처와 확인 날짜를 붙이고, 추정과 사실을 구분한다. 결론에는 항상 "확인 필요" 항목을 남긴다.',
-      cwd: ws, pinned: false, color: '#ffc46b',
-      keywords: ['리서치', '시장', '경쟁사', '조사', '데이터', '트렌드', '벤치마크', '출처'],
+      id: 'bot_maintainer', name: 'Maintainer', emoji: '🛡️', role: 'dev', model: 'claude-sonnet-4-5',
+      persona: '커진 서비스를 안전하고 빠르게 지키는 수호형 — 장애·보안·속도를 먼저 살피고, 조용히 돌아가는 운영을 만든다.',
+      cwd: ws, pinned: false, color: '#b8c0d2',
+      keywords: ['안정', '모니터링', '보안', '백업', '장애', '속도', '운영'],
     },
   ];
 
@@ -284,12 +296,12 @@ function seedStg() {
       pinned: true, members: bots.map((b) => b.id), createdAt: nowISO(),
     },
     {
-      id: 'ch_pongift', name: '폰기프트-업무', mode: 'auto', topic: '상품권 사업 기획·QA·일정',
-      pinned: true, members: ['bot_pm', 'bot_dev', 'bot_research'], createdAt: nowISO(),
+      id: 'ch_b2b', name: 'B2B-업무', mode: 'auto', topic: 'B2B 사업 기획·구현·성장',
+      pinned: true, members: ['bot_prototyper', 'bot_builder', 'bot_grower'], createdAt: nowISO(),
     },
     {
-      id: 'ch_side', name: '사이드-수익화', mode: 'mention', botId: 'bot_content', topic: '@봇이름 멘션으로 지정 호출',
-      pinned: false, members: ['bot_content', 'bot_pm', 'bot_research'], createdAt: nowISO(),
+      id: 'ch_side', name: '사이드-수익화', mode: 'mention', botId: 'bot_grower', topic: '성장·수익 실험 — @이름으로 지정 호출',
+      pinned: false, members: ['bot_grower', 'bot_prototyper', 'bot_maintainer'], createdAt: nowISO(),
     },
   ];
 
@@ -302,12 +314,12 @@ function seedStg() {
       },
       {
         id: uid('msg'), channelId: 'ch_all', ts: nowISO(), kind: 'text',
-        author: { type: 'bot', botId: 'bot_pm', name: '기획PM 봇' },
-        text: '**기획PM 봇** 준비됐습니다. 이번 주 목표를 알려주시면 PRD 초안과 3일 일정으로 쪼개 드릴게요.\n\n- 채널 모드가 `Auto`라서, 키워드에 따라 다른 봇이 자동으로 답합니다\n- 특정 봇만 부르려면 `@풀스택 개발 봇` 처럼 멘션하세요',
+        author: { type: 'bot', botId: 'bot_chief', name: 'MOA Chief' },
+        text: '**MOA Chief**입니다. 하고 싶은 일을 말해 주세요 — 💡 Prototyper · 🔨 Builder · 🧹 Sweeper · 🌱 Grower · 🛡️ Maintainer에게 나눠 맡기고, 결과만 정리해 드립니다.\n\n- 그냥 말하면 팀이 알아서 나눠 일합니다\n- 한 사람에게만 시키려면 `@Builder`처럼 불러 주세요',
         meta: { engine: 'seed' },
       },
     ],
-    ch_pongift: [],
+    ch_b2b: [],
     ch_side: [],
   };
 
@@ -331,14 +343,14 @@ function seedProd() {
   const ws = WORKSPACE_DIR;
   const bots = [
     {
-      id: 'bot_pm', name: '기획PM 봇', emoji: '🧭', role: 'pm', model: 'claude-sonnet-4-5',
-      persona: '폰기프트 사업을 총괄하는 기획·PM. 요구사항을 PRD·유저스토리·일정으로 쪼개고 리스크를 먼저 짚는다.',
-      cwd: ws, pinned: true, color: '#7c9cff', keywords: ['기획', '요구사항', 'PRD', '일정', '우선순위'],
+      id: 'bot_prototyper', name: 'Prototyper', emoji: '💡', role: 'content', model: 'claude-sonnet-4-5',
+      persona: '아이디어를 끊임없이 쏟아내는 발산형 — 가능성을 먼저 열고 여러 안을 만든다.',
+      cwd: ws, pinned: true, color: '#ffd166', keywords: ['아이디어', '발산', '컨셉', '가능성', '실험'],
     },
     {
-      id: 'bot_dev', name: '풀스택 개발 봇', emoji: '🛠️', role: 'dev', model: 'claude-sonnet-4-5',
-      persona: 'Node.js 풀스택 엔지니어. 구현 방법과 실행 명령을 구체적으로 제시한다.',
-      cwd: ws, pinned: true, color: '#5ee0b0', keywords: ['코드', '개발', 'API', '버그', '배포'],
+      id: 'bot_builder', name: 'Builder', emoji: '🔨', role: 'dev', model: 'claude-sonnet-4-5',
+      persona: '아이디어를 제품과 화면으로 바꾸는 실행형 — 오늘 바로 만들고 붙인다.',
+      cwd: ws, pinned: true, color: '#5ee0b0', keywords: ['만들', '구현', '화면', '제품', '기능', '배포'],
     },
   ];
   const channels = [
@@ -842,7 +854,7 @@ function simReply(bot, channel, text, history) {
 
   if (/안녕|반가|hello|hi/i.test(text) && text.length < 24) {
     lines.push(`안녕하세요, ${bot.name}입니다. 지금 채널은 \`${channel.mode === 'auto' ? 'Auto 라우팅' : '@멘션 호출'}\` 모드예요.`);
-    lines.push('', '무엇부터 볼까요? 예: "이번 주 폰기프트 QA 범위 정리", "릴스 3편 캡션", "경쟁사 가격 조사"');
+    lines.push('', '무엇부터 볼까요? 예: "이번 주 B2B QA 범위 정리", "릴스 3편 캡션", "경쟁사 가격 조사"');
     return lines.join('\n');
   }
 

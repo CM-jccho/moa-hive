@@ -66,21 +66,21 @@ def desktop(pw):
     # 랜딩
     check("브랜드 표시", "MOA Hive" in page.inner_text(".site-head"))
     hero = page.inner_text(".hero")
-    check("로컬 프라이버시 강조", "100% 로컬 프라이버시" in hero and "내 PC 안에서" in page.inner_text("h1"))
+    check("로컬 프라이버시 강조", "내 컴퓨터 안에만 저장" in hero and "AI 팀이 알아서" in page.inner_text("h1"))
+    check("3단계 설치 안내", page.locator(".quick-steps li").count() == 3, str(page.locator(".quick-steps li").count()))
     check("macOS·Windows 다운로드 카드", page.locator(".dl-card.mac").count() == 1 and page.locator(".dl-card.win").count() == 1)
     mac = page.get_attribute('[data-dl="mac-universal"]', "href")
     win = page.get_attribute('[data-dl="win-setup"]', "href")
-    check("mac .dmg 자산 링크", "/releases/download/v0.3.0/" in mac and ".dmg" in mac, str(mac))
-    check("win .exe 자산 링크", "/releases/download/v0.3.0/" in win and ".exe" in win, str(win))
+    check("mac .dmg 자산 링크", "/releases/download/v0.3.2/" in mac and ".dmg" in mac, str(mac))
+    check("win .exe 자산 링크", "/releases/download/v0.3.2/" in win and ".exe" in win, str(win))
     check("start.command 링크", "start.command" in page.get_attribute('[data-dl="mac-script"]', "href"))
     check("start.bat 링크", "start.bat" in page.get_attribute('[data-dl="win-script"]', "href"))
 
     # 설치 탭
     page.click('[data-guide="win"]')
-    check("Windows 설치 안내", "MOA-Hive-Setup-0.3.0.exe" in page.inner_text('[data-pane="win"]'))
-    page.click('[data-guide="source"]')
-    check("소스 실행 안내", "node server.js" in page.inner_text('[data-pane="source"]'))
+    check("Windows 설치 안내", "MOA-Hive-Setup-0.3.2.exe" in page.inner_text('[data-pane="win"]'))
     page.click('[data-guide="mac"]')
+    check("개발자용 안내 접이식", page.locator("details.pro").count() >= 1 and "node server.js" in page.locator("details.pro").first.text_content())
 
     # PWA
     href = page.get_attribute('link[rel="manifest"]', "href")
@@ -96,10 +96,23 @@ def desktop(pw):
     check("서비스 워커 등록", reg == "ok", reg)
     check("모바일 뷰포트 메타", "width=device-width" in page.get_attribute('meta[name="viewport"]', "content"))
 
-    # 데모 초기 상태
-    check("데모 환경 배지 STG", page.inner_text("#envBadge").startswith("STG v0.3"), page.inner_text("#envBadge"))
+    # 데모 초기 상태 — 일반 모드에서는 관리자 도구 숨김, 가상 오피스 표시
+    check("일반 모드 STG/PROD 숨김", page.is_hidden(".d-env"))
+    check("일반 모드 Release 탭 숨김", page.is_hidden("#tabRelease"))
+    check("가상 오피스 표시", page.is_visible("#officeFloor"))
+    check("오피스 캐릭터 렌더", page.locator("[data-testid=office-char]").count() >= 4,
+          str(page.locator("[data-testid=office-char]").count()))
+    page.locator("[data-testid=office-char]").first.click()
+    page.wait_for_timeout(300)
+    check("오피스 캐릭터 → 인스펙터", page.is_visible("#contextPane") and page.inner_text("#inspName") != "")
+
+    # 관리자 모드 켜기
+    page.click("#adminToggle")
+    page.wait_for_timeout(300)
+    check("관리자 모드 STG/PROD 표시", page.is_visible(".d-env"))
+    check("관리자 모드 Release 탭 표시", page.is_visible("#tabRelease"))
     check("기본 채널 #전체-팀", page.inner_text("#demoChannelName") == "#전체-팀")
-    check("봇 인스펙터 기본값", "기획PM" in page.inner_text("#inspName"))
+    check("봇 인스펙터 기본값", "MOA Chief" in page.inner_text("#inspName"))
 
     # 자유 목적 컨설팅
     page.click("#wizardBtn")
@@ -125,6 +138,7 @@ def desktop(pw):
     wait_chief(page)
     check("사용자 메시지 표시", "정산 마감" in page.inner_text("#demoMessages"))
     check("위임 단계 3건 완료", page.locator(".d-step.done").count() == 3, str(page.locator(".d-step.done").count()))
+    check("오피스 캐릭터 작업 완료", page.locator("[data-testid=office-char].working").count() == 0)
     check("취합 결과 표시", "취합 결과" in page.inner_text("#demoMessages"))
     check("인라인 제안 카드", page.locator(".d-proposal").count() == 1)
     bots_before = page.locator("#botList [data-bot]").count()
@@ -182,9 +196,13 @@ def mobile(pw):
     attach_logs(page, errors)
     page.goto(BASE, wait_until="networkidle")
 
-    check("모바일 히어로 표시", "내 PC 안에서" in page.inner_text("h1"))
+    check("모바일 히어로 표시", "AI 팀이 알아서" in page.inner_text("h1"))
     check("모바일 랜딩 가로 오버플로 없음", overflow(page) <= 0, str(overflow(page)))
     check("모바일 체험 CTA", page.locator('a[href="#demo"]').count() >= 1)
+    check("모바일 가상 오피스", page.is_visible("#officeFloor"))
+    page.locator("[data-testid=office-char]").first.click()
+    page.wait_for_timeout(300)
+    check("모바일 오피스 캐릭터 → 인스펙터", page.inner_text("#inspName") != "")
 
     # 업종 선택 컨설팅
     page.click("#wizardBtn")

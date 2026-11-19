@@ -489,3 +489,69 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 .d-summary ul { margin: 4px 0; padding-left: 17px; }
 .d-summary li { margin: 2px 0; }
 .d-summary p:last-child { margin-bottom: 0; }
+
+/* ── 관리자 모드 · 가상 오피스 ── */
+[hidden] { display: none !important; }
+.d-office { flex: 0 0 auto; padding: 8px 14px 7px; border-bottom: 1px solid var(--line); background: linear-gradient(180deg, rgba(124, 156, 255, 0.06), rgba(255, 255, 255, 0.01)); position: relative; overflow: hidden; }
+.d-office-head { display: flex; align-items: center; gap: 8px; font-size: 10.5px; color: var(--muted); }
+.d-office-title { font-weight: 800; color: #cfd6e6; font-size: 11px; white-space: nowrap; }
+.d-office-sub { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.d-office-hint { font-size: 9.5px; color: #8b93a7; white-space: nowrap; }
+.d-office-floor { display: flex; align-items: flex-end; gap: 6px; margin-top: 6px; overflow-x: auto; padding-bottom: 2px; }
+.d-office-floor::-webkit-scrollbar { height: 4px; }
+.d-office-floor::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 99px; }
+.d-office-char { position: relative; flex: 0 0 auto; width: 58px; display: flex; flex-direction: column; align-items: center; gap: 2px; border: 0; background: transparent; padding: 0; border-radius: 8px; color: var(--txt); }
+.d-office-char:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.d-char-avatar { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-size: 15px; background: rgba(124, 156, 255, 0.14); border: 1px solid rgba(124, 156, 255, 0.3); transition: transform 0.15s ease, border-color 0.15s ease; }
+.d-office-char:hover .d-char-avatar { transform: translateY(-2px) scale(1.06); border-color: rgba(124, 156, 255, 0.6); }
+.d-office-char.idle .d-char-avatar { animation: breathe 4.4s ease-in-out infinite; }
+.d-office-char.working .d-char-avatar { animation: workbounce 0.9s ease-in-out infinite; background: rgba(255, 196, 107, 0.15); border-color: rgba(255, 196, 107, 0.5); }
+.d-char-desk { width: 40px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.14); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25); }
+.d-char-name { font-size: 9px; color: #a9b2c6; max-width: 58px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.d-char-bubble { position: absolute; bottom: calc(100% - 4px); left: 50%; transform: translateX(-50%) translateY(2px); font-size: 9px; padding: 2px 6px; border-radius: 7px; background: #1b2236; border: 1px solid var(--line-2); color: #ffe0a8; white-space: nowrap; opacity: 0; transition: opacity 0.18s ease, transform 0.18s ease; pointer-events: none; }
+.d-office-char.working .d-char-bubble { opacity: 1; transform: translateX(-50%) translateY(0); }
+.d-office-char.working .d-char-bubble:empty { display: none; }
+.d-office-lounge { align-self: center; font-size: 8.5px; color: var(--muted); border-left: 1px dashed rgba(255, 255, 255, 0.12); padding: 0 5px; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .d-office { padding: 6px 10px; }
+  .d-office-sub { display: none; }
+  .d-office-hint { margin-left: auto; }
+  .d-char-avatar { width: 27px; height: 27px; font-size: 13px; }
+  .d-office-char { width: 50px; }
+  .d-char-desk { width: 34px; }
+  .d-char-name { max-width: 50px; font-size: 8.5px; }
+}
+
+/* ── 쉬운 설치 안내 ── */
+.quick-steps { list-style: none; margin: 0 0 20px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.quick-steps li { display: flex; gap: 10px; align-items: flex-start; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.qs-num { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; font-weight: 800; color: #0a0d18; background: linear-gradient(135deg, var(--accent), var(--accent-2)); flex: 0 0 auto; font-size: 13px; }
+.quick-steps b { font-size: 13.4px; }
+.quick-steps p { margin: 3px 0 0; font-size: 12.2px; color: var(--muted); line-height: 1.5; }
+.dl-plain { margin: 10px 0 0; font-size: 12.2px; color: var(--muted); line-height: 1.55; }
+.dl-card .btn-block { margin-top: 2px; }
+.dl-sub-actions { margin-top: 10px; font-size: 12px; }
+.pro { margin-top: 16px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255, 255, 255, 0.02); }
+.pro summary { cursor: pointer; padding: 12px 14px; font-size: 12.8px; color: #b9c1d4; font-weight: 650; }
+.pro > p, .pro > ul { margin: 0 14px 12px; font-size: 12.3px; color: var(--muted); line-height: 1.65; }
+.pro > ul { padding-left: 18px; }
+.pro code { overflow-wrap: anywhere; }
+.pro.small summary { padding: 6px 0; font-size: 11.5px; color: #8b93a7; }
+.pro.small { border: 0; background: none; margin-top: 6px; }
+.remote-card .btn { margin-top: 8px; }
+@media (max-width: 900px) { .quick-steps { grid-template-columns: minmax(0, 1fr); } }
+
+/* 캐릭터별 아이들 움직임 */
+.d-office-char.char-chief.idle .d-char-avatar { animation: chiefCalm 5.6s ease-in-out infinite; }
+.d-office-char.char-proto.idle .d-char-avatar { animation: protoSpark 2.2s ease-in-out infinite; }
+.d-office-char.char-builder.idle .d-char-avatar { animation: buildPulse 1.8s ease-in-out infinite; }
+.d-office-char.char-sweeper.idle .d-char-avatar { animation: sweepGlide 3.2s ease-in-out infinite; }
+.d-office-char.char-grower.idle .d-char-avatar { animation: growRise 4s ease-in-out infinite; }
+.d-office-char.char-maint.idle .d-char-avatar { animation: guardPulse 5s ease-in-out infinite; }
+@keyframes chiefCalm { 0%, 100% { transform: translateY(0) rotate(0); filter: brightness(1); } 50% { transform: translateY(-1px) rotate(-1.2deg); filter: brightness(1.09); } }
+@keyframes protoSpark { 0%, 100% { transform: rotate(0) scale(1); } 25% { transform: rotate(-3deg) scale(1.04); } 55% { transform: rotate(3deg) scale(1.06); } 80% { transform: rotate(-1deg) scale(1.02); } }
+@keyframes buildPulse { 0%, 100% { transform: translateY(0) scale(1); } 30% { transform: translateY(-3px) scale(1.05); } 50% { transform: translateY(1px) scale(0.98); } 70% { transform: translateY(-1px) scale(1.02); } }
+@keyframes sweepGlide { 0%, 100% { transform: translateX(0) rotate(0); } 30% { transform: translateX(-3px) rotate(-1.5deg); } 70% { transform: translateX(3px) rotate(1.5deg); } }
+@keyframes growRise { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.04); filter: brightness(1.08); } }
+@keyframes guardPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(124, 156, 255, 0.25); } 50% { transform: scale(1.02); box-shadow: 0 0 0 5px rgba(124, 156, 255, 0); } }

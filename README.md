@@ -1,11 +1,19 @@
 # MOA Hive 🐝
 
-**로컬 우선(Local-First) 멀티 AI 봇 팀 메신저 — macOS·Windows 데스크톱 앱으로 내 PC에서만 실행됩니다.**
+**말로 시키면 AI 팀이 알아서 일하는, 내 컴퓨터 전용 AI 사무실.**
 
-> 🔒 **100% 내 PC 로컬 실행** · 대화·문서·API 키 **외부 서버 유출 없음** · 모든 실행 전 **Allow / Deny 직접 승인**
+## 설치 1분, 세 단계
 
-🌐 **웹 데모 · 설치 안내(PWA):** https://cm-jccho.github.io/moa-hive/ — 설치 없이 팀 컨설팅 · MOA Chief · STG/PROD를 체험할 수 있습니다.
+1. **내 컴퓨터에 맞는 설치 파일 받기** — [macOS `.dmg`](https://github.com/CM-jccho/moa-hive/releases/latest) · [Windows `.exe`](https://github.com/CM-jccho/moa-hive/releases/latest)
+2. **앱 실행** — 처음 한 번만 macOS는 **우클릭 → 열기**, Windows는 **추가 정보 → 실행**을 누릅니다.
+3. **하고 싶은 일을 말로 입력** — “이번 주 할 일 정리해줘”처럼 입력하거나 🎤를 누르면 AI 사무실이 만들어집니다.
 
+> 🔒 대화·자료는 내 컴퓨터에만 저장됩니다. 계정도, 클라우드도 필요 없습니다.
+> 🌐 설치 없이 둘러보기: https://cm-jccho.github.io/moa-hive/
+> 🏢 화면 위 **가상 오피스**에서 봇들이 일하는 모습을 보고, 캐릭터를 누르면 역할 카드가 열립니다. 기본 캐스트는 **MOA Chief + Prototyper · Builder · Sweeper · Grower · Maintainer**입니다. STG/PROD 승격 도구는 관리자 모드(`?admin=1` 또는 설정)에서만 보입니다.
+
+<details>
+<summary>개발자용 요약 (터미널 · Node.js · Git)</summary>
 
 `OpenMausBot`의 구조(메신저형 봇 로스터 · 실제 로컬 CLI 하네스 · 권한 브로커)를 그대로 가져오고,
 여기에 **업종·역할별 팀 컨설팅**, **STG→PROD 승격 구조**, **Pickle 초대 카드**, **팀 마켓(BotMRR형)** 을 얹었습니다.
@@ -13,6 +21,10 @@
 - 의존성 **0** — npm install 없이 `node server.js` 한 줄
 - 기본 주소 `http://127.0.0.1:3847` (루프백 전용, 외부에서 접근 불가)
 - 대화·설정·봇·승인 이력은 `./data/` 안에만 저장
+- 명령 실행: `npm start` · 앱 빌드: `npm run dist:mac` / `npm run dist:win`
+- 테스트: `python3 tests/api_test.py` · `tests/ui_test.py` · `tests/web_test.py`
+
+</details>
 
 ---
 
@@ -74,9 +86,9 @@ node server.js            # 또는 npm start
 npm install          # electron · electron-builder (devDependencies)
 npm run electron     # 개발 모드로 앱 실행
 
-npm run dist:mac     # dist/MOA-Hive-0.3.0-<arch>.dmg
+npm run dist:mac     # dist/MOA-Hive-0.3.2-<arch>.dmg
 npm run dist:universal  # Apple Silicon + Intel 공용 dmg
-npm run dist:win     # dist/MOA-Hive-Setup-0.3.0.exe
+npm run dist:win     # dist/MOA-Hive-Setup-0.3.2.exe
 ```
 
 GitHub Actions(`.github/workflows/release-and-pages.yml`)가 태그 `v*` 푸시 또는 수동 실행 시
@@ -196,7 +208,7 @@ npm i -g @openai/codex               # Codex CLI
 
 ```markdown
 ---
-team: 폰기프트 성장팀
+team: B2B 성장팀
 bots:
   - name: 기획PM 봇
     emoji: 🧭
@@ -319,8 +331,6 @@ moa-hive/
 태그(`v*`)를 푸시하거나 Actions에서 **Run workflow**를 실행하면 **build → release** 작업이 앱 설치 파일을 만들어 Release에 올립니다.
 Pages가 꺼져 있으면 첫 실행에서 **GitHub Actions 배포로 자동 활성화**하고, 이미 branch 배포(`main` + `/docs`)를 쓰고 있으면 그 배포를 그대로 둡니다.
 
-> 워크플로 파일을 GitHub 웹에서 추가해야 하는 경우(토큰에 workflows 권한이 없을 때)는 같은 내용의 사본 `ci/release-and-pages.yml`을 열어 복사한 뒤,
-> `Add file → Create new file`에서 경로 `.github/workflows/release-and-pages.yml`로 저장하면 됩니다. 그 커밋이 푸시되면 Pages 배포가 시작됩니다.
 
 ```bash
 # 웹 테스트 (정적 서버 + Playwright)

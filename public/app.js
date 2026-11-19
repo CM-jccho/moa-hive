@@ -26,6 +26,8 @@
     voiceListening: false,
     pollTimer: null,
     marketTarget: null,
+    admin: false,
+    officeOpen: true,
   };
 
   /* ── helpers ── */
@@ -102,6 +104,87 @@
     if (!t) return false;
     return t.botId === id || (Array.isArray(t.delegateIds) && t.delegateIds.includes(id));
   }
+
+  /* ── 관리자 모드 (일반 화면에서는 STG/PROD·Release 숨김) ── */
+  function adminFromEnv() {
+    let q = null;
+    try { q = new URLSearchParams(location.search).get('admin'); } catch (e) {}
+    if (q === '1') return true;
+    if (q === '0') return false;
+    try { return localStorage.getItem('moa_admin') === '1'; } catch (e) { return false; }
+  }
+
+  function applyAdminMode() {
+    const on = !!S.admin;
+    document.body.classList.toggle('admin-mode', on);
+    const sw = $('#envSwitch');
+    if (sw) sw.hidden = !on;
+    const relTab = $('.rtab[data-tab="release"]');
+    if (relTab) relTab.hidden = !on;
+    if (!on && S.tab === 'release') setTab('context');
+    const relPane = $('#releasePane');
+    if (relPane && !on) relPane.hidden = true;
+    const cb = $('#adminToggle');
+    if (cb) cb.checked = on;
+  }
+
+  function setAdmin(on) {
+    S.admin = !!on;
+    try { localStorage.setItem('moa_admin', on ? '1' : '0'); } catch (e) {}
+    applyAdminMode();
+    renderSidebar();
+    if (on) toast('관리자 모드 — STG/PROD 전환과 Release 패널이 표시됩니다.', '');
+    else toast('일반 모드 — 관리자 도구를 숨겼습니다.', '');
+  }
+
+  /* ── 가상 오피스 ── */
+  function characterClass(name) {
+    if (/Chief/i.test(name)) return 'char-chief';
+    if (/Prototyper/i.test(name)) return 'char-proto';
+    if (/Builder/i.test(name)) return 'char-builder';
+    if (/Sweeper/i.test(name)) return 'char-sweeper';
+    if (/Grower/i.test(name)) return 'char-grower';
+    if (/Maintainer/i.test(name)) return 'char-maint';
+    return '';
+  }
+
+  function officeChar(b, working, bubble) {
+    return `<button type="button" class="office-char ${characterClass(b.name)} ${working ? 'working' : 'idle'}" data-office-bot="${esc(b.id)}" data-testid="office-char" title="${esc(b.name)} 역할 카드 열기">
+      <span class="char-bubble">${esc(bubble || '')}</span>
+      <span class="char-avatar">${esc(b.emoji || '🤖')}</span>
+      <span class="char-desk"></span>
+      <span class="char-name">${esc(b.name)}</span>
+    </button>`;
+  }
+
+  function renderOffice() {
+    const floor = $('#officeFloor');
+    if (!floor) return;
+    const chief = S.bots.find((b) => b.isChief || b.role === 'chief');
+    const rest = S.bots.filter((b) => b !== chief);
+    const desks = rest.slice(0, 3);
+    const lounge = rest.slice(3, 5);
+    const delegating = !!(S.typing && S.typing.delegating);
+    const put = (zone, list) => {
+      const row = floor.querySelector(`[data-zone="${zone}"] .zone-row`);
+      if (!row) return;
+      row.innerHTML = list.length
+        ? list.map((b) => {
+            const working = isBotWorking(b.id);
+            const bubble = working ? (b === chief && delegating ? '위임 중…' : '작업 중…') : '';
+            return officeChar(b, working, bubble);
+          }).join('')
+        : '<span class="office-empty">아직 없음</span>';
+    };
+    put('chief', chief ? [chief] : []);
+    put('agents', desks);
+    put('lounge', lounge);
+    const hint = $('#officeHint');
+    if (hint) hint.textContent = chief ? `${chief.name} + 에이전트 ${rest.length}명` : '';
+    floor.querySelectorAll('[data-office-bot]').forEach((el) => {
+      el.addEventListener('click', () => openBot(el.dataset.officeBot));
+    });
+  }
   function botById(id) { return S.bots.find((b) => b.id === id); }
   function channelById(id) { return S.channels.find((c) => c.id === id); }
   function approvalById(id) { return S.approvals.find((a) => a.id === id) || null; }
@@ -126,9 +209,11 @@
   }
 
   function renderAll() {
+    applyAdminMode();
     renderEnv();
     renderSidebar();
     renderChatHead();
+    renderOffice();
     renderMessages();
     renderBotContext();
     renderPickle();
@@ -364,6 +449,16 @@
     general: ['오늘 할 일 정리해줘', '이 문서 요약해줘', '다음 단계 제안해줘'],
   };
 
+  // 기본 캐릭터별 대표 업무 — 역할 공통 문구보다 캐릭터 성격을 먼저 보여줍니다.
+  const CHARACTER_TASKS = {
+    'MOA Chief': ['이번 주 목표로 다섯 명에게 일 분배해줘', '산출물 취합해서 보고해줘', '내가 결정할 것만 골라줘'],
+    Prototyper: ['새 아이디어 10개 발산해줘', '이 기능의 가능성 시나리오 그려줘', '새로운 컨셉 3안 제안해줘'],
+    Builder: ['이 화면 실제로 만들어줘', '구현 순서와 실행 명령 정리해줘', '프로토타입을 제품 형태로 붙여줘'],
+    Sweeper: ['중복 코드·화면 정리해줘', '이 흐름에서 군더더기 빼줘', '릴리즈 전 정리 체크리스트 만들어줘'],
+    Grower: ['첫 100명 유입 실험 설계해줘', '사람들이 찾게 만드는 채널 정리해줘', '지표 보고 다음 실험 골라줘'],
+    Maintainer: ['장애 나기 쉬운 지점 점검해줘', '모니터링·백업 계획 세워줘', '느린 부분과 보안 위험 정리해줘'],
+  };
+
   function renderInspector(b) {
     if (!b) return;
     const d = S.inspector[b.id] || {};
@@ -377,7 +472,8 @@
     st.textContent = working ? '⚡ 작업 중' : '✨ 대기 중';
     const first = String(b.persona || '').split(/(?<=[.!?])\s/)[0] || '역할 요약이 없습니다.';
     $('#inspSummary').textContent = d.summary || first.slice(0, 140);
-    $('#taskList').innerHTML = (ROLE_TASKS[b.role] || ROLE_TASKS.general)
+    const tasks = CHARACTER_TASKS[b.name] || ROLE_TASKS[b.role] || ROLE_TASKS.general;
+    $('#taskList').innerHTML = tasks
       .map((t) => `<button class="task-btn" data-task="${esc(t)}">${esc(t)}</button>`)
       .join('');
     const acts = d.activity || [];
@@ -525,6 +621,7 @@
       S.typing = d.typing;
       S.engines = d.engines || S.engines;
       renderMessages();
+      renderOffice();
     } catch (e) {
       toast(e.message, 'bad');
     }
@@ -537,7 +634,6 @@
     renderSidebar();
     openRight();
   }
-
   async function ensureDM(bot) {
     const ex = S.channels.find((c) => c.mode === 'mention' && c.botId === bot.id && (c.members || []).length <= 1);
     if (ex) return selectChannel(ex.id);
@@ -566,8 +662,10 @@
     try {
       const d = await api('/messages', { method: 'POST', body: { channelId: S.activeChannelId, text } });
       S.messages.push(d.userMessage);
-      S.typing = d.typing ? { botName: d.routedTo?.name || '봇' } : null;
+      const routedBot = d.routedTo ? botById(d.routedTo.id) : null;
+      S.typing = d.typing ? { botId: d.routedTo?.id, botName: d.routedTo?.name || '봇', delegating: !!(routedBot && routedBot.isChief) } : null;
       renderMessages();
+      renderOffice();
       if (d.routedTo) toast(`${d.routedTo.name}에게 라우팅됨`, '');
       startPolling();
     } catch (e) {
@@ -594,6 +692,7 @@
         } else if (S.typing) {
           renderMessages();
         }
+        renderOffice();
         if (!d.typing && !changed) { /* keep polling idle */ }
       } catch (e) { /* 무시 */ }
       if (ticks > 60) stopPolling();
@@ -797,6 +896,8 @@
     $('#marketUrl').value = s.market?.storeUrl || '';
     $('#demoUnlock').checked = !!s.market?.demoUnlock;
     $('#allowLan').checked = !!s.remote?.allowLan;
+    const adminCb = $('#adminToggle');
+    if (adminCb) adminCb.checked = !!S.admin;
     $('#settingsModal').hidden = false;
     loadRemote();
   }
@@ -1278,6 +1379,20 @@
     );
 
     $('#saveSettings').addEventListener('click', saveSettings);
+    const adminCb = $('#adminToggle');
+    if (adminCb) adminCb.addEventListener('change', (ev) => setAdmin(ev.target.checked));
+    const officeBtn = $('#officeToggle');
+    if (officeBtn) {
+      officeBtn.addEventListener('click', () => {
+        const floor = $('#officeFloor');
+        const willOpen = floor.hidden;
+        floor.hidden = !willOpen;
+        S.officeOpen = willOpen;
+        officeBtn.textContent = willOpen ? '▾' : '▸';
+        officeBtn.setAttribute('aria-expanded', String(willOpen));
+        try { localStorage.setItem('moa_office', willOpen ? '1' : '0'); } catch (e) {}
+      });
+    }
     $('#loadTemplateBtn').addEventListener('click', async () => {
       try {
         const d = await api('/import-template');
@@ -1320,7 +1435,16 @@
 
   /* ── 시작 ── */
   async function init() {
+    S.admin = adminFromEnv();
+    try { S.officeOpen = localStorage.getItem('moa_office') !== '0'; } catch (e) {}
     bind();
+    applyAdminMode();
+    const officeFloor = $('#officeFloor');
+    const officeBtn = $('#officeToggle');
+    if (officeFloor && !S.officeOpen) {
+      officeFloor.hidden = true;
+      if (officeBtn) { officeBtn.textContent = '▸'; officeBtn.setAttribute('aria-expanded', 'false'); }
+    }
     try {
       await loadState();
       if (S.activeChannelId) {
@@ -1349,9 +1473,10 @@
           S.proposals = pr.proposals || [];
           renderMessages();
           renderChatHead();
-        } else if (typingChanged) renderMessages();
+        } else if (typingChanged) { renderMessages(); renderOffice(); }
         if (S.inspectorFor) renderInspector(botById(S.inspectorFor));
         renderSidebar();
+        renderOffice();
       } catch (e) { /* 무시 */ }
     }, 2000);
   }
