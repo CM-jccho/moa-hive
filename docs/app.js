@@ -1316,12 +1316,21 @@ function renderCaseGallery() {
   box.innerHTML = CASES.map((c) => {
     const info = caseInfo(c);
     const names = c.bots.map((b, i) => b.emoji + ' ' + (info.names[i] || b.name)).join(' · ');
-    const sample = info.examples ? info.examples[0] && info.examples[0].text : ((c.example || []).find((e) => e.from !== 'user') || {}).text;
-    const q = sample ? String(sample).replace(/[*_`]/g, '').replace(/\s+/g, ' ').trim().slice(0, 72) : '';
+    const pool = info.examples
+      ? info.examples.map((e) => e.text)
+      : [((c.example || []).find((e) => e.from !== 'user') || {}).text];
+    const sample = pool.find((t) => t && !String(t).trim().startsWith('**')) || pool[0];
+    let q = sample ? String(sample).replace(/[*_`]/g, '').replace(/\s+/g, ' ').trim() : '';
+    if (q.length > 72) {
+      q = q.slice(0, 72);
+      const cut = q.lastIndexOf(' ');
+      if (cut > 40) q = q.slice(0, cut);
+      q += '…';
+    }
     return '<article class="case-tile" data-case-id="' + esc(c.id) + '" data-testid="case-tile">' +
       '<div class="ct-top"><span class="ct-emoji">' + esc(c.emoji) + '</span><div><b>' + esc(info.label) + '</b><span>' + esc(info.tagline) + '</span></div></div>' +
       '<div class="ct-bots">' + esc(names) + '</div>' +
-      (q ? '<div class="ct-quote">“' + esc(q) + (q.length >= 72 ? '…' : '') + '”</div>' : '') +
+      (q ? '<div class="ct-quote">“' + esc(q) + '”</div>' : '') +
       '<div class="ct-actions">' +
       '<button class="btn btn-sm btn-primary" type="button" data-apply-case="' + esc(c.id) + '">' + esc(u('applyCase') || '이 케이스 바로 적용') + '</button>' +
       '<button class="btn btn-sm btn-ghost" type="button" data-pack-case="' + esc(c.id) + '">' + esc(u('packBtn') || '🎁 세팅 팩') + '</button>' +
