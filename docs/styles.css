@@ -843,3 +843,84 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
   .d-steps { overflow-x: auto; }
   .d-gstep { font-size: 9.2px; padding: 4px 5px; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   데모 2단 레이아웃 (데스크톱 > 960px)
+   왼쪽(1.35fr ≈ 58%): 2D 사무실 + 봇 상태 요약
+   오른쪽(1fr ≈ 42%): 바로 해보기 버튼 · 한 줄 입력 · 실행 결과
+   한 화면 안에서 사무실과 실행창이 나란히 보이도록 시선 동선을 정리했습니다.
+   ══════════════════════════════════════════════════════════════ */
+.d-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 12px; align-items: start;
+  padding: 12px 14px 14px;
+}
+.d-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
+
+/* ── 왼쪽: 사무실 카드 ── */
+.d-col-office .d-office {
+  display: flex; flex-direction: column; flex: 0 0 auto;
+  padding: 0; border: 1px solid var(--line-2); border-radius: 16px;
+  overflow: hidden; background: #0a0d16;
+}
+.d-col-office .d-office-head { padding: 8px 12px 6px; }
+.d-col-office .d-office-floor { display: block; flex: 0 0 auto; min-height: 0; overflow: hidden; }
+.d-col-office .office-stage { width: 100%; height: 250px; min-height: 240px; max-height: 260px; }
+.d-col-office .d-office-tip { padding: 6px 12px 8px; }
+
+/* ── 왼쪽: 봇 상태 요약 ── */
+.d-bot-status {
+  flex: 0 0 auto; min-height: 0;
+  border: 1px solid var(--line); border-radius: 14px;
+  background: rgba(255, 255, 255, 0.022); padding: 9px 11px 10px;
+}
+.d-bot-status-head { display: flex; align-items: center; gap: 8px; }
+.d-bot-status-title { font-size: 10.4px; font-weight: 800; letter-spacing: 0.5px; color: #cfd6e6; }
+.d-bot-status-count { margin-left: auto; font-size: 9.8px; color: #8b93a7; white-space: nowrap; }
+.d-bot-status-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.d-bot-chip {
+  display: inline-flex; align-items: center; gap: 5px; max-width: 100%;
+  padding: 3px 9px 3px 7px; border: 1px solid var(--line); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03); color: #cfd6e6; font-size: 10.6px; font-weight: 650;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.d-bot-chip .em { font-size: 12px; line-height: 1; }
+.d-bot-chip .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.d-bot-chip .st { flex: 0 0 auto; font-size: 9.2px; font-weight: 700; color: #8b93a7; }
+.d-bot-chip:hover { border-color: rgba(124, 156, 255, 0.55); background: rgba(124, 156, 255, 0.1); }
+.d-bot-chip.is-chief { border-color: rgba(167, 139, 250, 0.4); background: rgba(167, 139, 250, 0.1); }
+.d-bot-chip.is-working { border-color: rgba(255, 196, 107, 0.5); background: rgba(255, 196, 107, 0.12); color: #ffe3ab; }
+.d-bot-chip.is-working .st { color: #ffe0a8; }
+
+/* ── 오른쪽: 실행창 카드 ── */
+.d-col-try .d-block-try,
+.d-col-try .d-messages { border: 1px solid var(--line-2); border-radius: 16px; }
+.d-col-try .d-block-try { padding: 12px 13px 13px; background: rgba(255, 255, 255, 0.02); }
+.d-col-try .d-quick { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.d-col-try .d-quick-btn {
+  flex-direction: column; align-items: flex-start; justify-content: center;
+  gap: 3px; min-height: 68px; padding: 9px 10px; font-size: 12px; line-height: 1.32;
+}
+.d-col-try .d-quick-btn .em { font-size: 19px; line-height: 1; }
+.d-col-try .d-composer { padding-top: 2px; }
+.demo-app .d-col-try .d-messages { flex: 1 1 auto; min-height: 200px; max-height: 270px; padding: 12px 13px 14px; }
+
+@media (max-width: 960px) {
+  .d-split { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 10px 12px 12px; }
+  .d-col-office .d-office { flex: 0 0 auto; }
+  .d-col-office .d-office-floor { min-height: 0; }
+  .d-col-office .office-stage { height: 200px; min-height: 0; max-height: 200px; }
+  .d-bot-status { flex: 0 0 auto; }
+  .demo-app .d-col-try .d-messages { flex: 0 1 auto; min-height: 190px; max-height: 320px; }
+}
+@media (max-width: 640px) {
+  .d-split { padding: 8px 10px 10px; }
+  .d-col-office .office-stage { height: 172px; max-height: 172px; }
+  .d-col-try .d-quick { grid-template-columns: minmax(0, 1fr); }
+  .d-col-try .d-quick-btn {
+    flex-direction: row; align-items: center; justify-content: flex-start;
+    gap: 9px; min-height: 50px; padding: 11px 12px; font-size: 12.2px;
+  }
+  .demo-app .d-col-try .d-messages { min-height: 180px; max-height: 300px; }
+}

@@ -814,7 +814,7 @@ function renderOfficeStatus() {
   const bots = state.bots || [];
   list.innerHTML = bots
     .map((b) => {
-      const working = !!busy[b.id] || b.id === state.typingBotId;
+      const working = (b.isChief ? !!busy.chief : busy.agent === b.id) || b.id === state.typingBotId;
       const st = working ? LN('demo.statusWorking', '작업 중') : LN('demo.statusIdle', '대기');
       return (
         '<button type="button" class="d-bot-chip' + (b.isChief ? ' is-chief' : '') + (working ? ' is-working' : '') +

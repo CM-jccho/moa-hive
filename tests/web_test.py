@@ -63,6 +63,27 @@ CANVAS_INFO = """() => {
   return { w: c.width, h: c.height, cw: Math.round(r.width), ch: Math.round(r.height), dpr: devicePixelRatio };
 }"""
 
+LAYOUT_INFO = """() => {
+  const box = (el) => { const b = el.getBoundingClientRect();
+    return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, width: b.width, height: b.height }; };
+  const split = document.querySelector('.d-split');
+  const cs = split ? getComputedStyle(split) : null;
+  const cols = cs ? cs.gridTemplateColumns.split(' ').filter((v) => v && v !== 'none' && v !== 'normal') : [];
+  return {
+    display: cs ? cs.display : 'none',
+    cols: cols.length,
+    split: split ? box(split) : null,
+    office: box(document.querySelector('.d-col-office .d-office')),
+    stage: box(document.querySelector('#officeStage')),
+    tryBox: box(document.querySelector('#stepTry')),
+    msgs: box(document.querySelector('#demoMessages')),
+    status: box(document.querySelector('#officeStatus')),
+    chips: document.querySelectorAll('.d-bot-chip').length,
+    vw: window.innerWidth,
+    vh: window.innerHeight,
+  };
+}"""
+
 CANVAS_STATS = """() => {
   const c = document.querySelector('#officeCanvas');
   const g = c.getContext('2d');
@@ -192,6 +213,21 @@ def desktop(pw):
     check("시간대 토글 4개", page.locator("#officeTimes [data-office-time]").count() == 4)
     page.screenshot(path=os.path.join(SHOTS, "web-desktop-top.png"))
 
+    # 2단 레이아웃 — 왼쪽 사무실 · 오른쪽 실행창
+    lay = page.evaluate(LAYOUT_INFO)
+    total = lay["office"]["width"] + lay["tryBox"]["width"] + 12
+    left_share = lay["office"]["width"] / total if total else 0
+    check("데모 2단 그리드", lay["display"] == "grid" and lay["cols"] == 2, f"{lay['display']} · cols={lay['cols']}")
+    check("왼쪽 사무실 ≈58%", 0.55 <= left_share <= 0.61, f"{left_share:.3f}")
+    check("사무실이 실행창 왼쪽", lay["office"]["right"] <= lay["tryBox"]["left"] + 1,
+          f"office.right={lay['office']['right']:.0f} try.left={lay['tryBox']['left']:.0f}")
+    check("결과창이 사무실 바로 옆", lay["msgs"]["left"] >= lay["office"]["right"] - 1
+          and lay["msgs"]["top"] < lay["office"]["bottom"] and lay["msgs"]["bottom"] > lay["office"]["top"],
+          f"msgs={lay['msgs']}")
+    check("사무실 높이 240~260px", 240 <= lay["stage"]["height"] <= 260, f"{lay['stage']['height']:.0f}")
+    check("사무실+실행창 한 화면", lay["split"]["height"] <= lay["vh"] - 140, f"{lay['split']['height']:.0f} / vh {lay['vh']}")
+    check("봇 상태 요약 6개", lay["chips"] == 6, str(lay["chips"]))
+
     # 시간대 미리보기 — 낮/밤 밝기 차이
     page.click('[data-office-time="day"]')
     page.wait_for_timeout(350)
@@ -220,6 +256,16 @@ def desktop(pw):
           str(page.locator("[data-testid=office-char]").count()))
     check("업종 적용 → 팀장 힌트", "MOA Chief" in page.inner_text("#officeHint"), page.inner_text("#officeHint"))
     check("업종 적용 → 퀵 버튼 교체", "단골 이벤트" in page.inner_text("#quickTasks"), page.inner_text("#quickTasks"))
+    check("업종 적용 → 봇 상태 5개", page.locator(".d-bot-chip").count() == 5, str(page.locator(".d-bot-chip").count()))
+    check("업종 적용 → 상태 칩 이름", "이벤트 기획 봇" in page.inner_text("#officeStatus"), page.inner_text("#officeStatus"))
+
+    # 봇 상태 칩 → 역할 카드
+    page.locator(".d-bot-chip").nth(1).click()
+    page.wait_for_timeout(350)
+    check("상태 칩 클릭 → 역할 카드", page.is_visible("#botSheet"), str(page.is_visible("#botSheet")))
+    check("상태 칩 → 그 봇 카드", "이벤트 기획 봇" == page.inner_text("#inspName"), page.inner_text("#inspName"))
+    page.click("#closeBot")
+    page.wait_for_timeout(200)
 
     # 캐릭터 클릭 → 역할 카드
     page.locator("[data-testid=office-char]").first.click()
@@ -239,6 +285,8 @@ def desktop(pw):
     check("버튼 → 내 메시지", "단골 이벤트" in page.inner_text("#demoMessages"), page.inner_text("#demoMessages")[:120])
     check("버튼 → 봇 작업 표시", page.locator("[data-testid=office-char].working").count() >= 1,
           str(page.locator("[data-testid=office-char].working").count()))
+    check("버튼 → 상태 칩 작업 중", page.locator(".d-bot-chip.is-working").count() >= 1,
+          str(page.locator(".d-bot-chip.is-working").all_inner_texts()))
     bubbles = page.locator(".office-hit.has-bubble .office-bubble").all_inner_texts()
     check("버튼 → 상태 말풍선", any(b.strip() for b in bubbles), str(bubbles))
     page.locator("#officeStage").screenshot(path=os.path.join(SHOTS, "office-working.png"))
@@ -247,8 +295,15 @@ def desktop(pw):
     check("위임 단계 3건 완료", page.locator(".d-deleg .d-step.done").count() == 3,
           str(page.locator(".d-deleg .d-step.done").count()))
     check("작업 종료 후 working 0", page.locator("[data-testid=office-char].working").count() == 0)
+    check("작업 종료 후 상태 칩 대기", page.locator(".d-bot-chip.is-working").count() == 0,
+          str(page.locator(".d-bot-chip.is-working").count()))
     check("정리 결과 표시", "정리 결과" in page.inner_text("#demoMessages"))
     check("제안 카드 1개", page.locator(".d-proposal").count() == 1)
+    lay = page.evaluate(LAYOUT_INFO)
+    check("실행 결과가 사무실 옆에 계속", lay["msgs"]["left"] >= lay["office"]["right"] - 1
+          and lay["msgs"]["top"] < lay["office"]["bottom"], f"{lay['msgs']}")
+    check("결과 후에도 사무실 높이 유지", 240 <= lay["stage"]["height"] <= 260, f"{lay['stage']['height']:.0f}")
+    check("실행 결과 스크롤 영역 유한", lay["msgs"]["height"] <= 340, f"{lay['msgs']['height']:.0f}")
     page.click('[data-prop="ok"]')
     page.wait_for_timeout(400)
     check("제안 수락 → 팀 반영", "붙였습니다" in page.inner_text("#demoMessages"), page.inner_text("#demoMessages")[-160:])
@@ -331,6 +386,14 @@ def mobile(pw):
     page.wait_for_timeout(600)
     check("모바일 업종 적용 → 팀 칩", "직장인" in page.inner_text("#currentTeam"), page.inner_text("#currentTeam"))
     check("모바일 퀵 버튼 3개", page.locator(".d-quick-btn").count() == 3)
+
+    # 모바일은 1열 스택 — 위: 사무실 / 아래: 버튼·결과창
+    mlay = page.evaluate(LAYOUT_INFO)
+    check("모바일 1열 스택", mlay["display"] == "flex" and mlay["tryBox"]["top"] >= mlay["office"]["bottom"] - 1,
+          f"{mlay['display']} · office.b={mlay['office']['bottom']:.0f} try.t={mlay['tryBox']['top']:.0f}")
+    check("모바일 칸 너비 동일", abs(mlay["office"]["width"] - mlay["tryBox"]["width"]) <= 2,
+          f"{mlay['office']['width']:.0f} / {mlay['tryBox']['width']:.0f}")
+    check("모바일 봇 상태 요약", mlay["chips"] == 5 and mlay["status"]["width"] > 200, str(mlay["chips"]))
     page.locator(".d-quick-btn").first.tap()
     wait_chief(page)
     check("모바일 위임 3건 완료", page.locator(".d-deleg .d-step.done").count() == 3)
@@ -353,12 +416,44 @@ def mobile(pw):
     browser.close()
 
 
+def breakpoints(pw):
+    print("\n[2단 → 1열 경계 960px]")
+    browser = pw.chromium.launch()
+    ctx = browser.new_context(viewport={"width": 1010, "height": 900}, locale="ko-KR")
+    page = ctx.new_page()
+    errors = []
+    attach_logs(page, errors)
+    page.goto(BASE, wait_until="networkidle")
+
+    page.set_viewport_size({"width": 961, "height": 900})
+    page.wait_for_timeout(400)
+    wide = page.evaluate(LAYOUT_INFO)
+    check("961px 2단 유지", wide["display"] == "grid" and wide["cols"] == 2,
+          f"{wide['display']} · cols={wide['cols']}")
+    check("961px 사무실↔실행창 좌우", wide["office"]["right"] <= wide["tryBox"]["left"] + 1,
+          f"{wide['office']['right']:.0f} / {wide['tryBox']['left']:.0f}")
+    check("961px 가로 오버플로 없음", overflow(page) <= 0, str(overflow(page)))
+
+    page.set_viewport_size({"width": 960, "height": 900})
+    page.wait_for_timeout(400)
+    narrow = page.evaluate(LAYOUT_INFO)
+    check("960px 1열 전환", narrow["display"] == "flex" and narrow["tryBox"]["top"] >= narrow["office"]["bottom"] - 1,
+          f"{narrow['display']} · office.b={narrow['office']['bottom']:.0f} try.t={narrow['tryBox']['top']:.0f}")
+    check("960px 사무실 위·실행창 아래", narrow["msgs"]["top"] > narrow["office"]["bottom"],
+          f"msgs.t={narrow['msgs']['top']:.0f} office.b={narrow['office']['bottom']:.0f}")
+    check("960px 가로 오버플로 없음", overflow(page) <= 0, str(overflow(page)))
+    check("960px 콘솔/페이지 에러 0건", len(errors) == 0, " | ".join(errors[:3]))
+    ctx.close()
+    browser.close()
+
+
 def main():
     print(f"\nMOA Hive 웹 테스트 — {BASE}")
     with sync_playwright() as pw:
         languages(pw)
         desktop(pw)
         mobile(pw)
+        breakpoints(pw)
     print(f"\n결과: {len(passed)} 통과 / {len(failed)} 실패")
     if failed:
         for f in failed:
