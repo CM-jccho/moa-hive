@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────────────────────
-# 이 파일은 .github/workflows/release-and-pages.yml 의 복사본입니다.
-# Pickle GitHub App 토큰에 workflows 권한이 없어 .github/workflows 경로로는
-# 푸시할 수 없을 때, GitHub 웹에서 이 내용을 복사해 워크플로 파일을 만들기 위한 사본입니다.
+# 이 파일은 .github/workflows/release-and-pages.yml 의 사본입니다.
+# GitHub 웹에서 새 파일로 붙여넣어 워크플로를 만들 때 사용하세요.
+#   경로: .github/workflows/release-and-pages.yml
 # ─────────────────────────────────────────────────────────────
 name: Release & Pages
 
