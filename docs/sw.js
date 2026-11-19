@@ -2,7 +2,7 @@
    GitHub Pages 하위 경로(/moa-hive/)에서도 동작하도록 모든 경로가 상대 경로입니다. */
 'use strict';
 
-const CACHE = 'moa-hive-shell-v1';
+const CACHE = 'moa-hive-shell-v2';
 const SHELL = [
   './',
   './index.html',
