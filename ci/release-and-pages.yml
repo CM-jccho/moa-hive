@@ -40,14 +40,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Check existing Pages build type
+        id: pages_type
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TYPE=$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.build_type' 2>/dev/null || echo "none")
+          echo "type=${TYPE}" >> "$GITHUB_OUTPUT"
+          echo "Pages build type: ${TYPE}"
       - name: Setup Pages
+        if: steps.pages_type.outputs.type != 'legacy'
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Upload docs
+        if: steps.pages_type.outputs.type != 'legacy'
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs
       - name: Deploy
         id: deployment
+        if: steps.pages_type.outputs.type != 'legacy'
         uses: actions/deploy-pages@v4
 
   # ── 2. macOS .dmg · Windows .exe 빌드 ──
