@@ -205,6 +205,8 @@ window.MOA_I18N = {
       chiefBadge: "Lead", workingBadge: "⚡ Working",
       noActivity: "· Nothing yet. Give it a job.",
       officeHint: "{chief} lead · {n} bots",
+      statusWorking: "Working", statusIdle: "Idle",
+      statusCount: "{n} bots · tap for a role",
       bubbleDelegating: "Assigning…", bubbleWorking: "Working…", doneShort: "Done!",
       zoneMeeting: "Meeting room", zoneMaker: "Maker zone", zoneLounge: "Lounge",
       timeDay: "Day", timeSunset: "Sunset", timeNight: "Night",
@@ -230,7 +232,7 @@ window.MOA_I18N = {
         ["Paste into ChatGPT (Custom GPT / Projects) or Claude (Projects)", "One instruction block per team. Korean and English are included."],
         ["Start with the five prompts", "Each prompt produces a draft you can send today."]
       ],
-      price: "Early bird 14,900 KRW · Bundle 24,900 KRW",
+      price: "Early bird 9,900 KRW · 50 prompts · Free lifetime updates",
       cta: "Get the setup pack on Latpeed →",
       note: "The web demo stays free. The pack is optional — for people who want the same team in the tool they already pay for."
     }
@@ -441,6 +443,8 @@ window.MOA_I18N = {
       chiefBadge: "队长", workingBadge: "⚡ 处理中",
       noActivity: "· 还没有记录。给它一件事试试。",
       officeHint: "{chief} 队长 · 机器人 {n} 个",
+      statusWorking: "处理中", statusIdle: "待机",
+      statusCount: "机器人 {n} 个 · 点一下看职责",
       bubbleDelegating: "分派中…", bubbleWorking: "处理中…", doneShort: "完成！",
       zoneMeeting: "会议室", zoneMaker: "制作区", zoneLounge: "休息区",
       timeDay: "白天", timeSunset: "黄昏", timeNight: "夜晚",
@@ -466,7 +470,7 @@ window.MOA_I18N = {
         ["粘贴到 ChatGPT（Custom GPT / Projects）或 Claude（Projects）", "每个团队一段指令，韩语和英语都有。"],
         ["用五条提示词直接开始", "每条都能产出今天就能发出去的草稿。"]
       ],
-      price: "早鸟价 14,900 韩元 · 组合包 24,900 韩元",
+      price: "早鸟价 9,900 韩元 · 50 条提示词 · 终身免费更新",
       cta: "在 Latpeed 购买配置包 →",
       note: "在线体验一直免费。配置包是给想把这套团队放进自己常用工具的人的选项。"
     }
@@ -677,6 +681,8 @@ window.MOA_I18N = {
       chiefBadge: "リーダー", workingBadge: "⚡ 作業中",
       noActivity: "· まだ記録がありません。仕事を頼んでみてください。",
       officeHint: "{chief} リーダー · ボット{n}名",
+      statusWorking: "作業中", statusIdle: "待機中",
+      statusCount: "ボット{n}名 · 押すと役割",
       bubbleDelegating: "分担中…", bubbleWorking: "作業中…", doneShort: "完了！",
       zoneMeeting: "会議室", zoneMaker: "メイカーゾーン", zoneLounge: "ラウンジ",
       timeDay: "昼", timeSunset: "夕暮れ", timeNight: "夜",
@@ -702,7 +708,7 @@ window.MOA_I18N = {
         ["ChatGPT（Custom GPT / Projects）またはClaude（Projects）に貼る", "チームごとに指示ブロック1つ。韓国語と英語が入っています。"],
         ["プロンプト5本で始める", "どれも今日送れる下書きを作ります。"]
       ],
-      price: "アーリーバード 14,900ウォン · バンドル 24,900ウォン",
+      price: "アーリーバード 9,900ウォン · プロンプト50本 · 生涯無料アップデート",
       cta: "Latpeedでセットアップパックを購入 →",
       note: "ウェブのデモは無料のままです。パックは、いつも使うツールに同じチームを入れたい人向けの選択肢です。"
     }

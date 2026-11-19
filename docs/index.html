@@ -133,6 +133,9 @@
             <div class="d-case-grid" id="caseGallery" role="group" aria-label="업종 선택"></div>
           </section>
 
+          <!-- 데스크톱 2단: 왼쪽 사무실 / 오른쪽 실행·결과 -->
+          <div class="d-split" data-testid="demo-split">
+          <div class="d-col d-col-office">
           <!-- 2D 가상 사무실 -->
           <section class="d-office" data-testid="office">
             <div class="d-office-head">
@@ -159,6 +162,17 @@
             <p class="d-office-tip" data-en="Tap a character to see what it does." data-zh="点一下角色，看看它负责什么。" data-ja="キャラクターを押すと、役割が分かります。">캐릭터를 누르면 무슨 일을 하는지 볼 수 있습니다.</p>
           </section>
 
+          <!-- 사무실 바로 아래 — 팀 · 봇 상태 요약 -->
+          <div class="d-bot-status" id="officeStatus" data-testid="office-status">
+            <div class="d-bot-status-head">
+              <span class="d-bot-status-title" data-en="Bot status" data-zh="机器人状态" data-ja="ボットの状態">봇 상태</span>
+              <span class="d-bot-status-count" id="officeStatusCount"></span>
+            </div>
+            <div class="d-bot-status-list" id="officeStatusList"></div>
+          </div>
+          </div>
+
+          <div class="d-col d-col-try">
           <!-- 2단계: 큰 버튼 + 한 줄 입력 -->
           <section class="d-block d-block-try" id="stepTry" data-block="2">
             <div class="d-block-head">
@@ -180,6 +194,8 @@
 
           <!-- 봇들이 일한 결과 -->
           <div class="d-messages" id="demoMessages" role="log" aria-live="polite" aria-relevant="additions"></div>
+          </div>
+          </div>
 
           <!-- 3단계: 내 ChatGPT · Claude 로 -->
           <section class="d-block d-block-pack" id="stepPack" data-block="3">
@@ -224,7 +240,7 @@
       <div class="section-head">
         <div class="kicker" data-en="Pro pack" data-zh="专业包" data-ja="プロパック">Pro pack</div>
         <h2 data-en="Take the same team into your ChatGPT · Claude" data-zh="把这里配好的团队，原样搬进你的 ChatGPT · Claude" data-ja="ここで選んだチームを、自分のChatGPT · Claudeへ">웹에서 고른 팀을, 내 ChatGPT · Claude에 그대로</h2>
-        <p class="section-lead" data-en="The same six industry teams, 30 practical prompts and a Claude Code skill pack — as files you paste in. Ready in three minutes, no API key, no extra subscription." data-zh="同样的六种行业团队、30 条实用提示词，以及 Claude Code 技能包，都整理成可直接粘贴的文件。三分钟就能在自己的账号里用上。不用 API 密钥，也不用另外订阅。" data-ja="同じ6業種のチーム、実務プロンプト30本、Claude Codeスキルパックをコピペ用ファイルにまとめました。3分で自分のアカウントに導入できます。APIキーも追加契約も不要です。">같은 6종 업종 팀과 업종별 실무 프롬프트 30개, Claude Code용 스킬팩을 복붙용 파일로 정리했습니다. 3분이면 내 계정에서 바로 씁니다. API 키도, 추가 구독도 필요 없습니다.</p>
+        <p class="section-lead" data-en="The same six industry teams, 50 practical prompts and a Claude Code skill pack — as files you paste in. Ready in three minutes, no API key, no extra subscription." data-zh="同样的六种行业团队、50 条实用提示词，以及 Claude Code 技能包，都整理成可直接粘贴的文件。三分钟就能在自己的账号里用上。不用 API 密钥，也不用另外订阅。" data-ja="同じ6業種のチーム、実務プロンプト50本、Claude Codeスキルパックをコピペ用ファイルにまとめました。3分で自分のアカウントに導入できます。APIキーも追加契約も不要です。">같은 6종 업종 팀과 업종별 30개 + 공통 보너스 20개, 실무 프롬프트 50개, Claude Code용 스킬팩을 복붙용 파일로 정리했습니다. 3분이면 내 계정에서 바로 씁니다. API 키도, 추가 구독도 필요 없습니다.</p>
       </div>
 
       <div class="pack-grid">
@@ -247,7 +263,7 @@
 
       <div class="pack-buy">
         <div>
-          <div class="pack-price" data-en="Early bird 14,900 KRW · Bundle 24,900 KRW" data-zh="早鸟价 14,900 韩元 · 组合包 24,900 韩元" data-ja="アーリーバード 14,900ウォン · バンドル 24,900ウォン">얼리버드 14,900원 · 번들 24,900원</div>
+          <div class="pack-price" data-en="Early bird 9,900 KRW · 50 prompts · Free lifetime updates" data-zh="早鸟价 9,900 韩元 · 50 条提示词 · 终身免费更新" data-ja="アーリーバード 9,900ウォン · プロンプト50本 · 生涯無料アップデート">얼리버드 9,900원 · 프롬프트 50개 · 평생 업데이트</div>
           <p class="small muted" data-en="Includes the 3-minute start guide (Markdown · PDF). The web demo stays free." data-zh="含 3 分钟上手指南（Markdown · PDF）。在线体验继续免费。" data-ja="3分スタートガイド（Markdown · PDF）付き。ウェブのデモはこれまで通り無料です。">3분 시작 가이드(Markdown · PDF) 포함. 웹 체험은 계속 무료입니다.</p>
         </div>
         <a class="btn btn-primary" id="packBuyTop" data-pack-link href="https://www.latpeed.com/products/VTtxq" target="_blank" rel="noopener" data-en="Get the setup pack on Latpeed →" data-zh="在 Latpeed 购买配置包 →" data-ja="Latpeedでセットアップパックを購入 →">래피드에서 세팅 팩 받기 →</a>

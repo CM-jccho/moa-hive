@@ -243,7 +243,7 @@ function renderPack() {
   set('packTitle', (p && p.title) || '🎁 이 팀을 내 ChatGPT · Claude에 그대로 쓰기');
   set('packSub', (p && p.sub) || '세팅 팩 — 한 번 붙여넣으면 3분 만에 준비됩니다.');
   set('packBuy', packCta());
-  set('packPrice', (p && p.price) || '얼리버드 14,900원 · 번들 24,900원');
+  set('packPrice', (p && p.price) || '얼리버드 9,900원 · 프롬프트 50개 · 평생 업데이트');
   set('packNote', (p && p.note) || '웹 체험은 계속 무료입니다. 세팅 팩은 이미 쓰는 도구에 같은 팀을 옮기고 싶은 분을 위한 선택 상품입니다.');
   const label = $('.pack-team-label');
   if (label) label.textContent = (p && p.teamLabel) || '이 팀 구성';
@@ -802,6 +802,32 @@ function renderOffice() {
     hint.textContent = chief
       ? fmt(LN('demo.officeHint', '{chief} 팀장 · 봇 {n}명'), { chief: chief.name, n: Math.max(0, state.bots.length - 1) })
       : '';
+  }
+  renderOfficeStatus();
+}
+
+/* 사무실 아래 — 팀·봇 상태 요약 (누르면 역할 카드) */
+function renderOfficeStatus() {
+  const list = $('#officeStatusList');
+  if (!list) return;
+  const busy = state.officeBusy || {};
+  const bots = state.bots || [];
+  list.innerHTML = bots
+    .map((b) => {
+      const working = !!busy[b.id] || b.id === state.typingBotId;
+      const st = working ? LN('demo.statusWorking', '작업 중') : LN('demo.statusIdle', '대기');
+      return (
+        '<button type="button" class="d-bot-chip' + (b.isChief ? ' is-chief' : '') + (working ? ' is-working' : '') +
+        '" data-office-bot="' + esc(b.id) + '" aria-label="' + esc(b.name + ' — ' + st) + '">' +
+        '<span class="em" aria-hidden="true">' + esc(b.emoji || '🤖') + '</span>' +
+        '<span class="nm">' + esc(b.name) + '</span>' +
+        '<span class="st">' + esc(st) + '</span></button>'
+      );
+    })
+    .join('');
+  const count = $('#officeStatusCount');
+  if (count) {
+    count.textContent = fmt(LN('demo.statusCount', '봇 {n}명 · 눌러서 역할 보기'), { n: bots.length });
   }
 }
 
