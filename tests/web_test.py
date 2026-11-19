@@ -93,7 +93,7 @@ def languages(pw):
           str(page.locator(".lang-switch [data-lang]").count()))
     check("기본 언어 한국어", page.inner_text("h1").startswith("설치 없이"))
     check("한국어 3단계 안내", "내 업종 고르기" in page.inner_text("#demoSteps")
-          and "ChatGPT에 붙여넣기" in page.inner_text("#demoSteps"))
+          and "내 ChatGPT·Claude에 복붙" in page.inner_text("#demoSteps"))
     check("한국어 업종 카드 6개", page.locator("[data-testid=case-tile]").count() == 6,
           str(page.locator("[data-testid=case-tile]").count()))
     check("한국어 업종 카드 이름", "동네 매장" in page.inner_text("#caseGallery"))

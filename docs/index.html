@@ -108,15 +108,15 @@
         <!-- 3단계 안내 바 (스크롤해도 위에 고정) -->
         <nav class="d-steps" id="demoSteps" aria-label="체험 3단계">
           <button type="button" class="d-gstep is-active" data-step="1" aria-current="step">
-            <b>1</b><span data-en="Pick your business" data-zh="选择你的行业" data-ja="業種を選ぶ">내 업종 고르기</span>
+            <b>1</b><span class="g-long" data-en="Pick your business" data-zh="选择你的行业" data-ja="業種を選ぶ">내 업종 고르기</span><span class="g-short" data-en="Business" data-zh="选行业" data-ja="業種">업종 고르기</span>
           </button>
           <i class="d-garrow" aria-hidden="true">→</i>
           <button type="button" class="d-gstep" data-step="2">
-            <b>2</b><span data-en="Tap to give work" data-zh="点按钮干活" data-ja="押して頼む">눌러서 일 시키기</span>
+            <b>2</b><span class="g-long" data-en="Tap a task button" data-zh="点按钮让它干活" data-ja="ボタンで仕事を頼む">버튼으로 일 시켜보기</span><span class="g-short" data-en="Give work" data-zh="点按钮" data-ja="仕事を頼む">일 시켜보기</span>
           </button>
           <i class="d-garrow" aria-hidden="true">→</i>
           <button type="button" class="d-gstep" data-step="3">
-            <b>3</b><span data-en="Paste into ChatGPT" data-zh="粘贴到 ChatGPT" data-ja="ChatGPT に貼る">ChatGPT에 붙여넣기</span>
+            <b>3</b><span class="g-long" data-en="Copy into ChatGPT · Claude" data-zh="复制到 ChatGPT·Claude" data-ja="ChatGPT·Claude にコピペ">내 ChatGPT·Claude에 복붙</span><span class="g-short" data-en="Paste" data-zh="复制粘贴" data-ja="コピペ">복붙</span>
           </button>
           <span class="d-steps-spacer"></span>
           <button class="d-reset" id="resetDemo" type="button" data-en="↺ Start over" data-zh="↺ 重新开始" data-ja="↺ 最初から">↺ 처음부터</button>
@@ -165,7 +165,7 @@
               <h3><span class="d-num">2</span><span data-en="Tell the team lead one line" data-zh="给队长机器人一句话" data-ja="チームリーダーに一言頼む">팀장 봇에게 한 줄 시키기</span></h3>
               <span class="d-team-chip" id="currentTeam">내 AI 팀</span>
             </div>
-            <p class="d-block-sub" data-en="Tap one big button. That is all it takes." data-zh="点一个大按钮就行。" data-ja="大きなボタンをひとつ押すだけです。">아래 큰 버튼 하나만 누르면 됩니다.</p>
+            <p class="d-block-sub" data-en="Try it now — tap one of the buttons below." data-zh="马上试试 — 点下面一个按钮就行。" data-ja="すぐ試す — 下のボタンを1つ押すだけ。">바로 해보기 — 아래 버튼 하나만 누르면 됩니다.</p>
             <div class="d-quick" id="quickTasks"></div>
             <div class="d-composer">
               <div class="d-composer-row">

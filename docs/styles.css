@@ -667,6 +667,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
 .d-gstep.is-done b { background: rgba(94, 224, 176, 0.2); color: #a7f3d0; }
 .d-garrow { font-style: normal; color: #414960; font-size: 11px; }
 .d-steps-spacer { flex: 1; }
+.g-short { display: none; }
 .d-reset {
   border: 1px solid var(--line); background: transparent; color: var(--muted);
   font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap;
@@ -822,6 +823,8 @@ pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; }
   .d-gstep { padding: 5px 6px; font-size: 9.8px; gap: 4px; }
   .d-case small { display: none; }
   .d-case { padding: 9px 6px; }
+  .g-long { display: none; }
+  .g-short { display: inline; }
   .d-reset { display: none; }
   .d-case b { font-size: 11px; }
   .d-gstep b { width: 17px; height: 17px; font-size: 10px; }
