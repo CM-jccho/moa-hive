@@ -2,7 +2,7 @@
    GitHub Pages 하위 경로(/moa-hive/)에서도 동작하도록 모든 경로가 상대 경로입니다. */
 'use strict';
 
-const CACHE = 'moa-hive-shell-v2';
+const CACHE = 'moa-hive-shell-v3';
 const SHELL = [
   './',
   './index.html',
@@ -54,19 +54,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 정적 자산: 캐시 우선 + 백그라운드 갱신
+  // 정적 자산: 네트워크 우선(최신 버전 즉시 반영) + 오프라인 시 캐시 폴백
   event.respondWith(
-    caches.match(req).then((cached) => {
-      const network = fetch(req)
-        .then((res) => {
-          if (res && res.status === 200) {
-            const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
-          }
-          return res;
-        })
-        .catch(() => cached);
-      return cached || network;
-    })
+    fetch(req)
+      .then((res) => {
+        if (res && res.status === 200) {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      })
+      .catch(() => caches.match(req))
   );
 });
