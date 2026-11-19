@@ -86,9 +86,9 @@ node server.js            # 또는 npm start
 npm install          # electron · electron-builder (devDependencies)
 npm run electron     # 개발 모드로 앱 실행
 
-npm run dist:mac     # dist/MOA-Hive-0.3.3-<arch>.dmg
+npm run dist:mac     # dist/MOA-Hive-0.3.4-<arch>.dmg
 npm run dist:universal  # Apple Silicon + Intel 공용 dmg
-npm run dist:win     # dist/MOA-Hive-Setup-0.3.3.exe
+npm run dist:win     # dist/MOA-Hive-Setup-0.3.4.exe
 ```
 
 GitHub Actions(`.github/workflows/release-and-pages.yml`)가 태그 `v*` 푸시 또는 수동 실행 시

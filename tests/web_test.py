@@ -71,14 +71,14 @@ def desktop(pw):
     check("macOS·Windows 다운로드 카드", page.locator(".dl-card.mac").count() == 1 and page.locator(".dl-card.win").count() == 1)
     mac = page.get_attribute('[data-dl="mac-universal"]', "href")
     win = page.get_attribute('[data-dl="win-setup"]', "href")
-    check("mac .dmg 자산 링크", "/releases/download/v0.3.3/" in mac and ".dmg" in mac, str(mac))
-    check("win .exe 자산 링크", "/releases/download/v0.3.3/" in win and ".exe" in win, str(win))
+    check("mac .dmg 자산 링크", "/releases/download/v0.3.4/" in mac and ".dmg" in mac, str(mac))
+    check("win .exe 자산 링크", "/releases/download/v0.3.4/" in win and ".exe" in win, str(win))
     check("start.command 링크", "start.command" in page.get_attribute('[data-dl="mac-script"]', "href"))
     check("start.bat 링크", "start.bat" in page.get_attribute('[data-dl="win-script"]', "href"))
 
     # 설치 탭
     page.click('[data-guide="win"]')
-    check("Windows 설치 안내", "MOA-Hive-Setup-0.3.3.exe" in page.inner_text('[data-pane="win"]'))
+    check("Windows 설치 안내", "MOA-Hive-Setup-0.3.4.exe" in page.inner_text('[data-pane="win"]'))
     page.click('[data-guide="mac"]')
     check("개발자용 안내 접이식", page.locator("details.pro").count() >= 1 and "node server.js" in page.locator("details.pro").first.text_content())
 

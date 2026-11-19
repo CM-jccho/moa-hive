@@ -167,7 +167,7 @@
 
       <div class="guide-pane" data-pane="mac">
         <ol class="steps">
-          <li><b>설치 파일 열기</b><p>내려받은 <code>MOA-Hive-0.3.3-universal.dmg</code>를 더블클릭합니다.</p></li>
+          <li><b>설치 파일 열기</b><p>내려받은 <code>MOA-Hive-0.3.4-universal.dmg</code>를 더블클릭합니다.</p></li>
           <li><b>Applications 폴더로 옮기기</b><p>열린 창에서 MOA Hive 아이콘을 Applications로 끌어다 놓습니다.</p></li>
           <li><b>MOA Hive 실행</b><p>처음 한 번만 아이콘을 <b>우클릭 → 열기</b>. 그다음부터는 더블클릭으로 열립니다.</p></li>
           <li><b>하고 싶은 일 말하기</b><p>“이번 주 할 일 정리해줘”처럼 입력하거나 🎤를 눌러 말합니다.</p></li>
@@ -177,7 +177,7 @@
 
       <div class="guide-pane" data-pane="win" hidden>
         <ol class="steps">
-          <li><b>설치 파일 열기</b><p><code>MOA-Hive-Setup-0.3.3.exe</code>를 더블클릭합니다.</p></li>
+          <li><b>설치 파일 열기</b><p><code>MOA-Hive-Setup-0.3.4.exe</code>를 더블클릭합니다.</p></li>
           <li><b>다음 → 설치</b><p>설치 위치는 그대로 두고 <b>설치</b>를 누릅니다.</p></li>
           <li><b>MOA Hive 실행</b><p>바탕화면이나 시작 메뉴의 MOA Hive 아이콘을 누릅니다.</p></li>
           <li><b>하고 싶은 일 말하기</b><p>“이번 주 할 일 정리해줘”처럼 입력하거나 🎤를 눌러 말합니다.</p></li>
@@ -291,7 +291,7 @@
               <div class="d-insp-head">
                 <div class="d-insp-av idle" id="inspAvatar">🧭</div>
                 <div>
-                  <div class="d-insp-name" id="inspName">기획PM 봇</div>
+                  <div class="d-insp-name" id="inspName">MOA Chief</div>
                   <div class="d-insp-state" id="inspState">✨ 대기 중</div>
                 </div>
               </div>
@@ -398,126 +398,6 @@
         <article class="sec-card"><div class="em">🔑</div><h3>비밀 키는 화면에 안 보임</h3><p>AI 서비스 키를 넣어도 저장한 뒤에는 다시 보여주지 않습니다.</p></article>
         <article class="sec-card"><div class="em">📁</div><h3>정해진 폴더만 사용</h3><p>봇이 일할 수 있는 폴더를 정하면 그 밖의 파일은 건드리지 않습니다.</p></article>
         <article class="sec-card"><div class="em">🛡️</div><h3>실수로 운영을 망치지 않게</h3><p>관리자 모드에서만 버전을 바꿀 수 있고, 확인 전에는 운영에 반영되지 않습니다.</p></article>
-      </div>
-    </div>
-  </section>
-</main>
-
-          <!-- 오른쪽 패널 -->
-          <aside class="d-right" aria-label="봇 인스펙터와 릴리스">
-            <div class="d-tabs" role="tablist" aria-label="오른쪽 패널">
-              <button class="d-tab is-active" role="tab" aria-selected="true" data-pane="context" id="tabContext">봇 인스펙터</button>
-              <button class="d-tab admin-only" role="tab" aria-selected="false" data-pane="release" id="tabRelease">Release</button>
-            </div>
-            <section class="d-pane" id="contextPane">
-              <div class="d-insp-head">
-                <div class="d-insp-av idle" id="inspAvatar">🧭</div>
-                <div>
-                  <div class="d-insp-name" id="inspName">기획PM 봇</div>
-                  <div class="d-insp-state" id="inspState">✨ 대기 중</div>
-                </div>
-              </div>
-              <p class="d-insp-summary" id="inspSummary">—</p>
-              <div class="d-block-title">지금 할 수 있는 일</div>
-              <div id="taskList"></div>
-              <div class="d-block-title">최근 처리 내역</div>
-              <div id="activityList"></div>
-              <div class="d-meta">
-                <div><span>엔진</span><b id="inspEngine">로컬 시뮬레이터</b></div>
-                <div><span>작업폴더</span><b id="inspCwd">./workspace</b></div>
-              </div>
-            </section>
-            <section class="d-pane" id="releasePane" hidden>
-              <div class="d-block-title">환경</div>
-              <div class="d-rel-ver">
-                <div><span>STG (편집 가능)</span><b id="relStg">v0.3.0-rc</b></div>
-                <div><span>PROD (읽기 전용)</span><b id="relProd">v0.1.0</b></div>
-              </div>
-              <div class="d-block-title">변경 diff</div>
-              <div class="d-diff" id="relDiff"></div>
-              <input class="d-rel-note" id="relNote" placeholder="승격 메모 (예: 오케스트레이터·웹 데모)" />
-              <label class="d-check"><input type="checkbox" id="promoteAck" /> 변경 내역과 CHANGELOG를 확인했습니다.</label>
-              <button class="btn btn-primary btn-sm btn-block" id="promoteBtn" type="button" disabled>최종 확인 후 PROD 반영</button>
-              <div class="d-block-title">버전 히스토리</div>
-              <div class="d-history" id="historyList"></div>
-            </section>
-          </aside>
-        </div>
-
-        <!-- 팀 컨설팅 시트 -->
-        <div class="d-sheet" id="wizardSheet" hidden>
-          <div class="d-sheet-card" role="dialog" aria-modal="true" aria-labelledby="wizardTitle">
-            <div class="d-sheet-head">
-              <div class="grow">
-                <h3 id="wizardTitle">🧭 팀 컨설팅</h3>
-                <p>업종을 고르거나, 하고 싶은 일을 그대로 적어 주세요.</p>
-              </div>
-              <button class="icon-btn" id="closeWizard" type="button" aria-label="닫기">✕</button>
-            </div>
-            <div class="d-sheet-body">
-              <div class="d-roles" id="roleCards"></div>
-              <label class="d-label" for="purposeInput">자유 목적 (선택) — 예: “거래처 제안서랑 매출 정산을 자동화하고 싶어요”</label>
-              <div class="d-purpose-wrap">
-                <textarea class="d-purpose" id="purposeInput" rows="3" placeholder="하고 싶은 일을 편하게 적어 주세요. 비워 두면 선택한 업종으로 설계합니다."></textarea>
-                <button class="d-mic" id="purposeMic" type="button" aria-label="음성으로 목적 입력" title="음성 입력 (한국어)">🎤</button>
-              </div>
-              <div class="d-sheet-actions">
-                <button class="btn btn-primary btn-sm" id="designBtn" type="button">AI 팀 설계 받기</button>
-                <button class="btn btn-ghost btn-sm" id="clearDesign" type="button">선택 해제</button>
-              </div>
-              <div id="designCard"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p class="small muted" style="margin:12px 2px 0">체험판은 실제 파일을 건드리지 않습니다. 앱에서는 같은 흐름이 실제 작업으로 이어지고, 실행 전에 항상 확인을 받습니다.</p>
-    </div>
-  </section>
-
-  <!-- ───────────── MOBILE ───────────── -->
-  <section class="section" id="mobile">
-    <div class="container">
-      <div class="section-head">
-        <div class="kicker">Mobile</div>
-        <h2>휴대폰에서도 같은 팀</h2>
-        <p class="section-lead">기본은 PC 안에서만 실행됩니다. 밖에서 쓰려면 아래 세 가지 중 하나를 고르세요. 어느 경우든 접속 토큰이 없으면 열리지 않습니다.</p>
-      </div>
-      <div class="remote-grid">
-        <article class="remote-card">
-          <h3>📶 같은 Wi-Fi <span class="tag">가장 간단</span></h3>
-          <p>설정 → 모바일 원격 접속 → “같은 Wi-Fi에서 접속 허용”을 켜고 재시작하면, Wi-Fi 주소(토큰 포함)가 표시됩니다. 아이폰 사파리에서 열고 <b>홈 화면에 추가</b>.</p>
-          <button class="btn btn-sm" type="button" data-open-demo="mobile">웹 체험 열기</button>
-        </article>
-        <article class="remote-card">
-          <h3>🔐 Tailscale <span class="tag">밖에서도</span></h3>
-          <p>Mac·아이폰에 Tailscale을 설치하고 같은 계정으로 로그인한 뒤, Mac 터미널에서 <code>tailscale serve --bg 3847</code>. 발급된 <code>https://…ts.net</code> 주소로 접속합니다.</p>
-          <a class="btn btn-sm" href="https://tailscale.com/download" target="_blank" rel="noopener">Tailscale 받기</a>
-        </article>
-        <article class="remote-card">
-          <h3>☁️ Cloudflare Tunnel <span class="tag">링크 공유</span></h3>
-          <p><code>MOA_REQUIRE_TOKEN=1 node server.js</code>로 토큰을 강제한 뒤 <code>cloudflared tunnel --url http://127.0.0.1:3847</code>. 발급된 주소를 휴대폰에서 열고 토큰을 입력합니다.</p>
-          <a class="btn btn-sm" href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/" target="_blank" rel="noopener">cloudflared 안내</a>
-        </article>
-      </div>
-      <p class="small muted" style="margin-top:12px">⚠️ 터널 주소를 아는 사람은 접근할 수 있습니다. 공유 링크는 짧게 쓰고, 장기 사용 시 Cloudflare Access 정책을 거세요.</p>
-    </div>
-  </section>
-
-  <!-- ───────────── SECURITY ───────────── -->
-  <section class="section" id="security">
-    <div class="container">
-      <div class="section-head">
-        <div class="kicker">Privacy by design</div>
-        <h2>왜 안전한가</h2>
-        <p class="section-lead">편의를 위해 데이터를 밖으로 보내지 않습니다. 서버·저장·실행 권한이 모두 내 PC 안에서 닫힙니다.</p>
-      </div>
-      <div class="sec-grid">
-        <article class="sec-card"><div class="em">🔒</div><h3>루프백 전용 바인딩</h3><p>서버는 <code>127.0.0.1</code>에만 열립니다. 원격은 직접 켤 때만, 그때도 토큰이 필수입니다.</p></article>
-        <article class="sec-card"><div class="em">💾</div><h3>로컬에만 저장</h3><p>대화·봇 설정·승인 이력은 <code>./data/</code>의 JSON에만 남습니다. 클라우드 동기화가 없습니다.</p></article>
-        <article class="sec-card"><div class="em">🔑</div><h3>API 키 마스킹</h3><p>키는 저장 후 조회 API가 원문을 반환하지 않습니다. 화면·로그에도 원문이 나오지 않습니다.</p></article>
-        <article class="sec-card"><div class="em">✋</div><h3>Allow / Deny 승인</h3><p>셸·파일 작업은 제안 → 사용자 클릭 → 재검증 → 실행 순서를 지킵니다. 위험 명령은 차단됩니다.</p></article>
-        <article class="sec-card"><div class="em">📁</div><h3>경로 샌드박스</h3><p>봇의 작업 폴더는 허용 루트 안으로 제한합니다. <code>..</code>·절대경로·심볼릭 링크 이탈을 막습니다.</p></article>
-        <article class="sec-card"><div class="em">🛡️</div><h3>PROD 읽기 전용</h3><p>운영 환경은 직접 수정할 수 없습니다. STG에서 검토하고 Release Manager로만 승격합니다.</p></article>
       </div>
     </div>
   </section>
