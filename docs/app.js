@@ -110,6 +110,8 @@ function applyReleaseLinks() {
     const key = a.getAttribute('data-dl');
     if (!map[key]) return;
     a.href = map[key];
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener noreferrer');
     if (key !== 'releases' && key !== 'win-zip' && !key.endsWith('-script')) {
       a.setAttribute('download', '');
     }
