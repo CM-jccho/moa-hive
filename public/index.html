@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>MOA Hive — 멀티 AI 봇 팀 메신저</title>
+<link rel="stylesheet" href="/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0e18'/%3E%3Cpath d='M14 44V22l10 12 8-12 8 12 10-12v22' stroke='%237c9cff' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+</head>
+<body>
+<div class="app" id="app">
+  <!-- ─────────── 사이드바 ─────────── -->
+  <aside class="sidebar" id="sidebar" data-testid="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-txt">
+        <strong>MOA Hive</strong>
+        <span class="brand-sub">Local-first AI team messenger</span>
+      </div>
+      <button class="icon-btn mobile-only" id="closeSidebar" aria-label="사이드바 닫기">✕</button>
+    </div>
+
+    <div class="env-switch" id="envSwitch" data-testid="env-switch">
+      <button class="env-btn is-active" data-env="stg" data-testid="env-stg">STG</button>
+      <button class="env-btn" data-env="prod" data-testid="env-prod">PROD</button>
+      <span class="env-badge" id="envBadge" data-testid="env-badge">STG v0.2.0-rc</span>
+    </div>
+
+    <a class="pickle-card" id="pickleCard" data-testid="pickle-card" target="_blank" rel="noopener noreferrer">
+      <div class="pickle-top"><span class="pickle-ico">🥒</span><span class="pickle-title">PC 밖에서도 AI 팀이 필요할 땐 Pickle</span></div>
+      <p class="pickle-body" id="pickleBody"></p>
+      <span class="pickle-cta" id="pickleCta">Pickle 초대 링크 열기 →</span>
+    </a>
+
+    <div class="side-scroll">
+      <div class="side-section">
+        <div class="side-head">
+          <span>채널</span>
+          <button class="mini-btn" id="newChannelBtn" title="새 채널">＋</button>
+        </div>
+        <div class="list" id="channelList" data-testid="channel-list"></div>
+      </div>
+
+      <div class="side-section">
+        <div class="side-head">
+          <span>봇 팀</span>
+          <button class="mini-btn" id="newBotBtn" data-testid="new-bot" title="새 봇">＋</button>
+        </div>
+        <div class="list" id="botList" data-testid="bot-list"></div>
+      </div>
+    </div>
+
+    <div class="side-foot">
+      <button class="foot-btn" id="wizardBtn" data-testid="wizard-btn">🧭 팀 컨설팅 (업종 맞춤)</button>
+      <button class="foot-btn" id="teamsBtn" data-testid="teams-btn">🗂️ Teams · Market</button>
+      <button class="foot-btn" id="guideBtn" data-testid="guide-btn">📱 실행 · 모바일 가이드</button>
+      <button class="foot-btn" id="settingsBtn" data-testid="settings-btn">⚙️ 설정</button>
+      <div class="engine-chip" id="engineChip" data-testid="engine-chip">엔진 확인 중…</div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ─────────── 채팅 ─────────── -->
+  <main class="chat">
+    <header class="chat-head">
+      <button class="icon-btn mobile-only" id="openSidebar" data-testid="drawer-toggle" aria-label="메뉴">☰</button>
+      <div class="chat-title">
+        <h1 id="channelName" data-testid="channel-name">#전체-팀</h1>
+        <p id="channelTopic"></p>
+      </div>
+      <div class="chat-tools">
+        <button class="mode-pill" id="modeBtn" data-testid="mode-btn" title="채널 모드 전환">Auto</button>
+        <span class="engine-dot" id="engineDot" title="엔진"></span>
+        <button class="icon-btn" id="rightToggle" data-testid="right-toggle" title="봇/릴리즈 패널">▤</button>
+      </div>
+    </header>
+
+    <div class="trust-bar" data-testid="trust-bar" id="trustBar">
+      <span class="tb-item">🔒 100% 내 PC 로컬 실행</span>
+      <span class="tb-sep">·</span>
+      <span class="tb-item">대화·문서·API 키 외부 서버 유출 없음</span>
+      <span class="tb-sep">·</span>
+      <span class="tb-item">모든 실행 전 Allow/Deny 직접 승인</span>
+    </div>
+
+    <div class="messages" id="messages" data-testid="message-list"></div>
+
+    <div class="composer">
+      <div class="readonly-banner" id="readonlyBanner" hidden>
+        PROD는 읽기 전용입니다 — 변경은 <b>STG</b>에서 하고 Release Manager로 승격하세요.
+      </div>
+      <div class="composer-row">
+        <textarea id="composer" data-testid="composer-input" rows="1" placeholder="메시지 입력 — @봇이름 으로 호출, /shell ls -la 로 명령 제안"></textarea>
+        <button class="mic-btn" id="micBtn" data-testid="mic-btn" title="음성 입력 (한국어)" aria-label="음성 입력">🎤</button>
+        <button class="send-btn" id="sendBtn" data-testid="send-btn" aria-label="전송">↑</button>
+      </div>
+      <div class="composer-hint">
+        <span id="typingHint" data-testid="typing-indicator"></span>
+        <span class="hint-right">로컬 저장 · <code>./data/</code></span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ─────────── 오른쪽 패널 ─────────── -->
+  <aside class="right" id="rightPanel" data-testid="right-panel">
+    <div class="right-tabs">
+      <button class="rtab is-active" data-tab="context" data-testid="tab-context">봇 컨텍스트</button>
+      <button class="rtab" data-tab="release" data-testid="tab-release">Release</button>
+      <button class="icon-btn mobile-only" id="closeRight">✕</button>
+    </div>
+
+    <section class="right-body" id="contextPane" data-testid="context-pane">
+      <div class="field">
+        <label>봇 선택</label>
+        <select id="botSelect" data-testid="bot-select"></select>
+      </div>
+      <div class="inspector" id="inspector" data-testid="inspector">
+        <div class="insp-head">
+          <div class="insp-avatar idle" id="inspAvatar">🧭</div>
+          <div class="insp-id">
+            <div class="insp-name" id="inspName">기획PM 봇</div>
+            <div class="insp-state idle" id="inspState" data-testid="insp-state">✨ 대기 중</div>
+          </div>
+        </div>
+        <div class="insp-summary" id="inspSummary" data-testid="insp-summary">—</div>
+        <div class="insp-sub">지금 할 수 있는 일 <span class="muted small">— 클릭하면 바로 요청</span></div>
+        <div class="task-list" id="taskList" data-testid="task-list"></div>
+        <div class="insp-sub">최근 처리 내역</div>
+        <div class="activity" id="activityList" data-testid="activity-list"></div>
+        <div class="insp-meta">
+          <div><span>엔진</span><b id="inspEngine">—</b></div>
+          <div><span>작업폴더</span><b id="inspCwd" title="">—</b></div>
+        </div>
+      </div>
+
+      <div class="bot-profile">
+        <div class="bp-emoji" id="bpEmoji">🧭</div>
+        <div>
+          <div class="bp-name" id="bpName" data-testid="bp-name">기획PM 봇</div>
+          <div class="bp-role" id="bpRole">pm · claude-sonnet-4-5</div>
+        </div>
+        <button class="mini-btn" id="pinBtn" data-testid="pin-btn" title="고정/해제">📌</button>
+      </div>
+      <div class="field"><label>이름</label><input id="editName" data-testid="edit-name" /></div>
+      <div class="field"><label>모델</label><input id="editModel" data-testid="model-select" list="modelList" />
+        <datalist id="modelList">
+          <option value="claude-sonnet-4-5"></option>
+          <option value="claude-haiku-4-5"></option>
+          <option value="claude-opus-4-5"></option>
+          <option value="gpt-4.1-mini"></option>
+          <option value="gpt-4.1"></option>
+        </datalist>
+      </div>
+      <div class="field"><label>페르소나</label><textarea id="editPersona" data-testid="persona-input" rows="5"></textarea></div>
+      <div class="field">
+        <label>작업 폴더 (cwd)</label>
+        <input id="editCwd" data-testid="cwd-input" spellcheck="false" />
+        <div class="field-hint" id="cwdHint">허용 루트 안의 폴더만 사용할 수 있습니다.</div>
+      </div>
+      <div class="field"><label>키워드 (Auto 라우팅, 쉼표)</label><input id="editKeywords" data-testid="keywords-input" /></div>
+      <div class="row">
+        <button class="primary-btn" id="saveBotBtn" data-testid="save-bot">변경 저장</button>
+        <button class="ghost-btn danger" id="deleteBotBtn" data-testid="delete-bot">삭제</button>
+      </div>
+      <div class="divider"></div>
+      <div class="meta-block">
+        <div class="meta-line"><span>채널 멤버</span><b id="channelMembers">—</b></div>
+        <div class="meta-line"><span>최근 승인</span><b id="approvalSummary">—</b></div>
+      </div>
+    </section>
+
+    <section class="right-body" id="releasePane" data-testid="release-pane" hidden>
+      <div class="rel-head">
+        <div>
+          <div class="rel-title">Release Manager</div>
+          <div class="rel-sub">STG 검토 → 최종 확인 → PROD 반영</div>
+        </div>
+        <span class="env-badge" id="relBadge">STG v0.2.0-rc</span>
+      </div>
+      <div class="rel-versions">
+        <div class="rel-ver"><span>STG</span><b id="relStg">v0.2.0-rc</b></div>
+        <div class="rel-arrow">→</div>
+        <div class="rel-ver"><span>PROD</span><b id="relProd">v0.1.0</b></div>
+      </div>
+      <div class="rel-diff" id="relDiff" data-testid="rel-diff"></div>
+      <input class="rel-note" id="relNote" placeholder="승격 메모 (예: Pickle 카드·마켓 반영)" />
+      <button class="primary-btn wide" id="promoteBtn" data-testid="promote-btn">최종 확인 후 PROD 반영</button>
+      <div class="rel-warn">PROD는 읽기 전용으로 보호됩니다. 반영 후 버전·히스토리가 기록됩니다.</div>
+      <div class="divider"></div>
+      <div class="rel-title small">Version History</div>
+      <div class="history" id="historyList" data-testid="history-list"></div>
+    </section>
+  </aside>
+</div>
+
+<!-- ─────────── 모달: Teams (Market / Import) ─────────── -->
+<div class="modal" id="teamsModal" data-testid="teams-modal" hidden>
+  <div class="modal-card wide">
+    <div class="modal-head">
+      <h2>Teams</h2>
+      <button class="icon-btn" data-close>✕</button>
+    </div>
+    <div class="tabs">
+      <button class="tab is-active" data-team-tab="market" data-testid="market-tab">Market</button>
+      <button class="tab" data-team-tab="import" data-testid="import-tab">Import (.md)</button>
+    </div>
+    <div class="tab-body" id="marketPane">
+      <div class="market-head">
+        <div>무료 스타터 팩은 바로 설치, Pro 팩은 미리보기 후 판매 링크로 이동합니다.</div>
+        <span class="market-link" id="marketStore">판매 링크 설정</span>
+      </div>
+      <div class="packs" id="packList" data-testid="pack-list"></div>
+    </div>
+    <div class="tab-body" id="importPane" hidden>
+      <p class="muted">YAML frontmatter가 있는 팀 정의(.md)를 붙여넣으세요. 봇과 채널이 한 번에 생성됩니다.</p>
+      <div class="row tight">
+        <button class="ghost-btn" id="loadTemplateBtn" data-testid="load-template">샘플 템플릿 불러오기</button>
+        <span class="muted small" id="importHint"></span>
+      </div>
+      <textarea id="importInput" data-testid="import-input" rows="14" spellcheck="false" placeholder="---
+team: 나의 팀
+bots:
+  - name: 기획 봇
+    emoji: 🧭
+    role: pm
+    persona: |
+      ...
+channels:
+  - name: 전체-팀
+    mode: auto
+---"></textarea>
+      <div class="row">
+        <button class="primary-btn" id="importBtn" data-testid="import-btn">팀 가져오기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── 모달: 팩 미리보기 ─────────── -->
+<div class="modal" id="previewModal" data-testid="preview-modal" hidden>
+  <div class="modal-card wide">
+    <div class="modal-head">
+      <h2 id="previewTitle">팩 미리보기</h2>
+      <button class="icon-btn" data-close>✕</button>
+    </div>
+    <div class="preview-body" id="previewBody" data-testid="preview-body"></div>
+    <div class="row">
+      <button class="primary-btn" id="previewAction" data-testid="preview-action">설치</button>
+      <button class="ghost-btn" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── 모달: 설정 ─────────── -->
+<div class="modal" id="settingsModal" data-testid="settings-modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>설정</h2>
+      <button class="icon-btn" data-close>✕</button>
+    </div>
+    <div class="settings-body">
+      <div class="set-block">
+        <div class="set-title">엔진</div>
+        <div class="engine-list" id="engineList" data-testid="engine-list"></div>
+        <div class="field">
+          <label>우선 엔진</label>
+          <select id="enginePref" data-testid="engine-pref">
+            <option value="auto">자동 (CLI → API → 시뮬레이터)</option>
+            <option value="cli-claude">Claude CLI (claude -p)</option>
+            <option value="cli-codex">Codex CLI (codex exec)</option>
+            <option value="api-anthropic">Anthropic API</option>
+            <option value="api-openai">OpenAI API</option>
+            <option value="simulator">로컬 시뮬레이터</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="set-block">
+        <div class="set-title">API 키 <span class="muted small">— 저장 후 원문은 다시 표시되지 않습니다</span></div>
+        <div class="field">
+          <label>Anthropic <span class="key-state" id="anthState">미설정</span></label>
+          <input id="anthropicKey" data-testid="anthropic-key" type="password" placeholder="sk-ant-… (비우면 변경 없음)" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label>OpenAI <span class="key-state" id="openaiState">미설정</span></label>
+          <input id="openaiKey" data-testid="openai-key" type="password" placeholder="sk-… (비우면 변경 없음)" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="set-block">
+        <div class="set-title">보안</div>
+        <div class="field">
+          <label>허용 작업 루트</label>
+          <input id="allowedRoot" data-testid="allowed-root" placeholder="비우면 홈 디렉터리" spellcheck="false" />
+          <div class="field-hint">이 폴더 밖의 cwd·파일 경로는 API에서 차단됩니다. 서버는 127.0.0.1에만 열립니다.</div>
+        </div>
+      </div>
+
+      <div class="set-block">
+        <div class="set-title">Pickle 초대 카드</div>
+        <div class="field"><label>초대 링크</label><input id="pickleUrl" data-testid="pickle-url" spellcheck="false" /></div>
+        <div class="field"><label>제목</label><input id="pickleTitle" /></div>
+        <div class="field"><label>설명</label><input id="pickleBodyInput" /></div>
+        <label class="check"><input type="checkbox" id="pickleEnabled" /> 사이드바에 표시</label>
+      </div>
+
+      <div class="set-block">
+        <div class="set-title">모바일 원격 접속 <span class="muted small">— 부가 기능</span></div>
+        <label class="check"><input type="checkbox" id="allowLan" data-testid="allow-lan" /> 같은 Wi-Fi에서 접속 허용 <span class="muted small">(접속 토큰 필수)</span></label>
+        <div class="field-hint" id="remoteHint">기본은 이 Mac 안에서만 접속됩니다. 켜고 서버를 재시작하면 아이폰·안드로이드 브라우저에서도 열 수 있습니다. 자세한 단계는 <b>실행 · 모바일 가이드</b>에 있습니다.</div>
+        <div class="remote-box" id="remoteBox" data-testid="remote-box"></div>
+      </div>
+
+      <div class="set-block">
+        <div class="set-title">팀 마켓</div>
+        <div class="field"><label>판매 링크 (Gumroad / 래피드)</label><input id="marketUrl" data-testid="market-url" spellcheck="false" /></div>
+        <label class="check"><input type="checkbox" id="demoUnlock" /> 데모용 전체 잠금 해제</label>
+      </div>
+    </div>
+    <div class="row">
+      <button class="primary-btn" id="saveSettings" data-testid="save-settings">설정 저장</button>
+      <button class="ghost-btn" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── 모달: 승격 확인 ─────────── -->
+<div class="modal" id="promoteModal" data-testid="promote-modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>PROD 반영 최종 확인</h2>
+      <button class="icon-btn" data-close>✕</button>
+    </div>
+    <div class="promote-body">
+      <p>아래 변경 사항이 <b>PROD</b>에 반영되고 버전이 올라갑니다. 반영 후에는 되돌리기 기록이 Version History에 남습니다.</p>
+      <div class="rel-diff" id="promoteDiff"></div>
+      <label class="check"><input type="checkbox" id="promoteAck" data-testid="promote-ack" /> 변경 내역과 CHANGELOG를 확인했습니다.</label>
+    </div>
+    <div class="row">
+      <button class="primary-btn" id="promoteConfirm" data-testid="promote-confirm" disabled>최종 확인 후 PROD 반영</button>
+      <button class="ghost-btn" data-close>취소</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="guideModal" data-testid="guide-modal" hidden>
+  <div class="modal-card wide">
+    <div class="modal-head">
+      <h2>실행 · 모바일 가이드</h2>
+      <button class="icon-btn" data-guide-close>✕</button>
+    </div>
+    <div class="tabs">
+      <button class="tab is-active" data-guide-tab="run" data-testid="guide-tab-run">① Mac 앱으로 실행</button>
+      <button class="tab" data-guide-tab="dmg" data-testid="guide-tab-dmg">② .dmg 배포</button>
+      <button class="tab" data-guide-tab="mobile" data-testid="guide-tab-mobile">③ 모바일 원격 접속</button>
+    </div>
+
+    <div class="guide-body" id="guideRun">
+      <p class="guide-lead"><b>기본 실행 형태는 macOS 데스크톱 앱(로컬 실행)</b>입니다. 설치 없이 폴더에서 바로 켭니다.</p>
+      <ol class="steps">
+        <li><b>Node.js 확인</b> — 터미널에서 <code>node -v</code> (v18 이상). 없으면 <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a>에서 설치.</li>
+        <li><b>한 번만 권한 주기</b> — <code>chmod +x start.command</code></li>
+        <li><b>실행</b> — <code>start.command</code> 더블클릭 (처음엔 우클릭 → 열기) 또는 터미널에서 <code>node server.js</code></li>
+        <li><b>브라우저</b> — <code>http://127.0.0.1:3847</code> 이 자동으로 열립니다.</li>
+        <li><b>독에 고정</b> — Safari: 파일 → 독에 추가 / Chrome: 주소창 오른쪽 설치 아이콘. 아이콘을 누르면 앱처럼 전체 화면으로 열립니다.</li>
+      </ol>
+      <div class="guide-note">데이터는 이 Mac의 <code>moa-hive/data/</code>에만 저장됩니다. 창을 닫으면 서버도 꺼집니다.</div>
+    </div>
+
+    <div class="guide-body" id="guideDmg" hidden>
+      <p class="guide-lead">배포용으로는 Electron으로 감싸 <b>.dmg</b>로 만들 수 있습니다. 서버 코드는 그대로 쓰고 창만 씌우는 방식입니다.</p>
+      <ol class="steps">
+        <li><b>개발 의존성 설치</b><pre><code>npm i -D electron electron-builder</code></pre></li>
+        <li><b>main.js 만들기</b><pre><code>const { app, BrowserWindow } = require('electron');
+const { spawn } = require('child_process');
+const path = require('path');
+let srv;
+app.whenReady().then(() => {
+  srv = spawn(process.execPath, [path.join(__dirname, 'server.js')], {
+    env: { ...process.env, ELECTRON_RUN_AS_NODE: '1', PORT: '3847' },
+  });
+  const win = new BrowserWindow({ width: 1440, height: 900, titleBarStyle: 'hiddenInset' });
+  setTimeout(() => win.loadURL('http://127.0.0.1:3847'), 700);
+});
+app.on('quit', () => srv && srv.kill());</code></pre></li>
+        <li><b>package.json에 build 설정</b><pre><code>"main": "main.js",
+"build": {
+  "appId": "com.moa.hive",
+  "productName": "MOA Hive",
+  "files": ["server.js", "config.js", "public/**", "market/**", "version.json", "CHANGELOG.md"],
+  "mac": { "target": ["dmg"], "category": "public.app-category.productivity" }
+}</code></pre></li>
+        <li><b>빌드</b><pre><code>npx electron-builder --mac --arm64
+# → dist/MOA Hive-0.2.0-arm64.dmg</code></pre></li>
+        <li><b>배포</b> — 서명·공증 없이도 본인 Mac에서는 우클릭 → 열기로 실행됩니다. 지인에게 나눌 때는 Apple Developer ID 서명 + 공증(notarize)을 권장합니다.</li>
+      </ol>
+      <div class="guide-note">Electron 샌드박스에서는 봇의 <code>cwd</code>를 사용자가 고른 폴더로 지정하세요. macOS Ventura 이상은 파일 접근 권한을 한 번 물어봅니다.</div>
+    </div>
+
+    <div class="guide-body" id="guideMobile" hidden>
+      <p class="guide-lead">부가 기능입니다. Mac에서 켜 둔 MOA Hive를 아이폰·안드로이드 브라우저로 조작합니다. <b>기본은 127.0.0.1 전용</b>이라, 아래 방법 중 하나를 골라야 휴대폰에서 열립니다.</p>
+      <div class="remote-box" id="remoteLive" data-testid="remote-live">상태 확인 중…</div>
+
+      <h3 class="guide-h">A. 같은 Wi-Fi (가장 간단)</h3>
+      <ol class="steps">
+        <li>설정 → 모바일 원격 접속 → <b>같은 Wi-Fi에서 접속 허용</b> 체크 → 설정 저장</li>
+        <li>터미널에서 서버 재시작: <code>node server.js</code> (또는 <code>start.command</code>)</li>
+        <li>위 상태 상자의 <b>Wi-Fi 주소</b>(토큰 포함)를 아이폰 사파리에 입력</li>
+        <li>사파리 공유 → <b>홈 화면에 추가</b> → 앱처럼 실행</li>
+      </ol>
+      <div class="guide-warn">공용 Wi-Fi(카페·호텔)에서는 켜지 마세요. 같은 네트워크의 다른 기기가 접근할 수 있습니다. 토큰이 없으면 열리지 않습니다.</div>
+
+      <h3 class="guide-h">B. Tailscale (밖에서도, 추천)</h3>
+      <ol class="steps">
+        <li>Mac과 아이폰에 Tailscale 설치 후 같은 계정으로 로그인</li>
+        <li>Mac 터미널: <code>tailscale serve --bg 3847</code></li>
+        <li>아이폰에서 표시된 <code>https://&lt;기기&gt;.&lt;tailnet&gt;.ts.net</code> 열기 — 127.0.0.1 그대로라 서버 설정 변경 불필요</li>
+      </ol>
+
+      <h3 class="guide-h">C. Cloudflare Tunnel (무료, 링크 공유)</h3>
+      <ol class="steps">
+        <li>Mac: <code>brew install cloudflared</code></li>
+        <li>토큰 강제 모드로 서버 실행: <code>MOA_REQUIRE_TOKEN=1 node server.js</code></li>
+        <li>다른 터미널: <code>cloudflared tunnel --url http://127.0.0.1:3847</code></li>
+        <li>발급된 <code>https://….trycloudflare.com</code> 주소를 아이폰에서 열고 토큰 입력</li>
+      </ol>
+      <div class="guide-warn">터널 주소를 아는 사람은 접근할 수 있습니다. <code>MOA_REQUIRE_TOKEN=1</code>로 토큰을 반드시 켜고, 오래 쓸 거면 Cloudflare Access 정책을 거세요.</div>
+    </div>
+
+    <div class="row">
+      <button class="ghost-btn" data-guide-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="onboardModal" data-testid="onboard-modal" hidden>
+  <div class="modal-card onboard">
+    <div class="onboard-badge">🔒</div>
+    <h2>내 PC 안에서만 도는 AI 팀</h2>
+    <p class="onboard-sub">MOA Hive는 대화·문서·API 키를 <b>이 Mac 밖으로 보내지 않습니다.</b></p>
+    <div class="trust-grid">
+      <div class="trust-card"><b>100% 로컬 실행</b><span>봇·대화·설정이 모두 <code>./data/</code>에만 저장됩니다.</span></div>
+      <div class="trust-card"><b>외부 서버 유출 없음</b><span>API 키는 원문이 다시 표시되지 않고, 조회 API도 <code>configured</code>만 반환합니다.</span></div>
+      <div class="trust-card"><b>모든 실행 전 승인</b><span>셸·파일 작업은 Allow/Deny 카드 없이는 절대 실행되지 않습니다.</span></div>
+    </div>
+    <p class="onboard-hint">AI를 어디서부터 써야 할지 모르겠다면, 업종·역할만 고르세요. 맞는 봇 조합과 활용법을 컨설팅해 드립니다.</p>
+    <div class="row">
+      <button class="primary-btn" id="onboardStart" data-testid="onboard-start">내 역할로 팀 추천받기</button>
+      <button class="ghost-btn" id="onboardSkip" data-testid="onboard-skip">그냥 둘러보기</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="wizardModal" data-testid="wizard-modal" hidden>
+  <div class="modal-card wide">
+    <div class="modal-head">
+      <h2>팀 컨설팅</h2>
+      <button class="icon-btn" data-wizard-close>✕</button>
+    </div>
+    <div class="wizard-steps">
+      <span class="ws is-active" data-step-dot="1">1 직업·역할</span>
+      <span class="ws" data-step-dot="2">2 고민</span>
+      <span class="ws" data-step-dot="3">3 추천 팀</span>
+    </div>
+
+    <div id="wizardStep1" data-testid="wizard-step1">
+      <p class="guide-lead">지금 하는 일에 가까운 것을 고르면, 그 역할에 맞는 봇 팀과 첫 프롬프트를 만들어 드립니다.</p>
+      <div class="role-grid" id="roleGrid" data-testid="role-grid"></div>
+
+      <div class="free-purpose">
+        <div class="free-head">또는 하고 싶은 일을 그대로 적어 주세요 <span class="muted small">— AI가 총괄 + 에이전트 팀을 설계합니다</span></div>
+        <div class="free-row">
+          <textarea id="purposeInput" data-testid="purpose-input" rows="2" spellcheck="false" placeholder="예: 중소기업 대표인데 거래처 제안서랑 매출 정산 자동화하고 싶어요"></textarea>
+          <button class="mic-btn" id="purposeMic" data-testid="purpose-mic" title="음성으로 말하기" aria-label="음성 입력">🎤</button>
+        </div>
+        <div class="row">
+          <button class="primary-btn" id="analyzeBtn" data-testid="analyze-btn">AI 팀 설계 받기</button>
+          <span class="muted small" id="voiceHint">음성 입력: Chrome·Edge·Safari(최신) 지원</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="wizardStep2" hidden>
+      <p class="guide-lead">해결하고 싶은 고민을 골라 주세요(복수 선택). 컨설팅 카드에 그대로 반영됩니다.</p>
+      <div class="pain-list" id="painList" data-testid="pain-list"></div>
+      <div class="field" style="margin-top:10px"><label>직접 적기 (선택)</label><input id="painCustom" placeholder="예: 견적서 쓰는 시간을 줄이고 싶어요" /></div>
+      <div class="row"><button class="primary-btn" id="toStep3" data-testid="wizard-next">컨설팅 보기</button><button class="ghost-btn" id="backStep1">이전</button></div>
+    </div>
+
+    <div id="wizardStep3" hidden>
+      <div id="consultCard" data-testid="consult-card"></div>
+      <div class="row">
+        <button class="primary-btn" id="applyConsult" data-testid="apply-consult">이 팀을 STG에 만들기</button>
+        <button class="ghost-btn" id="backStep2">이전</button>
+      </div>
+      <div class="guide-note">STG에 생성됩니다. PROD 반영은 Release 탭에서 직접 확인 후 승격하세요.</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="ctx-menu" id="ctxMenu" hidden></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

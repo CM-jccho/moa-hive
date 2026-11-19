@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>MOA Hive — 내 PC 안에서 일하는 AI 봇 팀 · 로컬 프라이버시</title>
+<meta name="description" content="MOA Hive는 기획·개발·콘텐츠·리서치 봇을 한 채널에 모으고 총괄 오케스트레이터가 일을 나누는 로컬 우선 AI 팀 메신저입니다. 대화·문서·API 키는 내 PC 밖으로 나가지 않습니다. macOS .dmg · Windows .exe · 웹 라이브 체험." />
+<meta name="theme-color" content="#070910" />
+<meta property="og:title" content="MOA Hive — 내 PC 안에서 일하는 AI 봇 팀" />
+<meta property="og:description" content="🔒 100% 로컬 프라이버시 · MOA Chief 오케스트레이터 · STG→PROD 승격 · macOS/Windows 앱 · 웹에서 바로 체험" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://cm-jccho.github.io/moa-hive/" />
+<meta property="og:image" content="./icons/icon-512.png" />
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" href="./icons/icon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="./icons/icon-180.png" />
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<a class="sr-only" href="#demo">라이브 체험으로 바로 가기</a>
+
+<header class="site-head">
+  <div class="container">
+    <a class="brand" href="./">
+      <span class="brand-mark" aria-hidden="true">M</span>
+      <span>MOA Hive<small>Local-first AI team messenger</small></span>
+    </a>
+    <nav class="site-nav" aria-label="주요 섹션">
+      <a href="#downloads">다운로드</a>
+      <a href="#install">설치 가이드</a>
+      <a href="#demo">라이브 체험</a>
+      <a href="#mobile">휴대폰 연결</a>
+      <a href="#security">보안</a>
+    </nav>
+    <div class="head-cta">
+      <button class="btn btn-sm" id="installBtn" type="button" hidden>📲 앱 설치</button>
+      <a class="btn btn-sm btn-primary" href="#demo">웹에서 체험</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ───────────── HERO ───────────── -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="pill">🔒 100% 로컬 프라이버시</span>
+        <h1>AI 팀이<br /><em>내 PC 안에서</em> 일한다</h1>
+        <p class="hero-lead">
+          기획·개발·콘텐츠·리서치 봇을 한 채널에 모으고, 총괄 <b>MOA Chief</b>가 일을 나눠 취합합니다.
+          대화·문서·API 키는 외부 서버로 나가지 않고, 모든 실행은 <b>Allow / Deny</b> 승인을 거칩니다.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#demo">▶ 웹에서 바로 체험</a>
+          <a class="btn" href="#downloads" data-dl="mac"> macOS 다운로드</a>
+          <a class="btn" href="#downloads" data-dl="win">🪟 Windows 다운로드</a>
+        </div>
+        <div class="hero-meta">
+          <span><b>의존성 0</b> · <code>node server.js</code></span>
+          <span><b>127.0.0.1</b> 루프백 전용</span>
+          <span><b>STG → PROD</b> 승격 구조</span>
+          <span><b>macOS · Windows</b> 앱</span>
+        </div>
+      </div>
+
+      <div class="hive-card" aria-hidden="true">
+        <div class="hive-head">
+          <span>#전체-팀 · Auto 라우팅</span>
+          <span class="pill blue">로컬 실행 중</span>
+        </div>
+        <div class="hive-bots">
+          <div class="hive-bot chief"><span class="em">🧠</span>MOA Chief</div>
+          <div class="hive-bot"><span class="em">🧭</span>기획PM</div>
+          <div class="hive-bot"><span class="em">🛠️</span>개발</div>
+          <div class="hive-bot"><span class="em">📸</span>콘텐츠</div>
+        </div>
+        <div class="hive-chat">
+          <div class="hive-line">
+            <span class="av">🧭</span>
+            <div class="hive-bubble">이번 주 목표를 알려주세요. PRD 초안과 3일 일정으로 쪼개 드릴게요.</div>
+          </div>
+          <div class="hive-line chief">
+            <span class="av">🧠</span>
+            <div class="hive-bubble"><b>총괄 보고</b> · 위임 3건 완료<br />기획PM → 개발 → 리서치 순으로 산출물을 취합했습니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────── DOWNLOADS ───────────── -->
+  <section class="section" id="downloads">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Download</div>
+        <h2>내 OS에 맞게 설치하세요</h2>
+        <p class="section-lead">데스크톱 앱은 서버를 앱 안에서 띄우고 창이 닫히면 함께 정리합니다. Node.js v18 이상이면 스크립트 한 번으로도 실행됩니다.</p>
+      </div>
+
+      <div class="dl-grid">
+        <article class="dl-card mac">
+          <div class="dl-top">
+            <div class="dl-ico" aria-hidden="true"></div>
+            <div>
+              <h3>macOS</h3>
+              <p class="dl-sub">Apple Silicon · Intel 공용 (universal)</p>
+            </div>
+          </div>
+          <div class="dl-rows">
+            <div class="dl-row">
+              <span aria-hidden="true">💿</span>
+              <div class="grow">
+                <div class="fname">MOA-Hive-0.3.0-universal.dmg</div>
+                <div class="fmeta">데스크톱 앱 · 더블클릭 설치 · 서명 전 빌드는 우클릭 → 열기</div>
+              </div>
+              <a class="btn btn-sm btn-primary" data-dl="mac-universal" href="https://github.com/CM-jccho/moa-hive/releases/latest">다운로드</a>
+            </div>
+            <div class="dl-row">
+              <span aria-hidden="true">⌨️</span>
+              <div class="grow">
+                <div class="fname">start.command</div>
+                <div class="fmeta">Node.js만 있으면 즉시 실행 · <code>node server.js</code> + 브라우저 자동</div>
+              </div>
+              <a class="btn btn-sm" data-dl="mac-script" href="https://github.com/CM-jccho/moa-hive/blob/main/start.command">보기</a>
+            </div>
+          </div>
+          <div class="dl-actions">
+            <a class="btn btn-sm" data-dl="mac-arm64" href="https://github.com/CM-jccho/moa-hive/releases/latest">Apple Silicon (arm64)</a>
+            <a class="btn btn-sm" data-dl="mac-x64" href="https://github.com/CM-jccho/moa-hive/releases/latest">Intel (x64)</a>
+          </div>
+        </article>
+
+        <article class="dl-card win">
+          <div class="dl-top">
+            <div class="dl-ico" aria-hidden="true"></div>
+            <div>
+              <h3>Windows</h3>
+              <p class="dl-sub">Windows 10 / 11 · x64</p>
+            </div>
+          </div>
+          <div class="dl-rows">
+            <div class="dl-row">
+              <span aria-hidden="true">🧩</span>
+              <div class="grow">
+                <div class="fname">MOA-Hive-Setup-0.3.0.exe</div>
+                <div class="fmeta">NSIS 설치 파일 · SmartScreen은 “추가 정보 → 실행”</div>
+              </div>
+              <a class="btn btn-sm btn-primary" data-dl="win-setup" href="https://github.com/CM-jccho/moa-hive/releases/latest">다운로드</a>
+            </div>
+            <div class="dl-row">
+              <span aria-hidden="true">📄</span>
+              <div class="grow">
+                <div class="fname">start.bat</div>
+                <div class="fmeta">더블클릭 실행 · <code>http://127.0.0.1:3847</code> 자동 오픈</div>
+              </div>
+              <a class="btn btn-sm" data-dl="win-script" href="https://github.com/CM-jccho/moa-hive/blob/main/start.bat">보기</a>
+            </div>
+          </div>
+          <div class="dl-actions">
+            <a class="btn btn-sm" data-dl="win-zip" href="https://github.com/CM-jccho/moa-hive/archive/refs/heads/main.zip">소스 ZIP</a>
+            <a class="btn btn-sm" data-dl="releases" href="https://github.com/CM-jccho/moa-hive/releases">모든 릴리스 자산</a>
+          </div>
+        </article>
+      </div>
+      <p class="dl-note" style="margin-top:14px">🔐 서명·공증 전 빌드입니다. 처음 실행할 때 OS 경고가 뜨면 macOS는 <b>우클릭 → 열기</b>, Windows는 <b>추가 정보 → 실행</b>을 누르세요. 소스는 공개되어 있어 직접 빌드할 수도 있습니다.</p>
+    </div>
+  </section>
+
+  <!-- ───────────── INSTALL ───────────── -->
+  <section class="section" id="install">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Setup</div>
+        <h2>설치 3단계</h2>
+        <p class="section-lead">앱 설치본을 쓰거나, 저장소를 받아 스크립트로 바로 실행할 수 있습니다. 두 방법 모두 데이터는 내 PC의 <code>data/</code> 폴더에만 남습니다.</p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="설치 방법">
+        <button class="tab is-active" role="tab" aria-selected="true" data-guide="mac">macOS</button>
+        <button class="tab" role="tab" aria-selected="false" data-guide="win">Windows</button>
+        <button class="tab" role="tab" aria-selected="false" data-guide="source">소스에서 실행</button>
+      </div>
+
+      <div class="guide-pane" data-pane="mac">
+        <ol class="steps">
+          <li>
+            <b>.dmg 내려받아 설치</b>
+            <p><code>MOA-Hive-0.3.0-universal.dmg</code>를 열고 MOA Hive를 <b>Applications</b>로 옮깁니다.</p>
+          </li>
+          <li>
+            <b>처음 한 번만 열어 주기</b>
+            <p>서명 전 빌드는 Finder에서 앱을 <b>우클릭 → 열기</b>로 실행합니다. 이후에는 그냥 더블클릭.</p>
+          </li>
+          <li>
+            <b>앱 안에서 바로 사용</b>
+            <p>앱이 로컬 서버(<code>127.0.0.1:3847</code>)를 띄우고 창을 엽니다. 창을 닫으면 서버도 종료됩니다. 데이터는 <code>~/Library/Application Support/MOA Hive/data/</code>에 저장됩니다.</p>
+          </li>
+        </ol>
+        <div class="note">💡 스크립트로 실행하려면: 저장소를 받아 <code>chmod +x start.command</code> 후 더블클릭. Node.js v18 이상이 필요합니다.</div>
+      </div>
+
+      <div class="guide-pane" data-pane="win" hidden>
+        <ol class="steps">
+          <li>
+            <b>설치 파일 실행</b>
+            <p><code>MOA-Hive-Setup-0.3.0.exe</code>를 실행합니다. SmartScreen 경고가 뜨면 <b>추가 정보 → 실행</b>.</p>
+          </li>
+          <li>
+            <b>설치 마법사 완료</b>
+            <p>설치 위치를 고르고 완료하면 시작 메뉴와 바탕화면에 MOA Hive가 생깁니다. 앱이 로컬 서버를 함께 띄웁니다.</p>
+          </li>
+          <li>
+            <b>스크립트 실행(대안)</b>
+            <p>Node.js v18 이상이 있으면 <code>start.bat</code> 더블클릭만으로 <code>node server.js</code>가 실행되고 브라우저가 열립니다.</p>
+          </li>
+        </ol>
+        <div class="note">🔒 서버는 <code>127.0.0.1</code>에만 바인딩됩니다. Windows 방화벽 알림이 뜨면 “취소”해도 앱은 정상 동작합니다.</div>
+      </div>
+
+      <div class="guide-pane" data-pane="source" hidden>
+        <ol class="steps">
+          <li>
+            <b>저장소 받기</b>
+            <pre><code>git clone https://github.com/CM-jccho/moa-hive.git
+cd moa-hive</code></pre>
+          </li>
+          <li>
+            <b>의존성 없이 실행</b>
+            <pre><code>node server.js        # → http://127.0.0.1:3847</code></pre>
+            <p>npm install이 필요 없습니다. 포트를 바꾸려면 <code>PORT=3900 node server.js</code>.</p>
+          </li>
+          <li>
+            <b>데스크톱 앱으로 빌드(선택)</b>
+            <pre><code>npm install
+npm run dist:mac      # dist/MOA-Hive-0.3.0-universal.dmg
+npm run dist:win      # dist/MOA-Hive-Setup-0.3.0.exe</code></pre>
+          </li>
+        </ol>
+        <div class="note">🧪 테스트: <code>node tests/reset_state.js &amp;&amp; node server.js</code> 후 <code>python3 tests/api_test.py</code>, <code>python3 tests/ui_test.py</code>, <code>python3 tests/web_test.py</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────── DEMO ───────────── -->
+  <section class="section demo-sec" id="demo">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Live demo</div>
+        <h2>설치 없이, 웹에서 바로 체험</h2>
+        <p class="section-lead">정적 페이지에서 돌아가는 체험판입니다. 업종을 고르거나 하고 싶은 일을 말하면 <b>MOA Chief</b>가 팀을 설계하고, 채팅에서 일을 위임·취합하는 흐름까지 그대로 보여 줍니다.</p>
+      </div>
+
+      <div class="demo-badge-line">
+        <span class="pill">🧪 체험 모드 — 실제 모델 호출 없음</span>
+        <span class="pill blue">📱 모바일에서도 동작</span>
+        <span class="spacer"></span>
+        <button class="btn btn-sm" id="resetDemo" type="button">↺ 데모 초기화</button>
+      </div>
+
+      <div class="demo-frame">
+        <div class="demo-app" id="demoApp">
+          <!-- 사이드바 -->
+          <aside class="d-side" aria-label="데모 사이드바">
+            <div class="d-brand">
+              <span class="brand-mark">M</span>
+              <span>MOA Hive<small>local-first</small></span>
+            </div>
+            <div class="d-env" role="group" aria-label="환경 선택">
+              <button type="button" id="envStg" class="is-active" data-env="stg">STG</button>
+              <button type="button" id="envProd" data-env="prod">PROD</button>
+              <span class="d-env-badge" id="envBadge">STG v0.3.0-rc</span>
+            </div>
+            <div class="d-scroll">
+              <div>
+                <div class="d-sec-title"><span>채널</span></div>
+                <div class="d-list" id="channelList"></div>
+              </div>
+              <div>
+                <div class="d-sec-title"><span>봇 팀</span></div>
+                <div class="d-list" id="botList"></div>
+              </div>
+            </div>
+            <div class="d-side-foot">
+              <button class="d-foot-btn" id="wizardBtn" type="button">🧭 팀 컨설팅 (업종 맞춤)</button>
+              <button class="d-foot-btn" id="releaseJump" type="button">🚀 STG → PROD</button>
+              <div class="d-engine" id="engineChip">엔진 · 로컬 시뮬레이터</div>
+            </div>
+          </aside>
+
+          <!-- 채팅 -->
+          <main class="d-chat" aria-label="데모 채팅">
+            <header class="d-chat-head">
+              <div class="d-chat-title">
+                <h3 id="demoChannelName">#전체-팀</h3>
+                <p id="demoTopic">모든 봇이 참여하는 기본 채널 — Auto 라우팅</p>
+              </div>
+              <span class="d-mode" id="demoMode">Auto</span>
+            </header>
+            <div class="d-trust">
+              <span>🔒 100% 내 PC 로컬 실행</span>
+              <span>· 대화·키 유출 없음</span>
+              <span>· Allow/Deny 승인</span>
+            </div>
+            <div class="d-messages" id="demoMessages" role="log" aria-live="polite" aria-relevant="additions"></div>
+            <div class="d-composer">
+              <div class="d-readonly" id="demoReadonly" hidden>PROD는 읽기 전용입니다 — 변경은 <b>STG</b>에서 하고 Release Manager로 승격하세요.</div>
+              <div class="d-composer-row">
+                <label class="sr-only" for="demoInput">메시지 입력</label>
+                <textarea id="demoInput" rows="1" placeholder="메시지 입력 — @봇이름 호출, “이번 주 할 일 정리해줘”"></textarea>
+                <button class="d-mic" id="demoMic" type="button" title="음성 입력 (한국어)" aria-label="음성 입력">🎤</button>
+                <button class="d-send" id="demoSend" type="button" aria-label="전송">↑</button>
+              </div>
+              <div class="d-hint"><span id="demoTyping"></span><span>로컬 저장 · ./data/</span></div>
+            </div>
+          </main>
+
+          <!-- 오른쪽 패널 -->
+          <aside class="d-right" aria-label="봇 인스펙터와 릴리스">
+            <div class="d-tabs" role="tablist" aria-label="오른쪽 패널">
+              <button class="d-tab is-active" role="tab" aria-selected="true" data-pane="context" id="tabContext">봇 인스펙터</button>
+              <button class="d-tab" role="tab" aria-selected="false" data-pane="release" id="tabRelease">Release</button>
+            </div>
+            <section class="d-pane" id="contextPane">
+              <div class="d-insp-head">
+                <div class="d-insp-av idle" id="inspAvatar">🧭</div>
+                <div>
+                  <div class="d-insp-name" id="inspName">기획PM 봇</div>
+                  <div class="d-insp-state" id="inspState">✨ 대기 중</div>
+                </div>
+              </div>
+              <p class="d-insp-summary" id="inspSummary">—</p>
+              <div class="d-block-title">지금 할 수 있는 일</div>
+              <div id="taskList"></div>
+              <div class="d-block-title">최근 처리 내역</div>
+              <div id="activityList"></div>
+              <div class="d-meta">
+                <div><span>엔진</span><b id="inspEngine">로컬 시뮬레이터</b></div>
+                <div><span>작업폴더</span><b id="inspCwd">./workspace</b></div>
+              </div>
+            </section>
+            <section class="d-pane" id="releasePane" hidden>
+              <div class="d-block-title">환경</div>
+              <div class="d-rel-ver">
+                <div><span>STG (편집 가능)</span><b id="relStg">v0.3.0-rc</b></div>
+                <div><span>PROD (읽기 전용)</span><b id="relProd">v0.1.0</b></div>
+              </div>
+              <div class="d-block-title">변경 diff</div>
+              <div class="d-diff" id="relDiff"></div>
+              <input class="d-rel-note" id="relNote" placeholder="승격 메모 (예: 오케스트레이터·웹 데모)" />
+              <label class="d-check"><input type="checkbox" id="promoteAck" /> 변경 내역과 CHANGELOG를 확인했습니다.</label>
+              <button class="btn btn-primary btn-sm btn-block" id="promoteBtn" type="button" disabled>최종 확인 후 PROD 반영</button>
+              <div class="d-block-title">버전 히스토리</div>
+              <div class="d-history" id="historyList"></div>
+            </section>
+          </aside>
+        </div>
+
+        <!-- 팀 컨설팅 시트 -->
+        <div class="d-sheet" id="wizardSheet" hidden>
+          <div class="d-sheet-card" role="dialog" aria-modal="true" aria-labelledby="wizardTitle">
+            <div class="d-sheet-head">
+              <div class="grow">
+                <h3 id="wizardTitle">🧭 팀 컨설팅</h3>
+                <p>업종을 고르거나, 하고 싶은 일을 그대로 적어 주세요.</p>
+              </div>
+              <button class="icon-btn" id="closeWizard" type="button" aria-label="닫기">✕</button>
+            </div>
+            <div class="d-sheet-body">
+              <div class="d-roles" id="roleCards"></div>
+              <label class="d-label" for="purposeInput">자유 목적 (선택) — 예: “거래처 제안서랑 매출 정산을 자동화하고 싶어요”</label>
+              <div class="d-purpose-wrap">
+                <textarea class="d-purpose" id="purposeInput" rows="3" placeholder="하고 싶은 일을 편하게 적어 주세요. 비워 두면 선택한 업종으로 설계합니다."></textarea>
+                <button class="d-mic" id="purposeMic" type="button" aria-label="음성으로 목적 입력" title="음성 입력 (한국어)">🎤</button>
+              </div>
+              <div class="d-sheet-actions">
+                <button class="btn btn-primary btn-sm" id="designBtn" type="button">AI 팀 설계 받기</button>
+                <button class="btn btn-ghost btn-sm" id="clearDesign" type="button">선택 해제</button>
+              </div>
+              <div id="designCard"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="small muted" style="margin:12px 2px 0">체험판은 실제 파일·셸을 실행하지 않습니다. 데스크톱 앱에서는 같은 흐름이 로컬 CLI/API로 이어지고, 실행 전 승인 카드가 뜹니다.</p>
+    </div>
+  </section>
+
+  <!-- ───────────── MOBILE ───────────── -->
+  <section class="section" id="mobile">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Mobile</div>
+        <h2>휴대폰에서도 같은 팀</h2>
+        <p class="section-lead">기본은 PC 안에서만 실행됩니다. 밖에서 쓰려면 아래 세 가지 중 하나를 고르세요. 어느 경우든 접속 토큰이 없으면 열리지 않습니다.</p>
+      </div>
+      <div class="remote-grid">
+        <article class="remote-card">
+          <h3>📶 같은 Wi-Fi <span class="tag">가장 간단</span></h3>
+          <p>설정 → 모바일 원격 접속 → “같은 Wi-Fi에서 접속 허용”을 켜고 재시작하면, Wi-Fi 주소(토큰 포함)가 표시됩니다. 아이폰 사파리에서 열고 <b>홈 화면에 추가</b>.</p>
+          <button class="btn btn-sm" type="button" data-open-demo="mobile">웹 체험 열기</button>
+        </article>
+        <article class="remote-card">
+          <h3>🔐 Tailscale <span class="tag">밖에서도</span></h3>
+          <p>Mac·아이폰에 Tailscale을 설치하고 같은 계정으로 로그인한 뒤, Mac 터미널에서 <code>tailscale serve --bg 3847</code>. 발급된 <code>https://…ts.net</code> 주소로 접속합니다.</p>
+          <a class="btn btn-sm" href="https://tailscale.com/download" target="_blank" rel="noopener">Tailscale 받기</a>
+        </article>
+        <article class="remote-card">
+          <h3>☁️ Cloudflare Tunnel <span class="tag">링크 공유</span></h3>
+          <p><code>MOA_REQUIRE_TOKEN=1 node server.js</code>로 토큰을 강제한 뒤 <code>cloudflared tunnel --url http://127.0.0.1:3847</code>. 발급된 주소를 휴대폰에서 열고 토큰을 입력합니다.</p>
+          <a class="btn btn-sm" href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/" target="_blank" rel="noopener">cloudflared 안내</a>
+        </article>
+      </div>
+      <p class="small muted" style="margin-top:12px">⚠️ 터널 주소를 아는 사람은 접근할 수 있습니다. 공유 링크는 짧게 쓰고, 장기 사용 시 Cloudflare Access 정책을 거세요.</p>
+    </div>
+  </section>
+
+  <!-- ───────────── SECURITY ───────────── -->
+  <section class="section" id="security">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Privacy by design</div>
+        <h2>왜 안전한가</h2>
+        <p class="section-lead">편의를 위해 데이터를 밖으로 보내지 않습니다. 서버·저장·실행 권한이 모두 내 PC 안에서 닫힙니다.</p>
+      </div>
+      <div class="sec-grid">
+        <article class="sec-card"><div class="em">🔒</div><h3>루프백 전용 바인딩</h3><p>서버는 <code>127.0.0.1</code>에만 열립니다. 원격은 직접 켤 때만, 그때도 토큰이 필수입니다.</p></article>
+        <article class="sec-card"><div class="em">💾</div><h3>로컬에만 저장</h3><p>대화·봇 설정·승인 이력은 <code>./data/</code>의 JSON에만 남습니다. 클라우드 동기화가 없습니다.</p></article>
+        <article class="sec-card"><div class="em">🔑</div><h3>API 키 마스킹</h3><p>키는 저장 후 조회 API가 원문을 반환하지 않습니다. 화면·로그에도 원문이 나오지 않습니다.</p></article>
+        <article class="sec-card"><div class="em">✋</div><h3>Allow / Deny 승인</h3><p>셸·파일 작업은 제안 → 사용자 클릭 → 재검증 → 실행 순서를 지킵니다. 위험 명령은 차단됩니다.</p></article>
+        <article class="sec-card"><div class="em">📁</div><h3>경로 샌드박스</h3><p>봇의 작업 폴더는 허용 루트 안으로 제한합니다. <code>..</code>·절대경로·심볼릭 링크 이탈을 막습니다.</p></article>
+        <article class="sec-card"><div class="em">🛡️</div><h3>PROD 읽기 전용</h3><p>운영 환경은 직접 수정할 수 없습니다. STG에서 검토하고 Release Manager로만 승격합니다.</p></article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <span>© 2026 MOA Hive · 개인 사용 라이선스(UNLICENSED) · 조재철</span>
+    <span>
+      <a href="https://github.com/CM-jccho/moa-hive" target="_blank" rel="noopener">GitHub 저장소</a> ·
+      <a href="https://github.com/CM-jccho/moa-hive/releases" target="_blank" rel="noopener">릴리스</a> ·
+      <a href="https://github.com/CM-jccho/moa-hive/issues" target="_blank" rel="noopener">이슈</a>
+    </span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button class="btn btn-primary install-fab" id="installFab" type="button">📲 홈 화면에 추가</button>
+
+<script src="./app.js" defer></script>
+</body>
+</html>

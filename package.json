@@ -1,0 +1,106 @@
+{
+  "name": "moa-hive",
+  "version": "0.3.0",
+  "private": true,
+  "description": "MOA Hive — 로컬 우선 멀티 AI 봇 팀 메신저 (의존성 0)",
+  "main": "electron/main.js",
+  "author": "조재철",
+  "scripts": {
+    "start": "node server.js",
+    "electron": "electron .",
+    "reset": "node tests/reset_state.js",
+    "test:api": "node tests/reset_state.js && node server.js",
+    "test:web": "python3 tests/web_test.py",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac dmg",
+    "dist:win": "electron-builder --win nsis",
+    "dist:universal": "electron-builder --mac dmg --universal"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "com.moahive.app",
+    "productName": "MOA Hive",
+    "copyright": "Copyright © 2026 조재철",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": ".",
+        "to": "runtime",
+        "filter": [
+          "server.js",
+          "config.js",
+          "consult.js",
+          "public/**/*",
+          "market/**/*",
+          "version.json",
+          "CHANGELOG.md",
+          "README.md"
+        ]
+      }
+    ],
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.productivity",
+      "artifactName": "MOA-Hive-${version}-${arch}.${ext}",
+      "darkModeSupport": true,
+      "identity": null,
+      "gatekeeperAssess": false,
+      "hardenedRuntime": false,
+      "minimumSystemVersion": "11.0"
+    },
+    "dmg": {
+      "title": "MOA Hive ${version}",
+      "artifactName": "MOA-Hive-${version}-${arch}.${ext}",
+      "contents": [
+        {
+          "x": 140,
+          "y": 220,
+          "type": "file"
+        },
+        {
+          "x": 400,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "MOA-Hive-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MOA Hive",
+      "uninstallDisplayName": "MOA Hive ${version}",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

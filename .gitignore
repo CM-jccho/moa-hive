@@ -1,0 +1,22 @@
+# 의존성 · 빌드 산출물
+node_modules/
+dist/
+
+# 실행 중 생성되는 로컬 데이터 (대화·봇 설정·승인 이력)
+data/
+workspace/
+
+# 테스트 스크린샷 · 로그
+tests/screenshots/
+*.log
+
+# OS · 편집기
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# 비밀값
+.env
+.env.*
