@@ -317,6 +317,10 @@ moa-hive/
 
 `main` 브랜치에 푸시하면 `.github/workflows/release-and-pages.yml`의 **pages** 작업이 `docs/`를 배포하고,
 태그(`v*`)를 푸시하거나 Actions에서 **Run workflow**를 실행하면 **build → release** 작업이 앱 설치 파일을 만들어 Release에 올립니다.
+Pages가 꺼져 있으면 첫 실행에서 **GitHub Actions 배포로 자동 활성화**하고, 이미 branch 배포(`main` + `/docs`)를 쓰고 있으면 그 배포를 그대로 둡니다.
+
+> 워크플로 파일을 GitHub 웹에서 추가해야 하는 경우(토큰에 workflows 권한이 없을 때)는 같은 내용의 사본 `ci/release-and-pages.yml`을 열어 복사한 뒤,
+> `Add file → Create new file`에서 경로 `.github/workflows/release-and-pages.yml`로 저장하면 됩니다. 그 커밋이 푸시되면 Pages 배포가 시작됩니다.
 
 ```bash
 # 웹 테스트 (정적 서버 + Playwright)
