@@ -1009,7 +1009,7 @@ async function chiefRespond(channel, chief, text, run) {
 
   msg.busy = false;
   msg.summary =
-    '**취합 결과**\n- 범위: ' + (text.length > 40 ? text.slice(0, 40) + '…' : text) + ' 를 ' + steps.length + '개 산출물로 분해\n- 다음 액션: ' + (steps[0] ? steps[0].name + '의 초안을 확인하고, 결정이 필요한 1건만 골라 주세요' : '할 일을 하나 정해 주세요') + '\n- 확인 필요: 실제 수치·고객사 정보는 아직 검증 전입니다(로컬 규칙 기반 취합)\n\n_하위 에이전트 산출물을 취합한 요약입니다 · 총괄 모드_';
+    '**취합 결과**\n- 범위: “' + (text.length > 40 ? text.slice(0, 40) + '…' : text) + '” 요청을 ' + steps.length + '개 산출물로 분해\n- 다음 액션: ' + (steps[0] ? steps[0].name + '의 초안을 확인하고, 결정이 필요한 1건만 골라 주세요' : '할 일을 하나 정해 주세요') + '\n- 확인 필요: 실제 수치·고객사 정보는 아직 검증 전입니다(로컬 규칙 기반 취합)\n\n_하위 에이전트 산출물을 취합한 요약입니다 · 총괄 모드_';
 
   if (!state.proposal && channel.id === state.activeChannelId) {
     const hasReport = state.bots.some((b) => /리포트/.test(b.name));
