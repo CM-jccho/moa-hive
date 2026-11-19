@@ -1151,7 +1151,8 @@
       box.innerHTML = '<div class="diff-empty">프로필을 불러오지 못했습니다. 잠시 후 다시 시도하세요.</div>';
       return;
     }
-    box.innerHTML = W.profiles
+    const roles = W.profiles.filter((p) => (p.kind || 'role') !== 'case');
+    box.innerHTML = roles
       .map(
         (p) => `<button class="role-card" data-role="${p.id}" data-testid="role-card">
         <span class="rc-emoji">${esc(p.emoji)}</span>
@@ -1209,6 +1210,65 @@
       <div class="team-preview">${p.bots.map((b) => `<span class="tp-chip">${esc(b.emoji)} ${esc(b.name)}</span>`).join('')}
         ${p.channels.map((c) => `<span class="tp-chip ch">#${esc(c.name)}</span>`).join('')}</div>
       <div class="starter-prompt">첫 프롬프트 · ${esc(p.starterPrompt)}</div>`;
+  }
+
+  /* ── 활용 케이스 갤러리 ── */
+  function caseProfiles() {
+    return W.profiles.filter((p) => p.kind === 'case');
+  }
+
+  function renderCases() {
+    const box = $('#caseGrid');
+    if (!box) return;
+    const cases = caseProfiles();
+    if (!cases.length) {
+      box.innerHTML = '<div class="diff-empty">케이스를 불러오지 못했습니다. 잠시 후 다시 시도하세요.</div>';
+      return;
+    }
+    box.innerHTML = cases
+      .map((p) => {
+        const ex = (p.example || []).find((e) => e.from !== 'user') || (p.example || [])[0];
+        const preview = ex ? String(ex.text).split('\n')[0].slice(0, 90) : '';
+        return `<article class="case-card" data-case-id="${esc(p.id)}" data-testid="case-card">
+          <div class="cc-top"><span class="cc-emoji">${esc(p.emoji)}</span>
+            <div><b>${esc(p.label)}</b><span>${esc(p.tagline)}</span></div></div>
+          ${preview ? `<div class="cc-example">“${esc(preview)}${preview.length >= 90 ? '…' : ''}”</div>` : ''}
+          <div class="cc-meta">봇 ${p.bots.length} · 채널 ${p.channels.length}${p.applied ? ' · 이미 만듦' : ''}</div>
+          <button class="primary-btn cc-apply" type="button" data-case-apply="${esc(p.id)}" data-testid="case-apply">이 케이스 바로 적용</button>
+        </article>`;
+      })
+      .join('');
+    box.querySelectorAll('[data-case-id]').forEach((card) => {
+      card.addEventListener('click', (ev) => {
+        if (ev.target.closest('[data-case-apply]')) return;
+        applyCase(card.dataset.caseId);
+      });
+    });
+    box.querySelectorAll('[data-case-apply]').forEach((btn) => {
+      btn.addEventListener('click', () => applyCase(btn.dataset.caseApply));
+    });
+  }
+
+  async function openCases() {
+    await loadConsult();
+    renderCases();
+    $('#casesModal').hidden = false;
+  }
+
+  async function applyCase(id) {
+    if (S.env.readOnly) return toast('PROD는 읽기 전용입니다. STG로 전환하세요.', 'bad');
+    const profile = W.profiles.find((p) => p.id === id);
+    if (!profile) return;
+    try {
+      const d = await api('/consult/apply', { method: 'POST', body: { id, pains: [], force: true } });
+      $('#casesModal').hidden = true;
+      toast(`${d.team} 세팅 완료 — 봇 ${d.bots.length}개 · 채널 ${d.channels.length}개`, 'good');
+      await loadState(d.mainChannelId || S.activeChannelId);
+      await loadConsult();
+      renderRoles();
+    } catch (e) {
+      toast(e.message, 'bad');
+    }
   }
 
   async function applyConsultTeam() {
@@ -1352,6 +1412,8 @@
 
     $('#guideBtn').addEventListener('click', () => openGuide('run'));
     $('#wizardBtn').addEventListener('click', openWizard);
+    $('#casesBtn').addEventListener('click', openCases);
+    $$('[data-cases-close]').forEach((b) => b.addEventListener('click', () => { $('#casesModal').hidden = true; }));
     $('#trustBar').addEventListener('click', () => openGuide('run'));
     $$('[data-wizard-close]').forEach((b) => b.addEventListener('click', () => { $('#wizardModal').hidden = true; }));
     $('#toStep3').addEventListener('click', () => { renderConsultCard(); wizardStep(3); });

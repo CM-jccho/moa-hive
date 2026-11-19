@@ -52,6 +52,7 @@
 
     <div class="side-foot">
       <button class="foot-btn" id="wizardBtn" data-testid="wizard-btn">🧭 팀 컨설팅 (업종 맞춤)</button>
+      <button class="foot-btn" id="casesBtn" data-testid="cases-btn">🎬 활용 케이스 (1클릭 적용)</button>
       <button class="foot-btn" id="teamsBtn" data-testid="teams-btn">🗂️ Teams · Market</button>
       <button class="foot-btn" id="guideBtn" data-testid="guide-btn">📱 실행 · 모바일 가이드</button>
       <button class="foot-btn" id="settingsBtn" data-testid="settings-btn">⚙️ 설정</button>
@@ -209,6 +210,18 @@
 </div>
 
 <!-- ─────────── 모달: Teams (Market / Import) ─────────── -->
+<!-- ─────────── 모달: 활용 케이스 갤러리 ─────────── -->
+<div class="modal" id="casesModal" data-testid="cases-modal" hidden>
+  <div class="modal-card wide">
+    <div class="modal-head">
+      <h2>🎬 활용 케이스</h2>
+      <button class="icon-btn" data-cases-close type="button" aria-label="닫기">✕</button>
+    </div>
+    <p class="muted small" style="margin:0 0 14px">업종을 고르면 그 일에 맞는 봇 팀·채널·추천 업무·예시 대화가 한 번에 세팅됩니다. 만든 뒤에는 자유롭게 고치면 됩니다.</p>
+    <div class="cases-grid" id="caseGrid" data-testid="case-grid"></div>
+  </div>
+</div>
+
 <div class="modal" id="teamsModal" data-testid="teams-modal" hidden>
   <div class="modal-card wide">
     <div class="modal-head">

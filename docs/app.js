@@ -6,8 +6,8 @@
 /* ───────────────────────── 릴리스 설정 (여기 한 곳만 고치면 됩니다) ───────────────────────── */
 const RELEASE = {
   repo: 'CM-jccho/moa-hive',
-  version: '0.3.2',
-  tag: 'v0.3.2',
+  version: '0.3.3',
+  tag: 'v0.3.3',
 };
 
 /* ───────────────────────── 공통 유틸 ───────────────────────── */
@@ -268,6 +268,107 @@ const CHIEF = {
   summary: '목적을 3단계로 쪼개 하위 에이전트에게 위임하고, 산출물을 취합해 결론과 다음 액션만 보고합니다.',
   keywords: ['총괄', '오케스트라', '전체', '요약', '진행'],
 };
+
+const CASES = [
+  {
+    id: 'store', emoji: '🏪', label: '자영업·동네 매장', channel: '매장-마케팅',
+    tagline: '홍보글·리뷰 답글·단골 이벤트·매출 정리',
+    starter: '이번 주 매장 홍보글 3편과 단골 이벤트 문구, 리뷰 답글 초안을 준비해 주세요.',
+    bots: [
+      { name: '이벤트 기획 봇', emoji: '🎪', role: 'pm', summary: '단골 이벤트와 프로모션을 비용·준비 시간과 함께 기획합니다.', tasks: ['이번 주 단골 이벤트 기획', '비용·준비 시간 계산', '재방문 확인 방법 정리'] },
+      { name: '홍보글 봇', emoji: '📣', role: 'content', summary: '동네 말투로 짧고 담백한 홍보글을 씁니다.', tasks: ['이번 주 홍보글 3편', '인스타 스토리 문구', '네이버 플레이스 소개글'] },
+      { name: '리뷰 케어 봇', emoji: '⭐', role: 'research', summary: '리뷰 답글 초안을 만들고 민감한 리뷰는 표시합니다.', tasks: ['새 리뷰 답글 초안', '별점 3점 이하 표시', '반복 불만 정리'] },
+      { name: '매출 정리 봇', emoji: '🧾', role: 'research', summary: '주간 매출을 표로 정리하고 다음 프로모션을 제안합니다.', tasks: ['주간 매출 표 정리', '다음 주 프로모션 후보', '목표 대비 차이 계산'] },
+    ],
+    example: [
+      { from: 'user', text: '이번 주 단골 이벤트 문구 만들어줘. 커피집이고 20~30대 손님이 많아.' },
+      { from: '이벤트 기획 봇', text: '**결론** — “오후 3시, 단골만 아는 1+1”로 갑니다. 월~목 15~17시 아메리카노 1+1, 문자·스토리용 2안을 준비했습니다.' },
+      { from: '리뷰 케어 봇', text: '이번 주 새 리뷰 4건 답글 초안을 준비했습니다. 별점 3점 이하는 사장님 확인 후 올리게 따로 표시했습니다.' },
+    ],
+  },
+  {
+    id: 'office', emoji: '💼', label: '직장인·팀 업무', channel: '팀-업무',
+    tagline: '회의록 3줄 요약·주간 보고·메일 초안·일정',
+    starter: '오늘 회의 메모를 3줄로 요약하고, 이번 주 보고서 초안과 답장할 메일 2건을 정리해 주세요.',
+    bots: [
+      { name: '회의록 봇', emoji: '📝', role: 'pm', summary: '회의 메모를 결정·할 일·담당자로 짧게 요약합니다.', tasks: ['회의 메모 3줄 요약', '할 일·담당자 정리', '결정 사항만 뽑기'] },
+      { name: '리포트 봇', emoji: '📊', role: 'research', summary: '주간 보고서를 지표·이슈·다음 계획으로 씁니다.', tasks: ['주간 보고 초안', '지표 3개 정리', '다음 주 계획 제안'] },
+      { name: '메일 봇', emoji: '✉️', role: 'content', summary: '답장이 밀린 메일을 결론 중심으로 초안화합니다.', tasks: ['답장 메일 2건 초안', '제안 메일 첫 문장', '일정 조율 답장'] },
+      { name: '일정 봇', emoji: '🗓️', role: 'pm', summary: '일정 충돌을 찾아 대안 시간과 마감을 정리합니다.', tasks: ['이번 주 일정 충돌 확인', '마감 역산', '대안 시간 제안'] },
+    ],
+    example: [
+      { from: 'user', text: '이 회의 메모 3줄로 요약하고 할 일만 뽑아줘.' },
+      { from: '회의록 봇', text: '**3줄 요약**\\n1. 이번 달 목표는 재구매율 5%p 상승\\n2. 결제 실패 문의를 우선 수정\\n3. 다음 주 화요일까지 담당자별 초안 공유' },
+      { from: '리포트 봇', text: '주간 보고 초안도 붙여 뒀습니다 — 지표 3개, 이슈 2개, 다음 주 계획 2개 구성입니다.' },
+    ],
+  },
+  {
+    id: 'seller', emoji: '🛍️', label: '스마트스토어·온라인 셀러', channel: '스토어-운영',
+    tagline: '상세페이지 카피·CS 답변·프로모션·리뷰 분석',
+    starter: '이번 주 프로모션을 기획하고, 자주 오는 CS 문의 5개 답변 템플릿과 상세페이지 카피 3안을 만들어 주세요.',
+    bots: [
+      { name: '상세페이지 봇', emoji: '🖼️', role: 'content', summary: '상품 장점을 장면과 숫자로 보여주는 카피를 씁니다.', tasks: ['상세페이지 카피 3안', '첫 문장 후킹', '구매 이유 정리'] },
+      { name: 'CS 답변 봇', emoji: '💬', role: 'research', summary: '자주 오는 문의를 답변 템플릿으로 만듭니다.', tasks: ['CS 답변 5종 템플릿', '교환·환불 안내', '예외 상황 표시'] },
+      { name: '프로모션 봇', emoji: '🎁', role: 'pm', summary: '재고·마진을 고려한 프로모션을 기획합니다.', tasks: ['이번 주 프로모션 기획', '할인·마진 계산', '중단 기준 정하기'] },
+      { name: '리뷰 분석 봇', emoji: '🔍', role: 'research', summary: '리뷰를 장점·불만·개선 요청으로 나눕니다.', tasks: ['리뷰 50건 분류', '반복 불만 찾기', '상품 개선 항목 정리'] },
+    ],
+    example: [
+      { from: 'user', text: '신상품 상세페이지 카피 3안 써줘. 30대 여성, 가벼운 가방.' },
+      { from: '상세페이지 봇', text: '**카피 3안** — “가볍게, 그러나 든든하게” / “출근부터 주말까지” / “가방 안이 정리되는 이유”로 잡았습니다.' },
+      { from: 'CS 답변 봇', text: '배송·교환·사이즈 문의 답변 템플릿 5종을 준비했습니다. 교환 안내는 정책 문구 그대로 넣었습니다.' },
+    ],
+  },
+  {
+    id: 'creator', emoji: '🎬', label: '1인 크리에이터·콘텐츠', channel: '콘텐츠-기획',
+    tagline: '소재 발굴·쇼츠 대본·댓글 소통·디지털 상품',
+    starter: '다음 주 콘텐츠 소재 10개와 쇼츠 대본 3편, 댓글 답글 초안과 디지털 상품 아이디어 3개를 준비해 주세요.',
+    bots: [
+      { name: '소재 발굴 봇', emoji: '🔭', role: 'content', summary: '저장·공유를 부르는 소재를 찾아 캘린더로 묶습니다.', tasks: ['다음 주 소재 10개', '주간 발행 캘린더', '저장 부르는 주제 고르기'] },
+      { name: '대본 봇', emoji: '🎞️', role: 'content', summary: '쇼츠 대본을 첫 3초 훅과 컷 지시로 씁니다.', tasks: ['쇼츠 대본 3편', '첫 3초 훅 2안', '촬영 컷 지시'] },
+      { name: '댓글 소통 봇', emoji: '💌', role: 'research', summary: '댓글을 읽고 답글 초안과 다음 영상 아이디어를 뽑습니다.', tasks: ['댓글 답글 초안', '다음 영상 아이디어', '반응 좋은 주제 표시'] },
+      { name: '디지털 상품 봇', emoji: '📦', role: 'pm', summary: '콘텐츠를 템플릿·전자책으로 기획합니다.', tasks: ['디지털 상품 3안', '가격·구성 정리', '출시 순서 제안'] },
+    ],
+    example: [
+      { from: 'user', text: '다음 주 쇼츠 소재 10개 뽑고, 그중 3개 대본 써줘.' },
+      { from: '소재 발굴 봇', text: '**소재 10개** — “3분 아침 루틴”, “안 쓰는 물건 5개”, “구독 대신 이거”처럼 저장을 부르는 주제로 골랐습니다.' },
+      { from: '대본 봇', text: '3편 대본을 첫 3초 훅 → 문제 → 해결 → CTA 구조로 준비했습니다. 촬영 컷도 함께 적었습니다.' },
+    ],
+  },
+  {
+    id: 'freelancer', emoji: '🧑‍💻', label: '프리랜서·1인 대표', channel: '일-파이프라인',
+    tagline: '제안서·견적서·마감 리마인드·포트폴리오',
+    starter: '이번 주 신규 고객 제안서 초안과 견적 3안, 진행 중 프로젝트 마감 리마인드 메일을 준비해 주세요.',
+    bots: [
+      { name: '제안서 봇', emoji: '📄', role: 'pm', summary: '고객 문제 → 해결 → 범위 → 일정 → 비용 순서로 씁니다.', tasks: ['제안서 5장 초안', '작업 범위 정리', '일정·비용 표'] },
+      { name: '견적 봇', emoji: '🧮', role: 'pm', summary: '견적 3안과 양보 범위를 만듭니다.', tasks: ['견적 3안', '양보 범위 정리', '빠진 비용 점검'] },
+      { name: '리마인드 봇', emoji: '⏰', role: 'content', summary: '마감·회신 기한을 놓치지 않게 짧게 씁니다.', tasks: ['마감 리마인드 메일', '회신 재촉 문구', '이번 주 마감 정리'] },
+      { name: '포트폴리오 봇', emoji: '🗂️', role: 'content', summary: '완료한 일을 문제·해결·성과 문장으로 정리합니다.', tasks: ['포트폴리오 문장 정리', '성과 숫자 뽑기', '사례 3건 구성'] },
+    ],
+    example: [
+      { from: 'user', text: '이번 주 신규 고객 제안서랑 견적 3안 준비해줘. 웹사이트 리뉴얼 건이야.' },
+      { from: '제안서 봇', text: '**제안 목차** — 현황 문제 → 리뉴얼 방향 → 작업 범위 → 일정 → 비용. 5장으로 잡았습니다.' },
+      { from: '견적 봇', text: '견적 3안(기본·표준·확장)과 양보 범위를 정리했습니다. 표준안을 기본 추천으로 두었습니다.' },
+    ],
+  },
+  {
+    id: 'product', emoji: '🚀', label: '프로덕트·스타트업 팀', channel: '프로덕트-스쿼드',
+    tagline: '프로토타입 → 빌드 → 스위프 → 그로스 → 메인테인',
+    starter: '2주 안에 낼 MVP 범위를 정하고, 프로토타입 → 구현 → 정리 → 첫 100명 실험 → 운영 점검 순서로 움직여 주세요.',
+    bots: [
+      { name: 'MOA Chief', emoji: '🧠', role: 'chief', isChief: true, summary: '차분하고 명쾌한 팀장 — 다섯 명에게 일을 나눠 맡기고 산출물만 취합합니다.', tasks: ['이번 주 팀 우선순위 정리', '다섯 명 산출물 취합', '결정할 것만 골라주기'] },
+      { name: 'Prototyper', emoji: '💡', role: 'content', summary: '아이디어를 끊임없이 쏟아내는 발산형입니다.', tasks: ['새 아이디어 10개', '가능성 시나리오', '컨셉 3안 제안'] },
+      { name: 'Builder', emoji: '🔨', role: 'dev', summary: '아이디어를 제품과 화면으로 바꾸는 실행형입니다.', tasks: ['화면 실제로 만들기', '구현 순서 정리', '프로토타입 붙이기'] },
+      { name: 'Sweeper', emoji: '🧹', role: 'dev', summary: '화면과 코드를 깔끔하게 정리하는 정돈형입니다.', tasks: ['중복 정리', '군더더기 빼기', '정리 체크리스트'] },
+      { name: 'Grower', emoji: '🌱', role: 'content', summary: '제품을 사람들이 찾게 키우는 성장형입니다.', tasks: ['첫 100명 실험', '채널 실험 설계', '지표 보고 다음 실험'] },
+      { name: 'Maintainer', emoji: '🛡️', role: 'dev', summary: '커진 서비스를 안전하고 빠르게 지키는 수호형입니다.', tasks: ['장애 위험 점검', '모니터링·백업', '보안·속도 점검'] },
+    ],
+    example: [
+      { from: 'user', text: '2주 안에 낼 MVP 범위 정하고 바로 프로토타입 만들어줘.' },
+      { from: 'Prototyper', text: '**컨셉 3안** — 예약형, 기록형, 공유형으로 넓혀 봤습니다. 2주 안에는 기록형이 가장 가볍습니다.' },
+      { from: 'Builder', text: '기록형 기준으로 화면 3개와 저장 흐름을 만들었습니다. 오늘 안에 눌러볼 수 있게 붙였습니다.' },
+    ],
+  },
+];
 
 const ROLE_TASKS = {
   pm: ['이번 주 목표를 PRD 초안으로 쪼개기', '회의록을 액션 아이템으로 정리', '릴리즈 전 QA 체크리스트 만들기'],
@@ -953,6 +1054,74 @@ function applyPlan() {
   toast('STG에 팀을 만들었습니다 — #' + channel.name);
 }
 
+/* ───────────────────────── 활용 케이스 갤러리 ───────────────────────── */
+function renderCaseGallery() {
+  const box = $('#caseGallery');
+  if (!box) return;
+  box.innerHTML = CASES.map((c) => {
+    const names = c.bots.map((b) => b.emoji + ' ' + b.name).join(' · ');
+    const quote = (c.example || []).find((e) => e.from !== 'user');
+    const q = quote ? String(quote.text).split('\n')[0].slice(0, 72) : '';
+    return '<article class="case-tile" data-case-id="' + esc(c.id) + '" data-testid="case-tile">' +
+      '<div class="ct-top"><span class="ct-emoji">' + esc(c.emoji) + '</span><div><b>' + esc(c.label) + '</b><span>' + esc(c.tagline) + '</span></div></div>' +
+      '<div class="ct-bots">' + esc(names) + '</div>' +
+      (q ? '<div class="ct-quote">“' + esc(q) + (q.length >= 72 ? '…' : '') + '”</div>' : '') +
+      '<button class="btn btn-sm btn-primary" type="button" data-apply-case="' + esc(c.id) + '">이 케이스 바로 적용</button>' +
+      '</article>';
+  }).join('');
+}
+
+function applyCase(id) {
+  const c = CASES.find((x) => x.id === id);
+  if (!c) return;
+  const bots = c.bots.map((spec) => {
+    let bot = state.bots.find((b) => b.name === spec.name);
+    if (bot) return bot;
+    bot = makeBot(Object.assign({ id: uid('bot') }, spec));
+    if (spec.tasks) bot.tasks = spec.tasks.slice();
+    state.bots.push(bot);
+    return bot;
+  });
+  let ch = state.channels.find((x) => x.name === c.channel);
+  if (!ch) {
+    ch = { id: uid('ch'), name: c.channel, mode: 'auto', topic: c.tagline, members: [], orchestrator: bots.some((b) => b.isChief) };
+    state.channels.push(ch);
+    state.messages[ch.id] = [];
+  }
+  ch.members = Array.from(new Set([].concat(ch.members || [], bots.map((b) => b.id))));
+  pushMessage(ch.id, {
+    kind: 'system',
+    name: 'MOA Hive',
+    text: '**' + c.label + '** 케이스를 세팅했습니다 — 봇 ' + bots.length + '명 · #' + c.channel + '. 아래 예시 대화를 그대로 이어서 써 보세요.',
+  });
+  pushMessage(ch.id, {
+    kind: 'bot',
+    botId: bots[0].id,
+    name: bots[0].name,
+    emoji: bots[0].emoji,
+    role: bots[0].role,
+    text: c.starter + '\n\n_추천 업무는 오른쪽 역할 카드에서 바로 누를 수 있습니다._',
+  });
+  (c.example || []).forEach((ex) => {
+    if (ex.from === 'user') {
+      pushMessage(ch.id, { kind: 'user', name: '나', text: ex.text });
+    } else {
+      const b = bots.find((x) => x.name === ex.from);
+      if (b) pushMessage(ch.id, { kind: 'bot', botId: b.id, name: b.name, emoji: b.emoji, role: b.role, text: ex.text });
+    }
+  });
+  state.env = 'stg';
+  state.activeChannelId = ch.id;
+  state.activeBotId = (bots.find((b) => b.isChief) || bots[0]).id;
+  state.officeBusy = null;
+  state.typingBotId = null;
+  closeWizard();
+  renderAll(true);
+  const demo = $('#demo');
+  if (demo) demo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  toast(c.label + ' 팀을 세팅했습니다 — #' + c.channel);
+}
+
 /* ───────────────────────── 채팅 · 오케스트레이션 ───────────────────────── */
 function pushMessage(channelId, msg) {
   if (!state.messages[channelId]) state.messages[channelId] = [];
@@ -1368,6 +1537,15 @@ function bindDemo() {
     });
   }
 
+  const gallery = $('#caseGallery');
+  if (gallery) {
+    gallery.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-apply-case]');
+      const tile = e.target.closest('[data-case-id]');
+      if (btn) applyCase(btn.getAttribute('data-apply-case'));
+      else if (tile) applyCase(tile.getAttribute('data-case-id'));
+    });
+  }
   const adminBtn = $('#adminToggle');
   if (adminBtn) adminBtn.addEventListener('click', () => setAdmin(!adminMode));
   const reset = $('#resetDemo');
@@ -1441,6 +1619,7 @@ function boot() {
   setupGuideTabs();
   setupInstall();
   registerServiceWorker();
+  renderCaseGallery();
   bindDemo();
   applyAdminMode();
   renderAll(false);

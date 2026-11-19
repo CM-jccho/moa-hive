@@ -266,6 +266,17 @@ def desktop(pw):
 
     page.screenshot(path=os.path.join(SHOTS, "desktop-main.png"), full_page=False)
 
+    # 활용 케이스 갤러리 → 1클릭 적용
+    page.click("[data-testid=cases-btn]")
+    page.wait_for_selector("[data-testid=cases-modal]:not([hidden])")
+    check("케이스 카드 6개", page.locator("[data-testid=case-card]").count() == 6,
+          str(page.locator("[data-testid=case-card]").count()))
+    page.locator('[data-case-apply="case-office"]').click()
+    page.wait_for_timeout(1400)
+    check("케이스 적용 → 채널", "팀-업무" in page.inner_text("[data-testid=channel-list]"),
+          page.inner_text("[data-testid=channel-list]")[:120])
+    check("케이스 예시 대화", "회의" in page.inner_text("[data-testid=message-list]"))
+
     # 레이아웃 검증
     layout = page.evaluate("""() => {
       const s = document.querySelector('.sidebar').getBoundingClientRect();

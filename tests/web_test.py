@@ -71,14 +71,14 @@ def desktop(pw):
     check("macOS·Windows 다운로드 카드", page.locator(".dl-card.mac").count() == 1 and page.locator(".dl-card.win").count() == 1)
     mac = page.get_attribute('[data-dl="mac-universal"]', "href")
     win = page.get_attribute('[data-dl="win-setup"]', "href")
-    check("mac .dmg 자산 링크", "/releases/download/v0.3.2/" in mac and ".dmg" in mac, str(mac))
-    check("win .exe 자산 링크", "/releases/download/v0.3.2/" in win and ".exe" in win, str(win))
+    check("mac .dmg 자산 링크", "/releases/download/v0.3.3/" in mac and ".dmg" in mac, str(mac))
+    check("win .exe 자산 링크", "/releases/download/v0.3.3/" in win and ".exe" in win, str(win))
     check("start.command 링크", "start.command" in page.get_attribute('[data-dl="mac-script"]', "href"))
     check("start.bat 링크", "start.bat" in page.get_attribute('[data-dl="win-script"]', "href"))
 
     # 설치 탭
     page.click('[data-guide="win"]')
-    check("Windows 설치 안내", "MOA-Hive-Setup-0.3.2.exe" in page.inner_text('[data-pane="win"]'))
+    check("Windows 설치 안내", "MOA-Hive-Setup-0.3.3.exe" in page.inner_text('[data-pane="win"]'))
     page.click('[data-guide="mac"]')
     check("개발자용 안내 접이식", page.locator("details.pro").count() >= 1 and "node server.js" in page.locator("details.pro").first.text_content())
 
@@ -178,6 +178,18 @@ def desktop(pw):
     page.wait_for_timeout(400)
     check("PROD 승격 v0.3.0", "v0.3.0" in page.inner_text("#relProd"), page.inner_text("#relProd"))
     check("히스토리 기록", "웹 데모" in page.inner_text("#historyList"))
+
+    # 활용 케이스 갤러리 → 1클릭 적용
+    page.locator("#cases").scroll_into_view_if_needed()
+    check("케이스 카드 6개", page.locator("[data-testid=case-tile]").count() == 6,
+          str(page.locator("[data-testid=case-tile]").count()))
+    check("케이스 적용 버튼", page.locator("[data-apply-case]").count() == 6)
+    page.click('[data-apply-case="store"]')
+    page.wait_for_timeout(600)
+    check("케이스 적용 → 채널", page.inner_text("#demoChannelName") == "#매장-마케팅", page.inner_text("#demoChannelName"))
+    check("케이스 예시 대화", "단골" in page.inner_text("#demoMessages"))
+    check("케이스 팀 인스펙터", page.inner_text("#inspName") in ("이벤트 기획 봇", "리뷰 케어 봇", "홍보글 봇", "매출 정리 봇"), page.inner_text("#inspName"))
+    check("케이스 오피스 반영", page.locator("[data-testid=office-char]").count() >= 4)
 
     # 반응형 · 콘솔
     check("데스크톱 가로 오버플로 없음", overflow(page) <= 0, str(overflow(page)))

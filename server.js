@@ -1271,6 +1271,7 @@ function applyConsult(profile, pains) {
       persona: clampStr(String(b.persona || ''), 4000),
       cwd: ws,
       pinned: !!b.pinned,
+      isChief: !!b.isChief,
       color: '#7c9cff',
       keywords: Array.isArray(b.keywords) ? b.keywords.map(String).slice(0, 20) : [],
       createdAt: nowISO(),
@@ -1316,6 +1317,24 @@ function applyConsult(profile, pains) {
         kind: 'system',
         author: { type: 'system', name: 'MOA Hive 컨설턴트' },
         text: `선택한 고민: ${pains.map((x) => '· ' + x).join(' / ')} — 이 팀이 그 지점을 나눠 맡습니다.`,
+      });
+    }
+    if (Array.isArray(profile.example)) {
+      profile.example.forEach((ex) => {
+        if (!ex || !ex.text) return;
+        if (ex.from === 'user') {
+          pushMessage(main.id, { kind: 'text', author: { type: 'user', name: '나' }, text: String(ex.text) });
+        } else {
+          const botId = names[ex.from];
+          const bot = bots.find((b) => b.name === ex.from);
+          if (!bot) return;
+          pushMessage(main.id, {
+            kind: 'text',
+            author: { type: 'bot', botId, name: bot.name },
+            text: String(ex.text),
+            meta: { engine: 'example' },
+          });
+        }
       });
     }
   }
@@ -2088,6 +2107,8 @@ const server = http.createServer(async (req, res) => {
           why: c.why,
           usage: c.usage,
           starterPrompt: c.starterPrompt,
+          kind: c.kind || 'role',
+          example: c.example || [],
           teamName: c.team.name,
           bots: (c.team.bots || []).map((b) => ({ name: b.name, emoji: b.emoji, role: b.role })),
           channels: (c.team.channels || []).map((x) => ({ name: x.name, mode: x.mode })),

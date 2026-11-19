@@ -141,7 +141,11 @@ channels:
 
     print("\n[6] 팀 컨설팅 위자드")
     _, cf = call("/consult")
-    check("컨설팅 프로필 4종", len(cf["profiles"]) == 4, str(len(cf["profiles"])))
+    roles = [p for p in cf["profiles"] if p.get("kind", "role") != "case"]
+    cases = [p for p in cf["profiles"] if p.get("kind") == "case"]
+    check("컨설팅 역할 4종", len(roles) == 4, str(len(roles)))
+    check("활용 케이스 6종", len(cases) == 6, str(len(cases)))
+    check("케이스 예시 대화 포함", bool(cases[0].get("example")), str(cases[0].keys()))
     check("역할 라벨 포함", any(p["label"] == "기획 / PM" for p in cf["profiles"]))
     _, st = call("/state")
     before_bots, before_ch = len(st["bots"]), len(st["channels"])
