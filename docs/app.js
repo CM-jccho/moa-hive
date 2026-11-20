@@ -3,6 +3,8 @@
    정적 호스팅에서 그대로 재현합니다. 외부 라이브러리·CDN을 쓰지 않습니다. */
 'use strict';
 
+document.documentElement.classList.add('js');
+
 /* ───────────────────────── 릴리스 설정 (여기 한 곳만 고치면 됩니다) ───────────────────────── */
 const RELEASE = {
   repo: 'CM-jccho/moa-hive',
@@ -25,41 +27,41 @@ function detectLang() {
   return LANGS.indexOf(s) >= 0 ? s : 'ko';
 }
 let LANG = detectLang();
-const DICT = () => (LANG !== 'ko' && window.MOA_I18N ? window.MOA_I18N[LANG] : null);
+const DICT = () =>(LANG !== 'ko' && window.MOA_I18N ? window.MOA_I18N[LANG] : null);
 function LN(path, fallback) {
   const d = DICT();
   if (!d) return fallback;
-  const v = String(path).split('.').reduce((o, k) => (o == null ? o : o[k]), d);
+  const v = String(path).split('.').reduce((o, k) =>(o == null ? o : o[k]), d);
   return v == null || v === '' ? fallback : v;
 }
 function fmt(str, vars) {
-  return String(str).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] != null ? vars[k] : m));
+  return String(str).replace(/\{(\w+)\}/g, (m, k) =>(vars && vars[k] != null ? vars[k] : m));
 }
 /* 화면에 바로 그려지는 짧은 문구 — 사전(i18n.js)에 넣기 애매한 함수형 라벨 */
 const U = {
   en: {
-    designTitle: (n) => '🧠 MOA Chief + ' + n + ' agents — proposed team',
+    designTitle: (n) =>' MOA Chief + ' + n + ' agents — proposed team',
     purpose: 'Goal', apply: 'Create this team in STG', redo: 'Design again',
     openRole: 'Open role card', packCta: 'Get the setup pack on Latpeed →',
-    applyCase: 'Apply this case', packBtn: '🎁 Setup pack', reportBot: 'Weekly report bot',
+    applyCase: 'Apply this case', packBtn: ' Setup pack', reportBot: 'Weekly report bot',
     adminOn: 'Admin mode', adminOff: 'Admin off',
     briefSteps: ['Take the goal, lock the scope', 'Delegate to three agents', 'Combine outputs and report'],
     roleSummary: { pm: 'Keeps requirements, schedule and reports in writing.', dev: 'Builds, checks and tidies the actual work.', content: 'Writes and plans the things you publish.', research: 'Checks the facts and marks what still needs checking.', chief: 'Splits the work and reports only the result.' },
   },
   zh: {
-    designTitle: (n) => '🧠 MOA Chief + ' + n + ' 个机器人 — 团队方案',
+    designTitle: (n) =>' MOA Chief + ' + n + ' 个机器人 — 团队方案',
     purpose: '目标', apply: '在 STG 里建这个团队', redo: '重新设计',
     openRole: '打开角色卡', packCta: '在 Latpeed 购买配置包 →',
-    applyCase: '应用这个场景', packBtn: '🎁 配置包', reportBot: '周报机器人',
+    applyCase: '应用这个场景', packBtn: ' 配置包', reportBot: '周报机器人',
     adminOn: '管理员模式', adminOff: '关闭管理员',
     briefSteps: ['接收目标、确定范围', '分派给三个机器人', '汇总产出并汇报'],
     roleSummary: { pm: '把需求、日程和汇报都整理成文档。', dev: '实际动手做、验证和整理。', content: '写和策划要发布的内容。', research: '核对依据，并标出待确认项。', chief: '分工并把结果汇总报告。' },
   },
   ja: {
-    designTitle: (n) => '🧠 MOA Chief + エージェント' + n + '名 — チーム案',
+    designTitle: (n) =>' MOA Chief + エージェント' + n + '名 — チーム案',
     purpose: '目標', apply: 'このチームをSTGに作る', redo: 'もう一度設計',
     openRole: '役割カードを開く', packCta: 'Latpeedでセットアップパックを購入 →',
-    applyCase: 'この事例を使う', packBtn: '🎁 セットアップパック', reportBot: '週次レポート',
+    applyCase: 'この事例を使う', packBtn: ' セットアップパック', reportBot: '週次レポート',
     adminOn: '管理者モード', adminOff: '管理者オフ',
     briefSteps: ['目的を受け取り範囲を確定', '3つのエージェントに委任', '成果をまとめて報告'],
     roleSummary: { pm: '要件・日程・レポートを文書に残します。', dev: '実際に作り、検証し、整理します。', content: '公開するものを書いて企画します。', research: '根拠を確認し、未確認の項目を明示します。', chief: '仕事を分けて結果だけを報告します。' },
@@ -72,17 +74,17 @@ function u(key, arg) {
 }
 
 /* ───────────────────────── 공통 유틸 ───────────────────────── */
-const $ = (sel, root) => (root || document).querySelector(sel);
-const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+const $ = (sel, root) =>(root || document).querySelector(sel);
+const $$ = (sel, root) =>Array.from((root || document).querySelectorAll(sel));
 const esc = (s) =>
   String(s == null ? '' : s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const uid = (p) => p + '_' + Math.random().toString(36).slice(2, 9);
-const nowLabel = () => {
+const sleep = (ms) =>new Promise((r) =>setTimeout(r, ms));
+const uid = (p) =>p + '_' + Math.random().toString(36).slice(2, 9);
+const nowLabel = () =>{
   const d = new Date();
   return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
 };
@@ -98,7 +100,7 @@ function md(src) {
   const lines = esc(src).split('\n');
   const out = [];
   let list = null;
-  const closeList = () => {
+  const closeList = () =>{
     if (list) {
       out.push('</' + list + '>');
       list = null;
@@ -148,28 +150,28 @@ function toast(message) {
   el.textContent = message;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+  toastTimer = setTimeout(() =>el.classList.remove('show'), 3200);
 }
 
 /* ───────────────────────── 언어 전환 (URL ?lang= · localStorage) ───────────────────────── */
 function captureKoText() {
-  $$('[data-en]').forEach((el) => { if (!el.hasAttribute('data-ko')) el.setAttribute('data-ko', el.textContent); });
-  $$('[data-en-html]').forEach((el) => { if (!el.hasAttribute('data-ko-html')) el.setAttribute('data-ko-html', el.innerHTML); });
-  $$('[data-en-placeholder]').forEach((el) => { if (!el.hasAttribute('data-ko-placeholder')) el.setAttribute('data-ko-placeholder', el.getAttribute('placeholder') || ''); });
+  $$('[data-en]').forEach((el) =>{ if (!el.hasAttribute('data-ko')) el.setAttribute('data-ko', el.textContent); });
+  $$('[data-en-html]').forEach((el) =>{ if (!el.hasAttribute('data-ko-html')) el.setAttribute('data-ko-html', el.innerHTML); });
+  $$('[data-en-placeholder]').forEach((el) =>{ if (!el.hasAttribute('data-ko-placeholder')) el.setAttribute('data-ko-placeholder', el.getAttribute('placeholder') || ''); });
 }
 
 function applyDomLang() {
-  $$('[data-en]').forEach((el) => {
+  $$('[data-en]').forEach((el) =>{
     const ko = el.getAttribute('data-ko');
     const v = LANG === 'ko' ? ko : (el.getAttribute('data-' + LANG) || ko);
     if (v != null) el.textContent = v;
   });
-  $$('[data-en-html]').forEach((el) => {
+  $$('[data-en-html]').forEach((el) =>{
     const ko = el.getAttribute('data-ko-html');
     const v = LANG === 'ko' ? ko : (el.getAttribute('data-' + LANG + '-html') || ko);
     if (v != null) el.innerHTML = v;
   });
-  $$('[data-en-placeholder]').forEach((el) => {
+  $$('[data-en-placeholder]').forEach((el) =>{
     const ko = el.getAttribute('data-ko-placeholder');
     const v = LANG === 'ko' ? ko : (el.getAttribute('data-' + LANG + '-placeholder') || ko);
     if (v != null) el.setAttribute('placeholder', v);
@@ -178,7 +180,7 @@ function applyDomLang() {
 }
 
 function syncLangButtons() {
-  $$('.lang-switch [data-lang]').forEach((b) => {
+  $$('.lang-switch [data-lang]').forEach((b) =>{
     const on = b.getAttribute('data-lang') === LANG;
     b.classList.toggle('is-active', on);
     b.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -208,7 +210,7 @@ function setLang(lang) {
 let packContext = null;
 
 function updatePackLinks() {
-  $$('[data-pack-link]').forEach((a) => { a.href = PACK_URL; });
+  $$('[data-pack-link]').forEach((a) =>{ a.href = PACK_URL; });
 }
 
 function openPack(ctx) {
@@ -239,8 +241,8 @@ function renderPack() {
   const d = DICT();
   const p = (d && d.pack) || null;
   const ctx = packContext || { bots: [] };
-  const set = (id, text) => { const el = $('#' + id); if (el) el.textContent = text; };
-  set('packTitle', (p && p.title) || '🎁 이 팀을 내 ChatGPT · Claude에 그대로 쓰기');
+  const set = (id, text) =>{ const el = $('#' + id); if (el) el.textContent = text; };
+  set('packTitle', (p && p.title) || ' 이 팀을 내 ChatGPT · Claude에 그대로 쓰기');
   set('packSub', (p && p.sub) || '세팅 팩 — 한 번 붙여넣으면 3분 만에 준비됩니다.');
   set('packBuy', packCta());
   set('packPrice', (p && p.price) || '얼리버드 9,900원 · 프롬프트 50개 · 평생 업데이트');
@@ -251,7 +253,7 @@ function renderPack() {
   if (team) {
     const bots = ctx.bots || [];
     team.innerHTML = (ctx.name ? '<div class="pack-team-name">' + esc(ctx.name) + '</div>' : '') +
-      bots.map((b) => '<span class="pack-chip">' + esc(b.emoji || '🤖') + ' ' + esc(b.name) + '</span>').join('');
+      bots.map((b) =>'<span class="pack-chip">' + esc(b.emoji || '') + ' ' + esc(b.name) + '</span>').join('');
   }
   const steps = $('#packSteps');
   if (steps) {
@@ -260,7 +262,7 @@ function renderPack() {
       ['ChatGPT(Custom GPT·Projects) 또는 Claude(Projects)에 붙여넣기', '팀당 지침 블록 하나입니다. 한·영 지침이 함께 들어 있습니다.'],
       ['프롬프트 5개로 바로 시작', '각 프롬프트는 오늘 바로 보낼 수 있는 초안을 만듭니다.'],
     ];
-    steps.innerHTML = rows.map((r) => '<li><b>' + esc(r[0]) + '</b><span>' + esc(r[1]) + '</span></li>').join('');
+    steps.innerHTML = rows.map((r) =>'<li><b>' + esc(r[0]) + '</b><span>' + esc(r[1]) + '</span></li>').join('');
   }
   updatePackLinks();
 }
@@ -281,7 +283,7 @@ function applyReleaseLinks() {
     'win-zip': 'https://github.com/' + RELEASE.repo + '/archive/refs/heads/main.zip',
     releases: 'https://github.com/' + RELEASE.repo + '/releases',
   };
-  $$('[data-dl]').forEach((a) => {
+  $$('[data-dl]').forEach((a) =>{
     const key = a.getAttribute('data-dl');
     if (!map[key]) return;
     a.href = map[key];
@@ -296,15 +298,15 @@ function applyReleaseLinks() {
 function setupGuideTabs() {
   const tabs = $$('[data-guide]');
   const panes = $$('.guide-pane');
-  tabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
+  tabs.forEach((tab) =>{
+    tab.addEventListener('click', () =>{
       const key = tab.getAttribute('data-guide');
-      tabs.forEach((t) => {
+      tabs.forEach((t) =>{
         const on = t === tab;
         t.classList.toggle('is-active', on);
         t.setAttribute('aria-selected', on ? 'true' : 'false');
       });
-      panes.forEach((p) => {
+      panes.forEach((p) =>{
         p.hidden = p.getAttribute('data-pane') !== key;
       });
     });
@@ -315,16 +317,16 @@ function setupInstall() {
   let deferred = null;
   const btn = $('#installBtn');
   const fab = $('#installFab');
-  const show = () => {
+  const show = () =>{
     if (btn) btn.hidden = false;
     if (fab) fab.classList.add('show');
   };
-  window.addEventListener('beforeinstallprompt', (e) => {
+  window.addEventListener('beforeinstallprompt', (e) =>{
     e.preventDefault();
     deferred = e;
     show();
   });
-  const ask = async () => {
+  const ask = async () =>{
     if (!deferred) {
       toast(LN('toasts.installHint', '브라우저 메뉴에서 “홈 화면에 추가” 또는 “앱 설치”를 선택해 주세요.'));
       return;
@@ -339,7 +341,7 @@ function setupInstall() {
   };
   if (btn) btn.addEventListener('click', ask);
   if (fab) fab.addEventListener('click', ask);
-  window.addEventListener('appinstalled', () => {
+  window.addEventListener('appinstalled', () =>{
     if (btn) btn.hidden = true;
     if (fab) fab.classList.remove('show');
     toast(LN('toasts.installed', '홈 화면에 추가되었습니다.'));
@@ -353,8 +355,8 @@ function setupInstall() {
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   if (!/^https?:$/.test(location.protocol)) return;
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  window.addEventListener('load', () =>{
+    navigator.serviceWorker.register('./sw.js').catch(() =>{});
   });
 }
 
@@ -363,83 +365,83 @@ const CONSULT = [
   {
     id: 'pm',
     label: '기획 / PM',
-    emoji: '🧭',
+    emoji: '',
     tagline: '요구사항·일정·리포트를 문서로 남기는 기획팀',
     pains: ['요구사항이 문서로 안 남는다', '일정과 우선순위가 계속 밀린다', '회의 후 액션이 흩어진다'],
     why: '기획자는 “정리하는 일”에 시간을 다 씁니다. 이 조합은 정리를 봇이 맡고, 사람은 결정만 하도록 역할을 나눕니다.',
     usage: ['이번 주 목표를 던지면 PRD 초안과 3일 일정으로 쪼갭니다.', '회의록을 붙이면 액션 아이템을 티켓 형태로 정리합니다.', '릴리즈 전 QA 체크리스트를 요청하고 승인 카드로 실행을 확인합니다.'],
     channel: '기획-본진',
     agents: [
-      { name: '기획PM 봇', emoji: '🧭', role: 'pm', task: '요구사항·범위 분해', summary: '요청을 3개 유저스토리와 3일 일정으로 쪼갰습니다.', persona: '요구사항을 PRD·유저스토리·일정으로 쪼개고 리스크를 먼저 짚는다.' },
-      { name: '리포트 봇', emoji: '📊', role: 'research', task: '지표·진행률 리포트', summary: '주간 지표와 진행률을 한 장으로 정리했습니다.', persona: '주간 지표와 진행률을 한 장 리포트로 정리한다. 숫자에는 기준일과 출처를 붙인다.' },
-      { name: '리서치 봇', emoji: '🔎', role: 'research', task: '근거·경쟁사 확인', summary: '경쟁 3곳의 가격대와 확인 필요 항목을 정리했습니다.', persona: '시장·경쟁사 조사. 사실과 추정을 구분하고 “확인 필요” 항목을 남긴다.' },
-      { name: 'QA·릴리즈 봇', emoji: '🧪', role: 'dev', task: '검증 시나리오', summary: '회귀 체크리스트 6항목을 만들었습니다.', persona: '릴리즈 전 체크리스트와 회귀 시나리오를 만든다.' },
+      { name: '기획PM 봇', emoji: '', role: 'pm', task: '요구사항·범위 분해', summary: '요청을 3개 유저스토리와 3일 일정으로 쪼갰습니다.', persona: '요구사항을 PRD·유저스토리·일정으로 쪼개고 리스크를 먼저 짚는다.' },
+      { name: '리포트 봇', emoji: '', role: 'research', task: '지표·진행률 리포트', summary: '주간 지표와 진행률을 한 장으로 정리했습니다.', persona: '주간 지표와 진행률을 한 장 리포트로 정리한다. 숫자에는 기준일과 출처를 붙인다.' },
+      { name: '리서치 봇', emoji: '', role: 'research', task: '근거·경쟁사 확인', summary: '경쟁 3곳의 가격대와 확인 필요 항목을 정리했습니다.', persona: '시장·경쟁사 조사. 사실과 추정을 구분하고 “확인 필요” 항목을 남긴다.' },
+      { name: 'QA·릴리즈 봇', emoji: '', role: 'dev', task: '검증 시나리오', summary: '회귀 체크리스트 6항목을 만들었습니다.', persona: '릴리즈 전 체크리스트와 회귀 시나리오를 만든다.' },
     ],
   },
   {
     id: 'b2b',
     label: 'B2B 영업 · 제안',
-    emoji: '🤝',
+    emoji: '',
     tagline: '타깃 발굴부터 제안서·팔로업까지 붙는 영업팀',
     pains: ['제안서 쓰는 데 하루가 사라진다', '팔로업 타이밍을 놓친다', '가격·조건 협상 근거가 없다'],
     why: '영업은 “한 건을 끝까지 끌고 가는 힘”이 승부입니다. 발굴·제안·가격·팔로업을 네 봇이 나눠 들고, 담당자는 미팅에만 집중합니다.',
     usage: ['고객사 한 곳을 던지면 타깃 근거·제안 목차·가격 3안이 한 흐름으로 나옵니다.', '미팅 메모를 붙이면 24시간 안에 보낼 메일 초안이 나옵니다.', '가격 봇에게 “양보 범위”를 물어 협상선을 먼저 정해 둡니다.'],
     channel: '영업-파이프라인',
     agents: [
-      { name: '제안서 설계 봇', emoji: '📄', role: 'pm', task: '제안서 목차·논리 구성', summary: '고객 문제 → 해결 → 도입 효과 순서의 목차 5장을 잡았습니다.', persona: '고객의 문제 → 해결 → 도입 효과 → 일정·비용 순서로 과장 없이 제안서를 쓴다.' },
-      { name: '정산·매출 봇', emoji: '💰', role: 'research', task: '매출·정산 흐름 정리', summary: '입금·세금계산서·미수금 기준을 한 표로 정리했습니다.', persona: '매출·정산 데이터를 정리해 미수금과 마감일을 표시한다.' },
-      { name: '팔로업 봇', emoji: '✉️', role: 'content', task: '팔로업 문구 작성', summary: '미팅 후 24시간 안에 보낼 메일 초안 1건을 작성했습니다.', persona: '미팅 후 팔로업 메일을 짧고 결론 중심으로 쓴다.' },
+      { name: '제안서 설계 봇', emoji: '', role: 'pm', task: '제안서 목차·논리 구성', summary: '고객 문제 → 해결 → 도입 효과 순서의 목차 5장을 잡았습니다.', persona: '고객의 문제 → 해결 → 도입 효과 → 일정·비용 순서로 과장 없이 제안서를 쓴다.' },
+      { name: '정산·매출 봇', emoji: '', role: 'research', task: '매출·정산 흐름 정리', summary: '입금·세금계산서·미수금 기준을 한 표로 정리했습니다.', persona: '매출·정산 데이터를 정리해 미수금과 마감일을 표시한다.' },
+      { name: '팔로업 봇', emoji: '', role: 'content', task: '팔로업 문구 작성', summary: '미팅 후 24시간 안에 보낼 메일 초안 1건을 작성했습니다.', persona: '미팅 후 팔로업 메일을 짧고 결론 중심으로 쓴다.' },
     ],
   },
   {
     id: 'content',
     label: '콘텐츠 · SNS 운영',
-    emoji: '📸',
+    emoji: '',
     tagline: '매일 올릴 것이 떨어지지 않는 콘텐츠팀',
     pains: ['무엇을 올릴지 매번 고민한다', '캡션이 항상 비슷하다', '성과를 봐도 다음 행동이 없다'],
     why: '콘텐츠는 기획·카피·비주얼·분석이 돌아가야 유지됩니다. 혼자 다 하면 발행이 끊기니, 봇들이 주간 리듬을 대신 만듭니다.',
     usage: ['“다음 주 7편”을 요청하면 주제·훅·발행 요일이 한 번에 나옵니다.', '같은 메시지의 인스타·스레드 버전을 동시에 요청합니다.', '일요일에 지표를 붙이면 다음 주 실험 1개를 제안합니다.'],
     channel: '콘텐츠-기획',
     agents: [
-      { name: '콘텐츠 전략 봇', emoji: '🎯', role: 'content', task: '주제·발행 캘린더 설계', summary: '이번 주 7편 주제와 발행 요일을 잡았습니다.', persona: '계정 포지셔닝과 주간 발행 캘린더를 설계한다.' },
-      { name: '카피 봇', emoji: '✍️', role: 'content', task: '훅·캡션 작성', summary: '첫 3초 훅 2안과 해시태그 세트를 만들었습니다.', persona: '첫 3초 훅과 마지막 CTA를 쓴다. 인스타·스레드용을 따로 쓴다.' },
-      { name: '성과 분석 봇', emoji: '📊', role: 'research', task: '지표·실험 설계', summary: '도달·저장·전환 지표와 다음 실험 1개를 정리했습니다.', persona: '도달·저장·팔로우 전환을 비교하고 다음 실험을 제안한다.' },
+      { name: '콘텐츠 전략 봇', emoji: '', role: 'content', task: '주제·발행 캘린더 설계', summary: '이번 주 7편 주제와 발행 요일을 잡았습니다.', persona: '계정 포지셔닝과 주간 발행 캘린더를 설계한다.' },
+      { name: '카피 봇', emoji: '', role: 'content', task: '훅·캡션 작성', summary: '첫 3초 훅 2안과 해시태그 세트를 만들었습니다.', persona: '첫 3초 훅과 마지막 CTA를 쓴다. 인스타·스레드용을 따로 쓴다.' },
+      { name: '성과 분석 봇', emoji: '', role: 'research', task: '지표·실험 설계', summary: '도달·저장·전환 지표와 다음 실험 1개를 정리했습니다.', persona: '도달·저장·팔로우 전환을 비교하고 다음 실험을 제안한다.' },
     ],
   },
   {
     id: 'founder',
     label: '1인 사업자 · 창업',
-    emoji: '🚀',
+    emoji: '',
     tagline: '혼자서 기획·개발·그로스·CS를 돌리는 사업팀',
     pains: ['아이디어는 많은데 출시를 못 한다', '운영할 사람이 나뿐이다', '가격·채널 결정을 매번 혼자 고민한다'],
     why: '1인 사업의 병목은 “결정과 반복 작업”입니다. 결정은 근거를 붙여 빠르게, 반복은 봇이 처리하도록 나눕니다.',
     usage: ['“2주 안에 낼 MVP 범위”를 물으면 기능을 잘라 줍니다.', '개발 봇에게 구현·배포 순서를, 그로스 봇에게 첫 100명 실험을 요청합니다.', 'CS 문의를 붙이면 응대 문장과 제품 개선 항목으로 바꿔 줍니다.'],
     channel: '런칭',
     agents: [
-      { name: '사업 기획 봇', emoji: '🧭', role: 'pm', task: 'MVP 범위·가격 정의', summary: '2주 MVP 범위와 가격 2안을 정리했습니다.', persona: '아이디어를 2주 MVP로 자르고 가격·타깃·해지 사유를 먼저 정의한다.' },
-      { name: '구현 봇', emoji: '🛠️', role: 'dev', task: '구현·배포 순서', summary: '수정 파일 2개와 실행 명령, 검증 순서를 정리했습니다.', persona: '혼자 운영 가능한 스택을 고르고 배포·결제·인증 순서를 제시한다.' },
-      { name: '그로스 봇', emoji: '📈', role: 'content', task: '초기 유입 실험', summary: '첫 100명 채널 실험 2개와 중단 기준을 붙였습니다.', persona: '초기 100명을 모으는 채널 실험을 설계하고 중단 기준을 붙인다.' },
+      { name: '사업 기획 봇', emoji: '', role: 'pm', task: 'MVP 범위·가격 정의', summary: '2주 MVP 범위와 가격 2안을 정리했습니다.', persona: '아이디어를 2주 MVP로 자르고 가격·타깃·해지 사유를 먼저 정의한다.' },
+      { name: '구현 봇', emoji: '', role: 'dev', task: '구현·배포 순서', summary: '수정 파일 2개와 실행 명령, 검증 순서를 정리했습니다.', persona: '혼자 운영 가능한 스택을 고르고 배포·결제·인증 순서를 제시한다.' },
+      { name: '그로스 봇', emoji: '', role: 'content', task: '초기 유입 실험', summary: '첫 100명 채널 실험 2개와 중단 기준을 붙였습니다.', persona: '초기 100명을 모으는 채널 실험을 설계하고 중단 기준을 붙인다.' },
     ],
   },
 ];
 
 const AGENT_LIB = {
-  proposal: { name: '제안서 설계 봇', emoji: '📄', role: 'pm', task: '제안서 목차·논리 구성', summary: '고객 문제 → 해결 → 도입 효과 순서의 목차 5장을 잡았습니다.', keywords: ['제안서', '도입', '제안', '발표'] },
-  billing: { name: '정산·매출 봇', emoji: '💰', role: 'research', task: '매출·정산 흐름 정리', summary: '입금·세금계산서·미수금 기준을 한 표로 정리했습니다.', keywords: ['정산', '매출', '세금계산서', '입금', '미수금'] },
-  followup: { name: '팔로업 봇', emoji: '✉️', role: 'content', task: '팔로업 문구 작성', summary: '미팅 후 24시간 안에 보낼 메일 초안 1건을 작성했습니다.', keywords: ['팔로업', '메일', '회신', '리마인드'] },
-  content: { name: '콘텐츠 전략 봇', emoji: '🎯', role: 'content', task: '주제·발행 캘린더 설계', summary: '이번 주 7편 주제와 발행 요일을 잡았습니다.', keywords: ['콘텐츠', '캘린더', '주제', '릴스'] },
-  copy: { name: '카피 봇', emoji: '✍️', role: 'content', task: '훅·캡션 작성', summary: '첫 3초 훅 2안과 해시태그 세트를 만들었습니다.', keywords: ['캡션', '훅', '카피', '해시태그'] },
-  analysis: { name: '성과 분석 봇', emoji: '📊', role: 'research', task: '지표·실험 설계', summary: '도달·저장·전환 지표와 다음 실험 1개를 정리했습니다.', keywords: ['분석', '지표', '성과', '전환'] },
-  planning: { name: '기획 정리 봇', emoji: '🧭', role: 'pm', task: '요구사항·범위 분해', summary: '요청을 3개 유저스토리와 3일 일정으로 쪼갰습니다.', keywords: ['기획', '요구사항', '일정', 'PRD'] },
-  build: { name: '구현 봇', emoji: '🛠️', role: 'dev', task: '구현·배포 순서', summary: '수정 파일 2개와 실행 명령, 검증 순서를 정리했습니다.', keywords: ['구현', '개발', '배포', '코드'] },
-  qa: { name: 'QA·검증 봇', emoji: '🧪', role: 'dev', task: '검증 시나리오', summary: '회귀 체크리스트 6항목을 만들었습니다.', keywords: ['QA', '테스트', '검증', '릴리즈'] },
-  research: { name: '리서치 봇', emoji: '🔎', role: 'research', task: '근거·경쟁사 확인', summary: '경쟁 3곳의 가격대와 확인 필요 항목을 정리했습니다.', keywords: ['리서치', '시장', '경쟁사', '조사'] },
-  ops: { name: '운영 자동화 봇', emoji: '⚙️', role: 'dev', task: '반복 업무 자동화 설계', summary: '반복 업무 3개를 스크립트·규칙 후보로 바꿨습니다.', keywords: ['자동화', '반복', '운영', '스크립트'] },
+  proposal: { name: '제안서 설계 봇', emoji: '', role: 'pm', task: '제안서 목차·논리 구성', summary: '고객 문제 → 해결 → 도입 효과 순서의 목차 5장을 잡았습니다.', keywords: ['제안서', '도입', '제안', '발표'] },
+  billing: { name: '정산·매출 봇', emoji: '', role: 'research', task: '매출·정산 흐름 정리', summary: '입금·세금계산서·미수금 기준을 한 표로 정리했습니다.', keywords: ['정산', '매출', '세금계산서', '입금', '미수금'] },
+  followup: { name: '팔로업 봇', emoji: '', role: 'content', task: '팔로업 문구 작성', summary: '미팅 후 24시간 안에 보낼 메일 초안 1건을 작성했습니다.', keywords: ['팔로업', '메일', '회신', '리마인드'] },
+  content: { name: '콘텐츠 전략 봇', emoji: '', role: 'content', task: '주제·발행 캘린더 설계', summary: '이번 주 7편 주제와 발행 요일을 잡았습니다.', keywords: ['콘텐츠', '캘린더', '주제', '릴스'] },
+  copy: { name: '카피 봇', emoji: '', role: 'content', task: '훅·캡션 작성', summary: '첫 3초 훅 2안과 해시태그 세트를 만들었습니다.', keywords: ['캡션', '훅', '카피', '해시태그'] },
+  analysis: { name: '성과 분석 봇', emoji: '', role: 'research', task: '지표·실험 설계', summary: '도달·저장·전환 지표와 다음 실험 1개를 정리했습니다.', keywords: ['분석', '지표', '성과', '전환'] },
+  planning: { name: '기획 정리 봇', emoji: '', role: 'pm', task: '요구사항·범위 분해', summary: '요청을 3개 유저스토리와 3일 일정으로 쪼갰습니다.', keywords: ['기획', '요구사항', '일정', 'PRD'] },
+  build: { name: '구현 봇', emoji: '', role: 'dev', task: '구현·배포 순서', summary: '수정 파일 2개와 실행 명령, 검증 순서를 정리했습니다.', keywords: ['구현', '개발', '배포', '코드'] },
+  qa: { name: 'QA·검증 봇', emoji: '', role: 'dev', task: '검증 시나리오', summary: '회귀 체크리스트 6항목을 만들었습니다.', keywords: ['QA', '테스트', '검증', '릴리즈'] },
+  research: { name: '리서치 봇', emoji: '', role: 'research', task: '근거·경쟁사 확인', summary: '경쟁 3곳의 가격대와 확인 필요 항목을 정리했습니다.', keywords: ['리서치', '시장', '경쟁사', '조사'] },
+  ops: { name: '운영 자동화 봇', emoji: '', role: 'dev', task: '반복 업무 자동화 설계', summary: '반복 업무 3개를 스크립트·규칙 후보로 바꿨습니다.', keywords: ['자동화', '반복', '운영', '스크립트'] },
 };
 
 const CHIEF = {
   name: 'MOA Chief',
-  emoji: '🧠',
+  emoji: '',
   role: 'chief',
   isChief: true,
   summary: '목적을 3단계로 쪼개 하위 에이전트에게 위임하고, 산출물을 취합해 결론과 다음 액션만 보고합니다.',
@@ -448,14 +450,14 @@ const CHIEF = {
 
 const CASES = [
   {
-    id: 'store', emoji: '🏪', label: '자영업·동네 매장', channel: '매장-마케팅',
+    id: 'store', emoji: '', label: '자영업·동네 매장', channel: '매장-마케팅',
     tagline: '홍보글·리뷰 답글·단골 이벤트·매출 정리',
     starter: '이번 주 매장 홍보글 3편과 단골 이벤트 문구, 리뷰 답글 초안을 준비해 주세요.',
     bots: [
-      { name: '이벤트 기획 봇', emoji: '🎪', role: 'pm', summary: '단골 이벤트와 프로모션을 비용·준비 시간과 함께 기획합니다.', tasks: ['이번 주 단골 이벤트 기획', '비용·준비 시간 계산', '재방문 확인 방법 정리'] },
-      { name: '홍보글 봇', emoji: '📣', role: 'content', summary: '동네 말투로 짧고 담백한 홍보글을 씁니다.', tasks: ['이번 주 홍보글 3편', '인스타 스토리 문구', '네이버 플레이스 소개글'] },
-      { name: '리뷰 케어 봇', emoji: '⭐', role: 'research', summary: '리뷰 답글 초안을 만들고 민감한 리뷰는 표시합니다.', tasks: ['새 리뷰 답글 초안', '별점 3점 이하 표시', '반복 불만 정리'] },
-      { name: '매출 정리 봇', emoji: '🧾', role: 'research', summary: '주간 매출을 표로 정리하고 다음 프로모션을 제안합니다.', tasks: ['주간 매출 표 정리', '다음 주 프로모션 후보', '목표 대비 차이 계산'] },
+      { name: '이벤트 기획 봇', emoji: '', role: 'pm', summary: '단골 이벤트와 프로모션을 비용·준비 시간과 함께 기획합니다.', tasks: ['이번 주 단골 이벤트 기획', '비용·준비 시간 계산', '재방문 확인 방법 정리'] },
+      { name: '홍보글 봇', emoji: '', role: 'content', summary: '동네 말투로 짧고 담백한 홍보글을 씁니다.', tasks: ['이번 주 홍보글 3편', '인스타 스토리 문구', '네이버 플레이스 소개글'] },
+      { name: '리뷰 케어 봇', emoji: '', role: 'research', summary: '리뷰 답글 초안을 만들고 민감한 리뷰는 표시합니다.', tasks: ['새 리뷰 답글 초안', '별점 3점 이하 표시', '반복 불만 정리'] },
+      { name: '매출 정리 봇', emoji: '', role: 'research', summary: '주간 매출을 표로 정리하고 다음 프로모션을 제안합니다.', tasks: ['주간 매출 표 정리', '다음 주 프로모션 후보', '목표 대비 차이 계산'] },
     ],
     example: [
       { from: 'user', text: '이번 주 단골 이벤트 문구 만들어줘. 커피집이고 20~30대 손님이 많아.' },
@@ -464,14 +466,14 @@ const CASES = [
     ],
   },
   {
-    id: 'office', emoji: '💼', label: '직장인·팀 업무', channel: '팀-업무',
+    id: 'office', emoji: '', label: '직장인·팀 업무', channel: '팀-업무',
     tagline: '회의록 3줄 요약·주간 보고·메일 초안·일정',
     starter: '오늘 회의 메모를 3줄로 요약하고, 이번 주 보고서 초안과 답장할 메일 2건을 정리해 주세요.',
     bots: [
-      { name: '회의록 봇', emoji: '📝', role: 'pm', summary: '회의 메모를 결정·할 일·담당자로 짧게 요약합니다.', tasks: ['회의 메모 3줄 요약', '할 일·담당자 정리', '결정 사항만 뽑기'] },
-      { name: '리포트 봇', emoji: '📊', role: 'research', summary: '주간 보고서를 지표·이슈·다음 계획으로 씁니다.', tasks: ['주간 보고 초안', '지표 3개 정리', '다음 주 계획 제안'] },
-      { name: '메일 봇', emoji: '✉️', role: 'content', summary: '답장이 밀린 메일을 결론 중심으로 초안화합니다.', tasks: ['답장 메일 2건 초안', '제안 메일 첫 문장', '일정 조율 답장'] },
-      { name: '일정 봇', emoji: '🗓️', role: 'pm', summary: '일정 충돌을 찾아 대안 시간과 마감을 정리합니다.', tasks: ['이번 주 일정 충돌 확인', '마감 역산', '대안 시간 제안'] },
+      { name: '회의록 봇', emoji: '', role: 'pm', summary: '회의 메모를 결정·할 일·담당자로 짧게 요약합니다.', tasks: ['회의 메모 3줄 요약', '할 일·담당자 정리', '결정 사항만 뽑기'] },
+      { name: '리포트 봇', emoji: '', role: 'research', summary: '주간 보고서를 지표·이슈·다음 계획으로 씁니다.', tasks: ['주간 보고 초안', '지표 3개 정리', '다음 주 계획 제안'] },
+      { name: '메일 봇', emoji: '', role: 'content', summary: '답장이 밀린 메일을 결론 중심으로 초안화합니다.', tasks: ['답장 메일 2건 초안', '제안 메일 첫 문장', '일정 조율 답장'] },
+      { name: '일정 봇', emoji: '', role: 'pm', summary: '일정 충돌을 찾아 대안 시간과 마감을 정리합니다.', tasks: ['이번 주 일정 충돌 확인', '마감 역산', '대안 시간 제안'] },
     ],
     example: [
       { from: 'user', text: '이 회의 메모 3줄로 요약하고 할 일만 뽑아줘.' },
@@ -480,14 +482,14 @@ const CASES = [
     ],
   },
   {
-    id: 'seller', emoji: '🛍️', label: '스마트스토어·온라인 셀러', channel: '스토어-운영',
+    id: 'seller', emoji: '', label: '스마트스토어·온라인 셀러', channel: '스토어-운영',
     tagline: '상세페이지 카피·CS 답변·프로모션·리뷰 분석',
     starter: '이번 주 프로모션을 기획하고, 자주 오는 CS 문의 5개 답변 템플릿과 상세페이지 카피 3안을 만들어 주세요.',
     bots: [
-      { name: '상세페이지 봇', emoji: '🖼️', role: 'content', summary: '상품 장점을 장면과 숫자로 보여주는 카피를 씁니다.', tasks: ['상세페이지 카피 3안', '첫 문장 후킹', '구매 이유 정리'] },
-      { name: 'CS 답변 봇', emoji: '💬', role: 'research', summary: '자주 오는 문의를 답변 템플릿으로 만듭니다.', tasks: ['CS 답변 5종 템플릿', '교환·환불 안내', '예외 상황 표시'] },
-      { name: '프로모션 봇', emoji: '🎁', role: 'pm', summary: '재고·마진을 고려한 프로모션을 기획합니다.', tasks: ['이번 주 프로모션 기획', '할인·마진 계산', '중단 기준 정하기'] },
-      { name: '리뷰 분석 봇', emoji: '🔍', role: 'research', summary: '리뷰를 장점·불만·개선 요청으로 나눕니다.', tasks: ['리뷰 50건 분류', '반복 불만 찾기', '상품 개선 항목 정리'] },
+      { name: '상세페이지 봇', emoji: '', role: 'content', summary: '상품 장점을 장면과 숫자로 보여주는 카피를 씁니다.', tasks: ['상세페이지 카피 3안', '첫 문장 후킹', '구매 이유 정리'] },
+      { name: 'CS 답변 봇', emoji: '', role: 'research', summary: '자주 오는 문의를 답변 템플릿으로 만듭니다.', tasks: ['CS 답변 5종 템플릿', '교환·환불 안내', '예외 상황 표시'] },
+      { name: '프로모션 봇', emoji: '', role: 'pm', summary: '재고·마진을 고려한 프로모션을 기획합니다.', tasks: ['이번 주 프로모션 기획', '할인·마진 계산', '중단 기준 정하기'] },
+      { name: '리뷰 분석 봇', emoji: '', role: 'research', summary: '리뷰를 장점·불만·개선 요청으로 나눕니다.', tasks: ['리뷰 50건 분류', '반복 불만 찾기', '상품 개선 항목 정리'] },
     ],
     example: [
       { from: 'user', text: '신상품 상세페이지 카피 3안 써줘. 30대 여성, 가벼운 가방.' },
@@ -496,14 +498,14 @@ const CASES = [
     ],
   },
   {
-    id: 'creator', emoji: '🎬', label: '1인 크리에이터·콘텐츠', channel: '콘텐츠-기획',
+    id: 'creator', emoji: '', label: '1인 크리에이터·콘텐츠', channel: '콘텐츠-기획',
     tagline: '소재 발굴·쇼츠 대본·댓글 소통·디지털 상품',
     starter: '다음 주 콘텐츠 소재 10개와 쇼츠 대본 3편, 댓글 답글 초안과 디지털 상품 아이디어 3개를 준비해 주세요.',
     bots: [
-      { name: '소재 발굴 봇', emoji: '🔭', role: 'content', summary: '저장·공유를 부르는 소재를 찾아 캘린더로 묶습니다.', tasks: ['다음 주 소재 10개', '주간 발행 캘린더', '저장 부르는 주제 고르기'] },
-      { name: '대본 봇', emoji: '🎞️', role: 'content', summary: '쇼츠 대본을 첫 3초 훅과 컷 지시로 씁니다.', tasks: ['쇼츠 대본 3편', '첫 3초 훅 2안', '촬영 컷 지시'] },
-      { name: '댓글 소통 봇', emoji: '💌', role: 'research', summary: '댓글을 읽고 답글 초안과 다음 영상 아이디어를 뽑습니다.', tasks: ['댓글 답글 초안', '다음 영상 아이디어', '반응 좋은 주제 표시'] },
-      { name: '디지털 상품 봇', emoji: '📦', role: 'pm', summary: '콘텐츠를 템플릿·전자책으로 기획합니다.', tasks: ['디지털 상품 3안', '가격·구성 정리', '출시 순서 제안'] },
+      { name: '소재 발굴 봇', emoji: '', role: 'content', summary: '저장·공유를 부르는 소재를 찾아 캘린더로 묶습니다.', tasks: ['다음 주 소재 10개', '주간 발행 캘린더', '저장 부르는 주제 고르기'] },
+      { name: '대본 봇', emoji: '', role: 'content', summary: '쇼츠 대본을 첫 3초 훅과 컷 지시로 씁니다.', tasks: ['쇼츠 대본 3편', '첫 3초 훅 2안', '촬영 컷 지시'] },
+      { name: '댓글 소통 봇', emoji: '', role: 'research', summary: '댓글을 읽고 답글 초안과 다음 영상 아이디어를 뽑습니다.', tasks: ['댓글 답글 초안', '다음 영상 아이디어', '반응 좋은 주제 표시'] },
+      { name: '디지털 상품 봇', emoji: '', role: 'pm', summary: '콘텐츠를 템플릿·전자책으로 기획합니다.', tasks: ['디지털 상품 3안', '가격·구성 정리', '출시 순서 제안'] },
     ],
     example: [
       { from: 'user', text: '다음 주 쇼츠 소재 10개 뽑고, 그중 3개 대본 써줘.' },
@@ -512,14 +514,14 @@ const CASES = [
     ],
   },
   {
-    id: 'freelancer', emoji: '🧑‍💻', label: '프리랜서·1인 대표', channel: '일-파이프라인',
+    id: 'freelancer', emoji: '', label: '프리랜서·1인 대표', channel: '일-파이프라인',
     tagline: '제안서·견적서·마감 리마인드·포트폴리오',
     starter: '이번 주 신규 고객 제안서 초안과 견적 3안, 진행 중 프로젝트 마감 리마인드 메일을 준비해 주세요.',
     bots: [
-      { name: '제안서 봇', emoji: '📄', role: 'pm', summary: '고객 문제 → 해결 → 범위 → 일정 → 비용 순서로 씁니다.', tasks: ['제안서 5장 초안', '작업 범위 정리', '일정·비용 표'] },
-      { name: '견적 봇', emoji: '🧮', role: 'pm', summary: '견적 3안과 양보 범위를 만듭니다.', tasks: ['견적 3안', '양보 범위 정리', '빠진 비용 점검'] },
+      { name: '제안서 봇', emoji: '', role: 'pm', summary: '고객 문제 → 해결 → 범위 → 일정 → 비용 순서로 씁니다.', tasks: ['제안서 5장 초안', '작업 범위 정리', '일정·비용 표'] },
+      { name: '견적 봇', emoji: '', role: 'pm', summary: '견적 3안과 양보 범위를 만듭니다.', tasks: ['견적 3안', '양보 범위 정리', '빠진 비용 점검'] },
       { name: '리마인드 봇', emoji: '⏰', role: 'content', summary: '마감·회신 기한을 놓치지 않게 짧게 씁니다.', tasks: ['마감 리마인드 메일', '회신 재촉 문구', '이번 주 마감 정리'] },
-      { name: '포트폴리오 봇', emoji: '🗂️', role: 'content', summary: '완료한 일을 문제·해결·성과 문장으로 정리합니다.', tasks: ['포트폴리오 문장 정리', '성과 숫자 뽑기', '사례 3건 구성'] },
+      { name: '포트폴리오 봇', emoji: '', role: 'content', summary: '완료한 일을 문제·해결·성과 문장으로 정리합니다.', tasks: ['포트폴리오 문장 정리', '성과 숫자 뽑기', '사례 3건 구성'] },
     ],
     example: [
       { from: 'user', text: '이번 주 신규 고객 제안서랑 견적 3안 준비해줘. 웹사이트 리뉴얼 건이야.' },
@@ -528,16 +530,16 @@ const CASES = [
     ],
   },
   {
-    id: 'product', emoji: '🚀', label: '프로덕트·스타트업 팀', channel: '프로덕트-스쿼드',
+    id: 'product', emoji: '', label: '프로덕트·스타트업 팀', channel: '프로덕트-스쿼드',
     tagline: '프로토타입 → 빌드 → 스위프 → 그로스 → 메인테인',
     starter: '2주 안에 낼 MVP 범위를 정하고, 프로토타입 → 구현 → 정리 → 첫 100명 실험 → 운영 점검 순서로 움직여 주세요.',
     bots: [
-      { name: 'MOA Chief', emoji: '🧠', role: 'chief', isChief: true, summary: '차분하고 명쾌한 팀장 — 다섯 명에게 일을 나눠 맡기고 산출물만 취합합니다.', tasks: ['이번 주 팀 우선순위 정리', '다섯 명 산출물 취합', '결정할 것만 골라주기'] },
-      { name: 'Prototyper', emoji: '💡', role: 'content', summary: '아이디어를 끊임없이 쏟아내는 발산형입니다.', tasks: ['새 아이디어 10개', '가능성 시나리오', '컨셉 3안 제안'] },
-      { name: 'Builder', emoji: '🔨', role: 'dev', summary: '아이디어를 제품과 화면으로 바꾸는 실행형입니다.', tasks: ['화면 실제로 만들기', '구현 순서 정리', '프로토타입 붙이기'] },
-      { name: 'Sweeper', emoji: '🧹', role: 'dev', summary: '화면과 코드를 깔끔하게 정리하는 정돈형입니다.', tasks: ['중복 정리', '군더더기 빼기', '정리 체크리스트'] },
-      { name: 'Grower', emoji: '🌱', role: 'content', summary: '제품을 사람들이 찾게 키우는 성장형입니다.', tasks: ['첫 100명 실험', '채널 실험 설계', '지표 보고 다음 실험'] },
-      { name: 'Maintainer', emoji: '🛡️', role: 'dev', summary: '커진 서비스를 안전하고 빠르게 지키는 수호형입니다.', tasks: ['장애 위험 점검', '모니터링·백업', '보안·속도 점검'] },
+      { name: 'MOA Chief', emoji: '', role: 'chief', isChief: true, summary: '차분하고 명쾌한 팀장 — 다섯 명에게 일을 나눠 맡기고 산출물만 취합합니다.', tasks: ['이번 주 팀 우선순위 정리', '다섯 명 산출물 취합', '결정할 것만 골라주기'] },
+      { name: 'Prototyper', emoji: '', role: 'content', summary: '아이디어를 끊임없이 쏟아내는 발산형입니다.', tasks: ['새 아이디어 10개', '가능성 시나리오', '컨셉 3안 제안'] },
+      { name: 'Builder', emoji: '', role: 'dev', summary: '아이디어를 제품과 화면으로 바꾸는 실행형입니다.', tasks: ['화면 실제로 만들기', '구현 순서 정리', '프로토타입 붙이기'] },
+      { name: 'Sweeper', emoji: '', role: 'dev', summary: '화면과 코드를 깔끔하게 정리하는 정돈형입니다.', tasks: ['중복 정리', '군더더기 빼기', '정리 체크리스트'] },
+      { name: 'Grower', emoji: '', role: 'content', summary: '제품을 사람들이 찾게 키우는 성장형입니다.', tasks: ['첫 100명 실험', '채널 실험 설계', '지표 보고 다음 실험'] },
+      { name: 'Maintainer', emoji: '', role: 'dev', summary: '커진 서비스를 안전하고 빠르게 지키는 수호형입니다.', tasks: ['장애 위험 점검', '모니터링·백업', '보안·속도 점검'] },
     ],
     example: [
       { from: 'user', text: '2주 안에 낼 MVP 범위 정하고 바로 프로토타입 만들어줘.' },
@@ -551,30 +553,30 @@ const CASES = [
 const CASE_QUICK = {
   store: {
     short: '동네 매장',
-    quick: ['🎪 이번 주 단골 이벤트 기획해줘', '📣 이번 주 홍보글 3편 써줘', '⭐ 새 리뷰 답글 초안 만들어줘'],
+    quick: [' 이번 주 단골 이벤트 기획해줘', ' 이번 주 홍보글 3편 써줘', ' 새 리뷰 답글 초안 만들어줘'],
   },
   office: {
     short: '직장인',
-    quick: ['📝 회의 메모 3줄로 요약해줘', '📊 주간 보고서 초안 써줘', '✉️ 답장할 메일 2건 정리해줘'],
+    quick: [' 회의 메모 3줄로 요약해줘', ' 주간 보고서 초안 써줘', ' 답장할 메일 2건 정리해줘'],
   },
   seller: {
     short: '스마트스토어',
-    quick: ['🖼️ 상세페이지 카피 3안 써줘', '💬 CS 답변 5종 만들어줘', '🎁 이번 주 프로모션 기획해줘'],
+    quick: [' 상세페이지 카피 3안 써줘', ' CS 답변 5종 만들어줘', ' 이번 주 프로모션 기획해줘'],
   },
   creator: {
     short: '1인 크리에이터',
-    quick: ['🔭 다음 주 콘텐츠 소재 10개 뽑아줘', '🎞️ 쇼츠 대본 3편 써줘', '💌 댓글 답글 초안 만들어줘'],
+    quick: [' 다음 주 콘텐츠 소재 10개 뽑아줘', ' 쇼츠 대본 3편 써줘', ' 댓글 답글 초안 만들어줘'],
   },
   freelancer: {
     short: '프리랜서',
-    quick: ['📄 제안서 초안 써줘', '🧮 견적 3안 만들어줘', '⏰ 마감 리마인드 메일 써줘'],
+    quick: [' 제안서 초안 써줘', ' 견적 3안 만들어줘', '⏰ 마감 리마인드 메일 써줘'],
   },
   product: {
     short: '프로덕트 팀',
-    quick: ['🧭 2주 안에 낼 MVP 범위 정해줘', '💡 새 컨셉 3안 내줘', '🔨 첫 화면부터 만들어줘'],
+    quick: [' 2주 안에 낼 MVP 범위 정해줘', ' 새 컨셉 3안 내줘', ' 첫 화면부터 만들어줘'],
   },
 };
-const QUICK_DEFAULT = ['🗂️ 이번 주 할 일 정리해줘', '🎯 팀 우선순위 정해줘', '✅ 다음 액션 하나 골라줘'];
+const QUICK_DEFAULT = [' 이번 주 할 일 정리해줘', ' 팀 우선순위 정해줘', ' 다음 액션 하나 골라줘'];
 
 const ROLE_TASKS = {
   pm: ['이번 주 목표를 PRD 초안으로 쪼개기', '회의록을 액션 아이템으로 정리', '릴리즈 전 QA 체크리스트 만들기'],
@@ -618,46 +620,46 @@ function makeBot(spec, extra) {
 
 function seedState() {
   const chief = makeBot({
-    id: 'bot_chief', name: 'MOA Chief', emoji: '🧠', role: 'chief', isChief: true,
+    id: 'bot_chief', name: 'MOA Chief', emoji: '', role: 'chief', isChief: true,
     summary: LN('roles.chief', '차분하고 명쾌한 팀장 — 사용자와 단독으로 소통하고, 다섯 명에게 일을 나눠 맡긴 뒤 산출물만 취합해 보고합니다.'),
     keywords: ['총괄', '팀', '전체', '요약', '진행', '보고'],
     activity: ['오늘의 팀 우선순위 정리', '다섯 명의 산출물 취합', '다음 액션 1건 보고'],
   });
   const proto = makeBot({
-    id: 'bot_prototyper', name: 'Prototyper', emoji: '💡', role: 'content',
+    id: 'bot_prototyper', name: 'Prototyper', emoji: '', role: 'content',
     summary: LN('roles.prototyper', '아이디어를 끊임없이 쏟아내는 발산형 — 가능성을 먼저 열고 빠르게 여러 안을 만듭니다.'),
     keywords: ['아이디어', '발산', '컨셉', '가능성', '실험', '기획'],
     activity: ['새 컨셉 10안 발산', '가능성 시나리오 3개', '실험 후보 5개 정리'],
   });
   const builder = makeBot({
-    id: 'bot_builder', name: 'Builder', emoji: '🔨', role: 'dev',
+    id: 'bot_builder', name: 'Builder', emoji: '', role: 'dev',
     summary: LN('roles.builder', '아이디어를 진짜 제품과 화면으로 바꾸는 실행형 — 오늘 바로 만들고 붙입니다.'),
     keywords: ['만들', '구현', '화면', '프로토타입', '제품', '기능', '배포'],
     activity: ['프로토타입 화면 2개 구현', '실행 순서·명령 정리', '제품 형태로 연결'],
   });
   const sweeper = makeBot({
-    id: 'bot_sweeper', name: 'Sweeper', emoji: '🧹', role: 'dev',
+    id: 'bot_sweeper', name: 'Sweeper', emoji: '', role: 'dev',
     summary: LN('roles.sweeper', '화면과 코드를 깔끔하게 정리하는 정돈형 — 군더더기를 과감히 빼고 흐름을 단순하게 만듭니다.'),
     keywords: ['정리', '리팩터', '중복', '군더더기', '단순화', '버그'],
     activity: ['중복 화면 3곳 정리', '불필요한 단계 4개 제거', '정리 체크리스트 작성'],
   });
   const grower = makeBot({
-    id: 'bot_grower', name: 'Grower', emoji: '🌱', role: 'content',
+    id: 'bot_grower', name: 'Grower', emoji: '', role: 'content',
     summary: LN('roles.grower', '제품을 계속 다듬어 사람들이 실제로 찾게 키우는 성장형 — 지표와 채널 실험으로 다음 성장을 만듭니다.'),
     keywords: ['성장', '유입', '지표', '채널', '마케팅', '리텐션', '수익'],
     activity: ['첫 100명 유입 실험 2안', '주간 지표 리포트 작성', '수익화 후보 3건 비교'],
   });
   const maintainer = makeBot({
-    id: 'bot_maintainer', name: 'Maintainer', emoji: '🛡️', role: 'dev',
+    id: 'bot_maintainer', name: 'Maintainer', emoji: '', role: 'dev',
     summary: LN('roles.maintainer', '커진 서비스를 안전하고 빠르게 지키는 수호형 — 장애·보안·속도를 먼저 살핍니다.'),
     keywords: ['안정', '모니터링', '보안', '백업', '장애', '속도', '운영'],
     activity: ['장애 위험 지점 3곳 점검', '모니터링·백업 계획 정리', '느린 구간 2곳 표시'],
   });
 
   const bots = [chief, proto, builder, sweeper, grower, maintainer];
-  if (LANG !== 'ko') bots.forEach((b) => { b.activity = []; });
+  if (LANG !== 'ko') bots.forEach((b) =>{ b.activity = []; });
   const channels = [
-    { id: 'ch_all', name: '전체-팀', mode: 'auto', topic: LN('seed.channelTopics.ch_all', '여섯 캐릭터가 모이는 기본 채널 — 말하면 알아서 나눠 일합니다'), members: bots.map((b) => b.id) },
+    { id: 'ch_all', name: '전체-팀', mode: 'auto', topic: LN('seed.channelTopics.ch_all', '여섯 캐릭터가 모이는 기본 채널 — 말하면 알아서 나눠 일합니다'), members: bots.map((b) =>b.id) },
     { id: 'ch_b2b', name: 'B2B-업무', mode: 'auto', topic: LN('seed.channelTopics.ch_b2b', 'B2B 사업 기획·구현·성장'), members: ['bot_prototyper', 'bot_builder', 'bot_grower'] },
     { id: 'ch_side', name: '사이드-수익화', mode: 'mention', botId: 'bot_grower', topic: LN('seed.channelTopics.ch_side', '성장·수익 실험 — @이름으로 지정 호출'), members: ['bot_grower', 'bot_prototyper', 'bot_maintainer'] },
   ];
@@ -679,7 +681,7 @@ function seedState() {
           kind: 'bot',
           botId: 'bot_chief',
           name: 'MOA Chief',
-          emoji: '🧠',
+          emoji: '',
           role: 'chief',
           text: LN('seed.greeting', '안녕하세요, 팀장 봇 **MOA Chief**입니다.\n\n1. 위에서 **내 업종**을 고르고\n2. 아래 **큰 버튼**을 하나 누르면\n\n나머지는 팀이 나눠서 합니다. 결과만 보시면 됩니다.'),
         },
@@ -716,7 +718,7 @@ function adminFromEnv() {
 
 function applyAdminMode() {
   document.body.classList.toggle('demo-admin', adminMode);
-  $$('.admin-only').forEach((el) => { el.hidden = !adminMode; });
+  $$('.admin-only').forEach((el) =>{ el.hidden = !adminMode; });
   if (!adminMode && state.env === 'prod') {
     state.env = 'stg';
     state.activeChannelId = state.channels[0] ? state.channels[0].id : state.activeChannelId;
@@ -726,7 +728,7 @@ function applyAdminMode() {
     if (ctx && !ctx.classList.contains('is-active')) ctx.click();
   }
   const btn = $('#adminToggle');
-  if (btn) btn.textContent = adminMode ? '🔒 ' + (u('adminOff') || '관리자 모드 끄기') : '🔧 ' + (u('adminOn') || '관리자 모드');
+  if (btn) btn.textContent = adminMode ? ' ' + (u('adminOff') || '관리자 모드 끄기') : ' ' + (u('adminOn') || '관리자 모드');
 }
 
 function setAdmin(on) {
@@ -760,8 +762,8 @@ function officeLabels() {
     working: LN('demo.bubbleWorking', '작업 중…'),
     doneShort: LN('demo.doneShort', '끝!'),
     idle: LN('demo.idleLines', [
-      '💡 초안 다듬는 중!', '🔍 자료 확인하고 있어요', '✍️ 답장 쓰는 중', '☕ 잠깐 커피 타고 올게요',
-      '📊 숫자 맞춰 보는 중', '🌱 좋은 흐름이에요', '🎯 이거 금방 끝나요', '⚡ 집중 중!',
+      ' 초안 다듬는 중!', ' 자료 확인하고 있어요', ' 답장 쓰는 중', ' 잠깐 커피 타고 올게요',
+      ' 숫자 맞춰 보는 중', ' 좋은 흐름이에요', ' 이거 금방 끝나요', ' 집중 중!',
     ]),
     openRole: u('openRole') || '역할 카드 열기',
   };
@@ -785,10 +787,10 @@ function initOffice() {
 function renderOffice() {
   const floor = $('#officeFloor');
   if (!floor) return;
-  const chief = state.bots.find((b) => b.isChief);
+  const chief = state.bots.find((b) =>b.isChief);
   if (window.OfficeScene) {
     window.OfficeScene.sync(
-      state.bots.map((b) => ({ id: b.id, name: b.name, emoji: b.emoji, isChief: !!b.isChief })),
+      state.bots.map((b) =>({ id: b.id, name: b.name, emoji: b.emoji, isChief: !!b.isChief })),
       {
         labels: officeLabels(),
         activeId: state.activeBotId,
@@ -813,13 +815,13 @@ function renderOfficeStatus() {
   const busy = state.officeBusy || {};
   const bots = state.bots || [];
   list.innerHTML = bots
-    .map((b) => {
+    .map((b) =>{
       const working = (b.isChief ? !!busy.chief : busy.agent === b.id) || b.id === state.typingBotId;
       const st = working ? LN('demo.statusWorking', '작업 중') : LN('demo.statusIdle', '대기');
       return (
-        '<button type="button" class="d-bot-chip' + (b.isChief ? ' is-chief' : '') + (working ? ' is-working' : '') +
-        '" data-office-bot="' + esc(b.id) + '" aria-label="' + esc(b.name + ' — ' + st) + '">' +
-        '<span class="em" aria-hidden="true">' + esc(b.emoji || '🤖') + '</span>' +
+        '<button type="button"class="d-bot-chip' + (b.isChief ? ' is-chief' : '') + (working ? ' is-working' : '') +
+        '"data-office-bot="' + esc(b.id) + '"aria-label="' + esc(b.name + ' — ' + st) + '">' +
+        '<span class="em"aria-hidden="true">' + esc(b.emoji || '') + '</span>' +
         '<span class="nm">' + esc(b.name) + '</span>' +
         '<span class="st">' + esc(st) + '</span></button>'
       );
@@ -858,7 +860,7 @@ const STEP_TARGET = { 1: '#stepCase', 2: '#stepTry', 3: '#stepPack' };
 function setStep(n, opts) {
   n = Number(n) || 1;
   currentStep = n;
-  $$('#demoSteps .d-gstep').forEach((el) => {
+  $$('#demoSteps .d-gstep').forEach((el) =>{
     const s = Number(el.getAttribute('data-step'));
     const on = s === n;
     el.classList.toggle('is-active', on);
@@ -876,11 +878,11 @@ function setStep(n, opts) {
 
 function splitEmoji(q) {
   const m = String(q).match(/^([\u{1F000}-\u{1FAFF}\u{2190}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]+)\s+([\s\S]+)$/u);
-  return m ? { em: m[1], text: m[2] } : { em: '▶️', text: String(q) };
+  return m ? { em: m[1], text: m[2] } : { em: '▶', text: String(q) };
 }
 
 function quickPrompts() {
-  const c = CASES.find((x) => x.id === state.currentCaseId);
+  const c = CASES.find((x) =>x.id === state.currentCaseId);
   const list = c ? caseInfo(c).quick : LN('demo.quickDefault', QUICK_DEFAULT);
   return (Array.isArray(list) ? list : QUICK_DEFAULT).slice(0, 3);
 }
@@ -889,11 +891,11 @@ function renderQuickTasks() {
   const box = $('#quickTasks');
   if (!box) return;
   box.innerHTML = quickPrompts()
-    .map((q) => {
+    .map((q) =>{
       const p = splitEmoji(q);
       return (
-        '<button class="d-quick-btn" type="button" data-quick="' + esc(p.text) + '">' +
-        '<span class="em" aria-hidden="true">' + esc(p.em) + '</span><span>' + esc(p.text) + '</span>' +
+        '<button class="d-quick-btn"type="button"data-quick="' + esc(p.text) + '">' +
+        '<span class="em"aria-hidden="true">' + esc(p.em) + '</span><span>' + esc(p.text) + '</span>' +
         '</button>'
       );
     })
@@ -903,17 +905,17 @@ function renderQuickTasks() {
 function renderTeamChip() {
   const el = $('#currentTeam');
   if (!el) return;
-  const c = CASES.find((x) => x.id === state.currentCaseId);
+  const c = CASES.find((x) =>x.id === state.currentCaseId);
   const label = c ? caseInfo(c).short : LN('demo.teamDefault', '내 AI 팀');
   el.textContent = fmt(LN('demo.teamChip', '{label} · 봇 {n}명'), { label, n: state.bots.length });
 }
 
 /* ───────────────────────── 환경 · 패널 렌더 ───────────────────────── */
-const envBadge = () => $('#envBadge');
-const isProd = () => state.env === 'prod';
+const envBadge = () =>$('#envBadge');
+const isProd = () =>state.env === 'prod';
 
 function currentChannel() {
-  return state.channels.find((c) => c.id === state.activeChannelId) || state.channels[0];
+  return state.channels.find((c) =>c.id === state.activeChannelId) || state.channels[0];
 }
 
 function channelLabel(ch) {
@@ -934,11 +936,11 @@ function botTasks(bot) {
 }
 
 function currentBot() {
-  return state.bots.find((b) => b.id === state.activeBotId) || state.bots[0];
+  return state.bots.find((b) =>b.id === state.activeBotId) || state.bots[0];
 }
 
 function channelMembers(channel) {
-  return (channel.members || []).map((id) => state.bots.find((b) => b.id === id)).filter(Boolean);
+  return (channel.members || []).map((id) =>state.bots.find((b) =>b.id === id)).filter(Boolean);
 }
 
 function renderEnv() {
@@ -970,14 +972,14 @@ function renderChannels() {
   list.innerHTML = state.channels
     .map(
       (c) =>
-        '<button type="button" class="d-item' +
+        '<button type="button"class="d-item' +
         (c.id === state.activeChannelId ? ' is-active' : '') +
-        '" data-channel="' +
+        '"data-channel="' +
         esc(c.id) +
         '"><span class="hash">#</span><span class="nm">' +
         esc(channelLabel(c)) +
         '</span>' +
-        (c.orchestrator ? '<span class="d-bot-state">🧠</span>' : '') +
+        (c.orchestrator ? '<span class="d-bot-state"></span>' : '') +
         '</button>'
     )
     .join('');
@@ -989,9 +991,9 @@ function renderBots() {
   list.innerHTML = state.bots
     .map(
       (b) =>
-        '<button type="button" class="d-item' +
+        '<button type="button"class="d-item' +
         (b.id === state.activeBotId ? ' is-active' : '') +
-        '" data-bot="' +
+        '"data-bot="' +
         esc(b.id) +
         '"><span class="em">' +
         esc(b.emoji) +
@@ -999,7 +1001,7 @@ function renderBots() {
         esc(b.name) +
         '</span>' +
         (b.id === state.typingBotId
-          ? '<span class="d-bot-state working">' + esc(LN('demo.workingBadge', '⚡ 작업 중')) + '</span>'
+          ? '<span class="d-bot-state working">' + esc(LN('demo.workingBadge', ' 작업 중')) + '</span>'
           : b.isChief
           ? '<span class="d-bot-state">' + esc(LN('demo.chiefBadge', '팀장')) + '</span>'
           : '') +
@@ -1017,7 +1019,7 @@ function renderInspector() {
     av.classList.toggle('working', bot.id === state.typingBotId);
     av.classList.toggle('idle', bot.id !== state.typingBotId);
   }
-  const set = (id, text) => {
+  const set = (id, text) =>{
     const el = $('#' + id);
     if (el) el.textContent = text;
   };
@@ -1026,20 +1028,20 @@ function renderInspector() {
   const st = $('#inspState');
   if (st) {
     const working = bot.id === state.typingBotId;
-    st.textContent = working ? LN('demo.stateWorking', '⚡ 작업 중') : LN('demo.stateIdle', '✨ 대기 중');
+    st.textContent = working ? LN('demo.stateWorking', ' 작업 중') : LN('demo.stateIdle', ' 대기 중');
     st.classList.toggle('working', working);
   }
   const tasks = $('#taskList');
   if (tasks) {
     tasks.innerHTML = botTasks(bot)
-      .map((t) => '<button type="button" class="d-task" data-task="' + esc(t) + '">' + esc(t) + '</button>')
+      .map((t) =>'<button type="button"class="d-task"data-task="' + esc(t) + '">' + esc(t) + '</button>')
       .join('');
   }
   const acts = $('#activityList');
   if (acts) {
     const rows = (bot.activity || []).slice(0, 3);
     acts.innerHTML = rows.length
-      ? rows.map((a) => '<div class="d-act">· ' + esc(a) + '</div>').join('')
+      ? rows.map((a) =>'<div class="d-act">· ' + esc(a) + '</div>').join('')
       : '<div class="d-act muted">' + esc(LN('demo.noActivity', '· 아직 처리 내역이 없습니다. 업무를 요청해 보세요.')) + '</div>';
   }
   set('inspEngine', DICT() ? LN('demo.engine', '로컬 시뮬레이터') : (bot.engine || '로컬 시뮬레이터'));
@@ -1064,7 +1066,7 @@ function renderRelease() {
           ['버전', 'v' + state.prodVersion + ' → v0.3.0', false],
           ['봇', '+' + Math.max(0, state.bots.length - 2) + '명 · 총 ' + state.bots.length + '명', false],
           ['채널', '+' + Math.max(0, state.channels.length - 1) + '개 · 총 ' + state.channels.length + '개', false],
-          ['오케스트레이터', state.bots.some((b) => b.isChief) ? 'MOA Chief + 에이전트' : '없음', !state.bots.some((b) => b.isChief)],
+          ['오케스트레이터', state.bots.some((b) =>b.isChief) ? 'MOA Chief + 에이전트' : '없음', !state.bots.some((b) =>b.isChief)],
         ];
     diff.innerHTML = rows
       .map(
@@ -1115,11 +1117,11 @@ function renderHeader() {
 function messageHtml(msg) {
   const kind = msg.kind || 'bot';
   if (kind === 'system') {
-    return '<div class="d-msg system"><div class="av">🐝</div><div class="d-body"><div class="d-bubble">' + md(msg.text) + '</div></div></div>';
+    return '<div class="d-msg system"><div class="av"></div><div class="d-body"><div class="d-bubble">' + md(msg.text) + '</div></div></div>';
   }
   if (kind === 'user') {
     return (
-      '<div class="d-msg user"><div class="av">🙋</div><div class="d-body"><div class="d-author"><b>나</b><span class="d-time">' +
+      '<div class="d-msg user"><div class="av"></div><div class="d-body"><div class="d-author"><b>나</b><span class="d-time">' +
       nowLabel() +
       '</span></div><div class="d-bubble">' +
       md(msg.text) +
@@ -1131,7 +1133,7 @@ function messageHtml(msg) {
   inner += md(msg.text);
   if (msg.steps && msg.steps.length) {
     inner += '<div class="d-deleg">';
-    msg.steps.forEach((s) => {
+    msg.steps.forEach((s) =>{
       inner +=
         '<div class="d-step ' +
         (s.status || '') +
@@ -1159,8 +1161,8 @@ function messageHtml(msg) {
       esc(p.body) +
       '</p>' +
       (p.status === 'pending'
-        ? '<div class="row"><button class="btn btn-sm btn-primary" type="button" data-prop="ok">' + esc(LN('demo.proposalOk', '좋아요, 붙이기')) + '</button><button class="btn btn-sm btn-ghost" type="button" data-prop="pass">' + esc(LN('demo.proposalPass', '괜찮아요')) + '</button></div>'
-        : '<div class="done">' + esc(p.status === 'ok' ? LN('orch.proposalDone', '✓ 팀에 반영되었습니다.') : LN('orch.proposalPassed', '· 기록되었습니다.')) + '</div>') +
+        ? '<div class="row"><button class="btn btn-sm btn-primary"type="button"data-prop="ok">' + esc(LN('demo.proposalOk', '좋아요, 붙이기')) + '</button><button class="btn btn-sm btn-ghost"type="button"data-prop="pass">' + esc(LN('demo.proposalPass', '괜찮아요')) + '</button></div>'
+        : '<div class="done">' + esc(p.status === 'ok' ? LN('orch.proposalDone', ' 팀에 반영되었습니다.') : LN('orch.proposalPassed', '· 기록되었습니다.')) + '</div>') +
       '</div>';
   }
   inner += '</div>';
@@ -1168,11 +1170,11 @@ function messageHtml(msg) {
     '<div class="d-msg' +
     (isChief ? ' chief' : '') +
     '"><div class="av">' +
-    esc(msg.emoji || (isChief ? '🧠' : '🤖')) +
+    esc(msg.emoji || (isChief ? '' : '')) +
     '</div><div class="d-body"><div class="d-author"><b>' +
     esc(msg.name || '봇') +
     '</b>' +
-    (isChief ? '<span class="pill blue" style="font-size:9.5px;padding:1px 7px">' + esc(LN('demo.chiefBadge', '팀장')) + '</span>' : '') +
+    (isChief ? '<span class="pill blue"style="font-size:9.5px;padding:1px 7px">' + esc(LN('demo.chiefBadge', '팀장')) + '</span>' : '') +
     '<span class="d-time">' +
     (msg.time || nowLabel()) +
     '</span></div>' +
@@ -1188,10 +1190,10 @@ function renderMessages(forceScroll) {
   const list = state.messages[state.activeChannelId] || [];
   let html = list.map(messageHtml).join('');
   if (state.typingBotId) {
-    const bot = state.bots.find((b) => b.id === state.typingBotId);
+    const bot = state.bots.find((b) =>b.id === state.typingBotId);
     html +=
-      '<div class="d-msg" data-testid="demo-typing"><div class="av">' +
-      esc((bot && bot.emoji) || '🤖') +
+      '<div class="d-msg"data-testid="demo-typing"><div class="av">' +
+      esc((bot && bot.emoji) || '') +
       '</div><div class="d-body"><div class="d-author"><b>' +
       esc((bot && bot.name) || '봇') +
       '</b></div><div class="d-bubble"><span class="d-typing"><i></i><i></i><i></i></span></div></div></div>';
@@ -1225,13 +1227,13 @@ function analyzePurpose(text) {
     { id: 'build', re: /(앱|서비스|개발|자동화|스크립트|코드|MVP|출시|app|service|develop|automation|script|code|launch|アプリ|開発|自動化|スクリプト|コード|应用|开发|自动化|上线|小程序)/i, agents: ['planning', 'build', 'qa', 'ops'], channel: '빌드-오케스트라', why: '만드는 일은 범위·구현·검증이 붙어야 끝납니다. 총괄이 순서를 잡고 각 에이전트가 자기 산출물만 냅니다.' },
     { id: 'plan', re: /(기획|일정|회의|보고|리포트|정리|plan|schedule|meeting|report|会議|議事録|スケジュール|企画|計画|レポート|会议|计划|报告|整理)/i, agents: ['planning', 'research', 'analysis'], channel: '기획-오케스트라', why: '기획은 흩어진 요청을 문서와 일정으로 바꾸는 일입니다. 정리·근거·리포트를 나눠 맡깁니다.' },
   ];
-  let hit = rules.find((r) => r.re.test(t));
+  let hit = rules.find((r) =>r.re.test(t));
   if (!hit) {
     hit = { id: 'general', agents: ['planning', 'research', 'ops'], channel: '총괄-오케스트라', why: '목적이 아직 넓습니다. 먼저 범위를 정리하고, 근거를 확인한 뒤, 반복 업무를 자동화 후보로 바꾸는 3단 구성이 안전합니다.' };
   }
   const agents = hit.agents
     .slice(0, 3)
-    .map((k) => {
+    .map((k) =>{
       const a = AGENT_LIB[k];
       if (!a) return null;
       const d = DICT();
@@ -1276,12 +1278,12 @@ const RULE_WHY = {
 };
 
 function planFromRole(role) {
-  const c = CONSULT.find((r) => r.id === role);
+  const c = CONSULT.find((r) =>r.id === role);
   if (!c) return null;
   const d = DICT();
   const loc = d && d.consult && d.consult[role];
   const src = (loc && loc.agents) || c.agents;
-  const agents = c.agents.map((a, i) => Object.assign({}, a, src[i] || {}));
+  const agents = c.agents.map((a, i) =>Object.assign({}, a, src[i] || {}));
   return {
     id: c.id,
     goal: (loc && loc.tagline) || c.tagline,
@@ -1300,9 +1302,9 @@ function renderRoles() {
   const d = DICT();
   box.innerHTML = CONSULT.map(
     (r) =>
-      '<button type="button" class="d-role' +
+      '<button type="button"class="d-role' +
       (wizardRole === r.id ? ' is-active' : '') +
-      '" data-role="' +
+      '"data-role="' +
       esc(r.id) +
       '"><span class="em">' +
       esc(r.emoji) +
@@ -1325,9 +1327,9 @@ function renderDesign() {
   const agents = p.agents || [];
   box.innerHTML =
     '<div class="d-design"><h4>' +
-    esc(u('designTitle', agents.length) || ('🧠 MOA Chief + 에이전트 ' + agents.length + '명 설계안')) +
+    esc(u('designTitle', agents.length) || (' MOA Chief + 에이전트 ' + agents.length + '명 설계안')) +
     '</h4>' +
-    '<p><b>' + esc(u('purpose') || '목적') + '</b> · ' +
+    '<p><b>' + esc(u('purpose') || '목적') + '</b>· ' +
     esc(p.goal || '—') +
     '</p>' +
     '<div class="agents">' +
@@ -1346,17 +1348,17 @@ function renderDesign() {
     '</div>' +
     '<div class="flow">' +
     ((LANG !== 'ko' && u('briefSteps')) || p.steps || [])
-      .map((s) => '<span>' + esc(s) + '</span>')
+      .map((s) =>'<span>' + esc(s) + '</span>')
       .join('<span>→</span>') +
     '<span>#' +
     esc(p.channel) +
     '</span></div>' +
-    '<div class="why">💡 ' +
+    '<div class="why">' +
     esc(p.why || '') +
     '</div>' +
-    '<div class="d-sheet-actions"><button class="btn btn-primary btn-sm" id="applyDesignBtn" type="button">' +
+    '<div class="d-sheet-actions"><button class="btn btn-primary btn-sm"id="applyDesignBtn"type="button">' +
     esc(u('apply') || '이 팀을 STG에 만들기') +
-    '</button><button class="btn btn-ghost btn-sm" id="redoDesign" type="button">' +
+    '</button><button class="btn btn-ghost btn-sm"id="redoDesign"type="button">' +
     esc(u('redo') || '다시 설계') +
     '</button></div></div>';
 }
@@ -1371,7 +1373,7 @@ function openWizard() {
   const p = $('#purposeInput');
   if (p) {
     p.value = '';
-    setTimeout(() => p.focus(), 80);
+    setTimeout(() =>p.focus(), 80);
   }
 }
 
@@ -1398,7 +1400,7 @@ function designTeam() {
 function applyPlan() {
   if (!wizardPlan) return;
   const plan = wizardPlan;
-  let chief = state.bots.find((b) => b.isChief);
+  let chief = state.bots.find((b) =>b.isChief);
   if (!chief) {
     chief = makeBot(Object.assign({ id: uid('bot') }, CHIEF));
     chief.isChief = true;
@@ -1406,8 +1408,8 @@ function applyPlan() {
     state.bots.push(chief);
   }
   const agents = [];
-  (plan.agents || []).forEach((a) => {
-    let bot = state.bots.find((b) => b.name === a.name);
+  (plan.agents || []).forEach((a) =>{
+    let bot = state.bots.find((b) =>b.name === a.name);
     if (!bot) {
       bot = makeBot({
         id: uid('bot'),
@@ -1428,7 +1430,7 @@ function applyPlan() {
     mode: 'mention',
     botId: chief.id,
     topic: (LANG === 'ko' ? '총괄 오케스트레이터 1:1 — ' : '') + (plan.goal || '팀 목표'),
-    members: [chief.id].concat(agents.map((a) => a.id)),
+    members: [chief.id].concat(agents.map((a) =>a.id)),
     orchestrator: true,
   };
   state.channels.push(channel);
@@ -1438,7 +1440,7 @@ function applyPlan() {
       id: uid('msg'),
       kind: 'system',
       name: 'MOA Hive',
-      text: fmt(LN('orch.designCreated', '**총괄 오케스트레이터 팀을 만들었습니다** — 🧠 MOA Chief + 에이전트 {n}명\n\n목적: {goal}\n\n{why}'), { n: agents.length, goal, why: plan.why || '' }),
+      text: fmt(LN('orch.designCreated', '**총괄 오케스트레이터 팀을 만들었습니다** —  MOA Chief + 에이전트 {n}명\n\n목적: {goal}\n\n{why}'), { n: agents.length, goal, why: plan.why || '' }),
     },
     {
       id: uid('msg'),
@@ -1448,7 +1450,7 @@ function applyPlan() {
       emoji: chief.emoji,
       role: 'chief',
       text: fmt(LN('orch.designReady', '준비됐습니다. 아래 에이전트에게 일을 나눠 맡기고, 제가 결과만 취합해 보고합니다.\n\n- {agents}\n\n하고 싶은 일을 그대로 말해 주세요. 예: “{goal}”'), {
-        agents: agents.map((a) => a.emoji + ' ' + a.name).join('\n- '),
+        agents: agents.map((a) =>a.emoji + ' ' + a.name).join('\n- '),
         goal,
       }),
     },
@@ -1473,7 +1475,7 @@ function caseInfo(c) {
     quick: (l && l.quick) || q.quick || [],
     tagline: (l && l.tagline) || c.tagline,
     channel: (l && l.channel) || c.channel,
-    names: (l && l.names) || c.bots.map((b) => b.name),
+    names: (l && l.names) || c.bots.map((b) =>b.name),
     starter: (l && l.starter) || c.starter,
     examples: (l && l.examples) || null,
   };
@@ -1482,14 +1484,14 @@ function caseInfo(c) {
 function renderCaseGallery() {
   const box = $('#caseGallery');
   if (!box) return;
-  box.innerHTML = CASES.map((c) => {
+  box.innerHTML = CASES.map((c) =>{
     const info = caseInfo(c);
     const on = state.currentCaseId === c.id;
     return (
-      '<button type="button" class="d-case' + (on ? ' is-active' : '') + '"' +
-      ' data-apply-case="' + esc(c.id) + '" data-case-id="' + esc(c.id) + '" data-testid="case-tile"' +
-      ' aria-pressed="' + (on ? 'true' : 'false') + '" title="' + esc(info.tagline) + '">' +
-      '<span class="em" aria-hidden="true">' + esc(c.emoji) + '</span>' +
+      '<button type="button"class="d-case' + (on ? ' is-active' : '') + '"' +
+      ' data-apply-case="' + esc(c.id) + '"data-case-id="' + esc(c.id) + '"data-testid="case-tile"' +
+      ' aria-pressed="' + (on ? 'true' : 'false') + '"title="' + esc(info.tagline) + '">' +
+      '<span class="em"aria-hidden="true">' + esc(c.emoji) + '</span>' +
       '<b>' + esc(info.short) + '</b>' +
       '<small>' + esc(info.tagline) + '</small>' +
       '</button>'
@@ -1498,18 +1500,18 @@ function renderCaseGallery() {
 }
 
 function applyCase(id, opts) {
-  const c = CASES.find((x) => x.id === id);
+  const c = CASES.find((x) =>x.id === id);
   if (!c) return;
   const info = caseInfo(c);
   const localized = LANG !== 'ko';
   const specs = c.bots.slice();
-  const hasChief = specs.some((b) => b.isChief);
+  const hasChief = specs.some((b) =>b.isChief);
   const bots = [];
   if (!hasChief) {
     const chief = makeBot({
       id: uid('bot'),
       name: 'MOA Chief',
-      emoji: '🧠',
+      emoji: '',
       role: 'chief',
       isChief: true,
       summary: LN('roles.chief', '차분하고 명쾌한 팀장 — 할 일을 나눠 맡기고 결과만 정리합니다.'),
@@ -1518,7 +1520,7 @@ function applyCase(id, opts) {
     });
     bots.push(chief);
   }
-  specs.forEach((spec, i) => {
+  specs.forEach((spec, i) =>{
     const name = info.names[i] || spec.name;
     const bot = makeBot({
       id: uid('bot'),
@@ -1532,13 +1534,13 @@ function applyCase(id, opts) {
     bot.activity = [];
     bots.push(bot);
   });
-  const chief = bots.find((b) => b.isChief) || bots[0];
+  const chief = bots.find((b) =>b.isChief) || bots[0];
   const channel = {
     id: uid('ch'),
     name: info.channel,
     mode: 'auto',
     topic: info.tagline,
-    members: bots.map((b) => b.id),
+    members: bots.map((b) =>b.id),
     orchestrator: true,
   };
   state.bots = bots;
@@ -1588,7 +1590,7 @@ function pushMessage(channelId, msg) {
 
 function pickReply(bot, text) {
   const role = bot.role || 'pm';
-  const topic = text.length > 60 ? text.slice(0, 60) + '…' : text;
+  const topic = text.length >60 ? text.slice(0, 60) + '…' : text;
   if (LANG !== 'ko') {
     const key = ['dev', 'content', 'research', 'chief', 'pm'].indexOf(role) >= 0 ? role : 'pm';
     return fmt(LN('replies.' + key, ''), { topic, name: bot.name });
@@ -1605,7 +1607,7 @@ function pickReply(bot, text) {
     return (
       head +
       '\n\n**다음 주 7편 (요일 · 주제)**\n- 월 · 매일 쓰는 물건 하나를 바꾼 이야기\n- 화 · 5분 루틴이 만든 차이\n- 수 · 실패한 자동화 3가지\n- 목 · 돈 안 드는 생산성 도구\n- 금 · 이번 주 배운 것\n- 토 · 독자 질문 답변\n- 일 · 다음 주 예고\n\n' +
-      '**첫 3초 훅 2안**\n> “이거 하나 바꿨더니 아침이 30분 남았습니다.”\n> “매일 하던 이 일, 사실 안 해도 됩니다.”\n\n' +
+      '**첫 3초 훅 2안**\n>“이거 하나 바꿨더니 아침이 30분 남았습니다.”\n>“매일 하던 이 일, 사실 안 해도 됩니다.”\n\n' +
       '**해시태그** `#생활자동화 #1인사업 #AI툴 #루틴`\n\n_체험용 예시 응답입니다._'
     );
   }
@@ -1630,20 +1632,20 @@ function pickReply(bot, text) {
 function routeBot(channel, text) {
   const members = channelMembers(channel);
   if (!members.length) return null;
-  const mention = members.find((b) => text.includes('@' + b.name));
+  const mention = members.find((b) =>text.includes('@' + b.name));
   if (mention) return mention;
   if (channel.mode === 'mention' && channel.botId) {
-    const fixed = members.find((b) => b.id === channel.botId);
+    const fixed = members.find((b) =>b.id === channel.botId);
     if (fixed) return fixed;
   }
-  const chief = members.find((b) => b.isChief);
+  const chief = members.find((b) =>b.isChief);
   if (chief) return chief;
-  const candidates = members.filter((b) => !b.isChief);
+  const candidates = members.filter((b) =>!b.isChief);
   let best = candidates[0] || members[0];
   let bestScore = 0;
-  candidates.forEach((b) => {
-    const score = (b.keywords || []).reduce((acc, k) => (text.toLowerCase().includes(String(k).toLowerCase()) ? acc + 1 : acc), 0);
-    if (score > bestScore) {
+  candidates.forEach((b) =>{
+    const score = (b.keywords || []).reduce((acc, k) =>(text.toLowerCase().includes(String(k).toLowerCase()) ? acc + 1 : acc), 0);
+    if (score >bestScore) {
       bestScore = score;
       best = b;
     }
@@ -1652,12 +1654,12 @@ function routeBot(channel, text) {
 }
 
 function shouldOrchestrate(channel) {
-  return !!(channel && channel.orchestrator && state.bots.some((b) => b.isChief));
+  return !!(channel && channel.orchestrator && state.bots.some((b) =>b.isChief));
 }
 
 async function respond(channel, text) {
   const run = state.runId;
-  const chief = state.bots.find((b) => b.isChief);
+  const chief = state.bots.find((b) =>b.isChief);
   if (shouldOrchestrate(channel)) {
     await chiefRespond(channel, chief, text, run);
     return;
@@ -1684,16 +1686,16 @@ async function respond(channel, text) {
     role: bot.role,
     text: pickReply(bot, text),
   });
-  bot.activity = [text.length > 34 ? text.slice(0, 34) + '…' : text].concat(bot.activity || []).slice(0, 4);
+  bot.activity = [text.length >34 ? text.slice(0, 34) + '…' : text].concat(bot.activity || []).slice(0, 4);
   renderBots();
   renderInspector();
   renderMessages(true);
 }
 
 async function chiefRespond(channel, chief, text, run) {
-  const agents = channelMembers(channel).filter((b) => !b.isChief).slice(0, 3);
-  const steps = agents.map((a, i) => {
-    const meta = Object.values(AGENT_LIB).find((x) => x.name === a.name) || CONSULT.flatMap((c) => c.agents).find((x) => x.name === a.name);
+  const agents = channelMembers(channel).filter((b) =>!b.isChief).slice(0, 3);
+  const steps = agents.map((a, i) =>{
+    const meta = Object.values(AGENT_LIB).find((x) =>x.name === a.name) || CONSULT.flatMap((c) =>c.agents).find((x) =>x.name === a.name);
     return {
       id: a.id,
       name: a.name,
@@ -1711,9 +1713,9 @@ async function chiefRespond(channel, chief, text, run) {
     name: chief.name,
     emoji: chief.emoji,
     role: 'chief',
-    text: fmt(LN('orch.report', '**팀장 봇** · 🧠 {chief}\n\n할 일: {goal}\n\n봇 {n}명에게 나눠서 맡깁니다.'), {
+    text: fmt(LN('orch.report', '**팀장 봇** ·  {chief}\n\n할 일: {goal}\n\n봇 {n}명에게 나눠서 맡깁니다.'), {
       chief: chief.name,
-      goal: text.length > 80 ? text.slice(0, 80) + '…' : text,
+      goal: text.length >80 ? text.slice(0, 80) + '…' : text,
       n: steps.length,
     }),
     steps,
@@ -1722,7 +1724,7 @@ async function chiefRespond(channel, chief, text, run) {
   renderMessages(true);
 
   for (let i = 0; i < steps.length; i++) {
-    if (i > 0) {
+    if (i >0) {
       steps[i].status = 'working';
       state.officeBusy = { chief: true, agent: steps[i].id };
       renderMessages(false);
@@ -1738,7 +1740,7 @@ async function chiefRespond(channel, chief, text, run) {
 
   state.officeBusy = null;
   msg.busy = false;
-  const topic40 = text.length > 40 ? text.slice(0, 40) + '…' : text;
+  const topic40 = text.length >40 ? text.slice(0, 40) + '…' : text;
   msg.summary =
     LN('orch.summaryHeader', '**정리 결과**') + '\n' +
     '- ' + fmt(LN('orch.summaryScope', '범위: “{topic}” 요청을 {n}개 결과물로 나눴습니다.'), { topic: topic40, n: steps.length }) + '\n' +
@@ -1750,7 +1752,7 @@ async function chiefRespond(channel, chief, text, run) {
 
   if (!state.proposal && channel.id === state.activeChannelId) {
     const reportName = LANG === 'ko' ? '주간 리포트 봇' : (u('reportBot') || 'Weekly report bot');
-    const hasReport = state.bots.some((b) => b.name === reportName || /리포트|report|报表|レポート/i.test(b.name));
+    const hasReport = state.bots.some((b) =>b.name === reportName || /리포트|report|报表|レポート/i.test(b.name));
     if (!hasReport) {
       const proposal = {
         kind: 'bot',
@@ -1788,16 +1790,16 @@ function handleProposal(action, btn) {
     pushMessage(state.activeChannelId, {
       kind: 'system',
       name: 'MOA Hive',
-      text: LN('orch.ruleApplied', '✓ 규칙을 추가했습니다.'),
+      text: LN('orch.ruleApplied', ' 규칙을 추가했습니다.'),
     });
     toast(LN('toasts.ruleAdded', '읽기 전용 명령 자동 승인 규칙을 추가했습니다.'));
   } else if (action === 'ok') {
     const name = state.proposal.bot || reportName;
-    if (!state.bots.some((b) => b.name === name)) {
+    if (!state.bots.some((b) =>b.name === name)) {
       const bot = makeBot({
         id: uid('bot'),
         name,
-        emoji: '📊',
+        emoji: '',
         role: 'research',
         summary: LANG === 'ko' ? '주간 지표와 진행률을 한 장 리포트로 정리합니다. 숫자에는 기준일과 출처를 붙입니다.' : ((u('roleSummary') || {}).research || ''),
         activity: LANG === 'ko' ? ['주간 리포트 초안 생성'] : [],
@@ -1809,7 +1811,7 @@ function handleProposal(action, btn) {
     pushMessage(state.activeChannelId, {
       kind: 'system',
       name: 'MOA Hive',
-      text: fmt(LN('orch.botApplied', '✓ **{name}**을(를) 팀에 붙였습니다.'), {
+      text: fmt(LN('orch.botApplied', ' **{name}**을(를) 팀에 붙였습니다.'), {
         name,
         channel: channelLabel(currentChannel()),
       }),
@@ -1820,7 +1822,7 @@ function handleProposal(action, btn) {
   }
   if (btn && btn.closest) {
     const wrap = btn.closest('.d-proposal');
-    if (wrap) wrap.innerHTML = '<div class="done">' + (action === 'ok' ? LN('orch.proposalDone', '✓ 팀에 반영되었습니다.') : LN('orch.proposalPassed', '· 기록되었습니다.')) + '</div>';
+    if (wrap) wrap.innerHTML = '<div class="done">' + (action === 'ok' ? LN('orch.proposalDone', ' 팀에 반영되었습니다.') : LN('orch.proposalPassed', '· 기록되었습니다.')) + '</div>';
   }
   state.dirty = true;
   renderAll(true);
@@ -1831,8 +1833,8 @@ function bindDemo() {
   const app = $('#demoApp');
   if (!app) return;
 
-  $$('#envStg, #envProd').forEach((b) => {
-    b.addEventListener('click', () => {
+  $$('#envStg, #envProd').forEach((b) =>{
+    b.addEventListener('click', () =>{
       const env = b.getAttribute('data-env');
       if (state.env === env) return;
       state.env = env;
@@ -1846,7 +1848,7 @@ function bindDemo() {
     });
   });
 
-  app.addEventListener('click', (e) => {
+  app.addEventListener('click', (e) =>{
     const chBtn = e.target.closest('[data-channel]');
     if (chBtn) {
       state.activeChannelId = chBtn.getAttribute('data-channel');
@@ -1894,10 +1896,10 @@ function bindDemo() {
     }
   });
 
-  $$('#tabContext, #tabRelease').forEach((tab) => {
-    tab.addEventListener('click', () => {
+  $$('#tabContext, #tabRelease').forEach((tab) =>{
+    tab.addEventListener('click', () =>{
       const key = tab.getAttribute('data-pane');
-      $$('#tabContext, #tabRelease').forEach((t) => {
+      $$('#tabContext, #tabRelease').forEach((t) =>{
         const on = t === tab;
         t.classList.toggle('is-active', on);
         t.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -1911,7 +1913,7 @@ function bindDemo() {
 
   const jump = $('#releaseJump');
   if (jump) {
-    jump.addEventListener('click', () => {
+    jump.addEventListener('click', () =>{
       const tab = $('#tabRelease');
       if (tab) tab.click();
       const right = $('.d-right');
@@ -1920,7 +1922,7 @@ function bindDemo() {
   }
 
   const input = $('#demoInput');
-  const send = () => {
+  const send = () =>{
     if (!input) return;
     const v = input.value;
     input.value = '';
@@ -1928,11 +1930,11 @@ function bindDemo() {
     sendMessage(v);
   };
   if (input) {
-    input.addEventListener('input', () => {
+    input.addEventListener('input', () =>{
       input.style.height = 'auto';
       input.style.height = Math.min(110, input.scrollHeight) + 'px';
     });
-    input.addEventListener('keydown', (e) => {
+    input.addEventListener('keydown', (e) =>{
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         send();
@@ -1944,14 +1946,14 @@ function bindDemo() {
 
   const ack = $('#promoteAck');
   if (ack) {
-    ack.addEventListener('change', () => {
+    ack.addEventListener('change', () =>{
       const btn = $('#promoteBtn');
       if (btn) btn.disabled = state.promoted || !ack.checked;
     });
   }
   const promote = $('#promoteBtn');
   if (promote) {
-    promote.addEventListener('click', () => {
+    promote.addEventListener('click', () =>{
       if (state.promoted) return;
       if (!($('#promoteAck') && $('#promoteAck').checked)) return;
       state.promoted = true;
@@ -1968,7 +1970,7 @@ function bindDemo() {
       pushMessage(state.activeChannelId, {
         kind: 'system',
         name: 'MOA Hive',
-        text: '🚀 **PROD v0.3.0 반영 완료** — STG의 봇·채널·설정이 운영 버전으로 승격되었습니다. PROD는 다시 읽기 전용입니다.',
+        text: ' **PROD v0.3.0 반영 완료** — STG의 봇·채널·설정이 운영 버전으로 승격되었습니다. PROD는 다시 읽기 전용입니다.',
       });
       renderAll(true);
       toast(LN('toasts.promoted', 'PROD v0.3.0 반영 완료 — 버전 히스토리에 기록했습니다.'));
@@ -1978,7 +1980,7 @@ function bindDemo() {
   /__* 3단계 바 · 봇 카드 · 세팅 팩 CTA __*/
   const stepsBar = $('#demoSteps');
   if (stepsBar) {
-    stepsBar.addEventListener('click', (e) => {
+    stepsBar.addEventListener('click', (e) =>{
       const b = e.target.closest('.d-gstep');
       if (!b) return;
       setStep(Number(b.getAttribute('data-step')), { scroll: true });
@@ -1988,13 +1990,13 @@ function bindDemo() {
   if (closeBotBtn) closeBotBtn.addEventListener('click', closeBot);
   const botSheet = $('#botSheet');
   if (botSheet) {
-    botSheet.addEventListener('click', (e) => { if (e.target === botSheet) closeBot(); });
+    botSheet.addEventListener('click', (e) =>{ if (e.target === botSheet) closeBot(); });
   }
   const packCtaBtn = $('#packCta');
   if (packCtaBtn) {
-    packCtaBtn.addEventListener('click', () => {
+    packCtaBtn.addEventListener('click', () =>{
       setStep(3);
-      openPack({ name: $('#currentTeam') ? $('#currentTeam').textContent : '', bots: state.bots.map((b) => ({ emoji: b.emoji, name: b.name })) });
+      openPack({ name: $('#currentTeam') ? $('#currentTeam').textContent : '', bots: state.bots.map((b) =>({ emoji: b.emoji, name: b.name })) });
     });
   }
 
@@ -2004,13 +2006,13 @@ function bindDemo() {
   if (close) close.addEventListener('click', closeWizard);
   const sheet = $('#wizardSheet');
   if (sheet) {
-    sheet.addEventListener('click', (e) => {
+    sheet.addEventListener('click', (e) =>{
       if (e.target === sheet) closeWizard();
     });
   }
   const roles = $('#roleCards');
   if (roles) {
-    roles.addEventListener('click', (e) => {
+    roles.addEventListener('click', (e) =>{
       const btn = e.target.closest('[data-role]');
       if (!btn) return;
       wizardRole = btn.getAttribute('data-role');
@@ -2023,7 +2025,7 @@ function bindDemo() {
   if (design) design.addEventListener('click', designTeam);
   const clear = $('#clearDesign');
   if (clear) {
-    clear.addEventListener('click', () => {
+    clear.addEventListener('click', () =>{
       wizardRole = null;
       wizardPlan = null;
       const p = $('#purposeInput');
@@ -2034,7 +2036,7 @@ function bindDemo() {
   }
   const designCard = $('#designCard');
   if (designCard) {
-    designCard.addEventListener('click', (e) => {
+    designCard.addEventListener('click', (e) =>{
       if (e.target.closest('#applyDesignBtn')) applyPlan();
       if (e.target.closest('#redoDesign')) {
         wizardPlan = null;
@@ -2045,13 +2047,13 @@ function bindDemo() {
 
   const gallery = $('#caseGallery');
   if (gallery) {
-    gallery.addEventListener('click', (e) => {
+    gallery.addEventListener('click', (e) =>{
       const packBtn = e.target.closest('[data-pack-case]');
       if (packBtn) {
-        const c = CASES.find((x) => x.id === packBtn.getAttribute('data-pack-case'));
+        const c = CASES.find((x) =>x.id === packBtn.getAttribute('data-pack-case'));
         if (c) {
           const info = caseInfo(c);
-          openPack({ name: info.label, bots: c.bots.map((b, i) => ({ emoji: b.emoji, name: info.names[i] || b.name })) });
+          openPack({ name: info.label, bots: c.bots.map((b, i) =>({ emoji: b.emoji, name: info.names[i] || b.name })) });
         }
         return;
       }
@@ -2064,15 +2066,15 @@ function bindDemo() {
 
   /* 세팅 팩 퍼널 — 업종 카드 · 가상 오피스 · 봇 인스펙터 */
   const packTriggers = ['#inspPackBtn', '#officePackBtn', '#demoPackLink'];
-  packTriggers.forEach((sel) => {
+  packTriggers.forEach((sel) =>{
     const el = $(sel);
     if (!el) return;
-    el.addEventListener('click', (e) => {
+    el.addEventListener('click', (e) =>{
       if (sel === '#demoPackLink') return; /* 앵커는 #pack 섹로 이동 */
       e.preventDefault();
       const ch = currentChannel();
       const members = channelMembers(ch);
-      const bots = (members.length ? members : state.bots).map((b) => ({ emoji: b.emoji, name: b.name }));
+      const bots = (members.length ? members : state.bots).map((b) =>({ emoji: b.emoji, name: b.name }));
       openPack({ name: ch ? '#' + channelLabel(ch) : '', bots });
     });
   });
@@ -2080,9 +2082,9 @@ function bindDemo() {
   if (closePackBtn) closePackBtn.addEventListener('click', closePack);
   const packSheet = $('#packSheet');
   if (packSheet) {
-    packSheet.addEventListener('click', (e) => { if (e.target === packSheet) closePack(); });
+    packSheet.addEventListener('click', (e) =>{ if (e.target === packSheet) closePack(); });
   }
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', (e) =>{
     if (e.key !== 'Escape') return;
     if (packSheet && !packSheet.hidden) closePack();
     const botSheetEl = $('#botSheet');
@@ -2090,14 +2092,14 @@ function bindDemo() {
   });
 
   /* 언어 선택기 */
-  $$('.lang-switch [data-lang]').forEach((b) => {
-    b.addEventListener('click', () => setLang(b.getAttribute('data-lang')));
+  $$('.lang-switch [data-lang]').forEach((b) =>{
+    b.addEventListener('click', () =>setLang(b.getAttribute('data-lang')));
   });
   const adminBtn = $('#adminToggle');
-  if (adminBtn) adminBtn.addEventListener('click', () => setAdmin(!adminMode));
+  if (adminBtn) adminBtn.addEventListener('click', () =>setAdmin(!adminMode));
   const reset = $('#resetDemo');
   if (reset) {
-    reset.addEventListener('click', () => {
+    reset.addEventListener('click', () =>{
       state = seedState();
       wizardPlan = null;
       wizardRole = null;
@@ -2113,7 +2115,7 @@ function bindDemo() {
   setupVoice($('#purposeMic'), $('#purposeInput'));
 
   $$('[data-open-demo]').forEach((b) =>
-    b.addEventListener('click', () => {
+    b.addEventListener('click', () =>{
       const target = $('#demo');
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     })
@@ -2124,11 +2126,11 @@ function setupVoice(btn, target) {
   if (!btn || !target) return;
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
-    btn.addEventListener('click', () => toast(LN('toasts.voiceUnsupported', '이 브라우저는 음성 입력을 지원하지 않습니다 — Chrome·Edge·Safari 최신을 쓰거나 아래에 입력해 주세요.')));
+    btn.addEventListener('click', () =>toast(LN('toasts.voiceUnsupported', '이 브라우저는 음성 입력을 지원하지 않습니다 — Chrome·Edge·Safari 최신을 쓰거나 아래에 입력해 주세요.')));
     return;
   }
   let rec = null;
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', () =>{
     if (btn.classList.contains('listening') && rec) {
       try {
         rec.stop();
@@ -2140,17 +2142,17 @@ function setupVoice(btn, target) {
     rec.interimResults = true;
     rec.continuous = false;
     let base = target.value;
-    rec.onresult = (ev) => {
+    rec.onresult = (ev) =>{
       let text = '';
       for (let i = ev.resultIndex; i < ev.results.length; i++) text += ev.results[i][0].transcript;
       target.value = (base ? base + ' ' : '') + text;
       target.dispatchEvent(new Event('input', { bubbles: true }));
     };
-    rec.onerror = () => {
+    rec.onerror = () =>{
       btn.classList.remove('listening');
       toast(LN('toasts.voiceFailed', '음성 입력을 시작하지 못했습니다. 마이크 권한을 확인해 주세요.'));
     };
-    rec.onend = () => btn.classList.remove('listening');
+    rec.onend = () =>btn.classList.remove('listening');
     try {
       rec.start();
       btn.classList.add('listening');

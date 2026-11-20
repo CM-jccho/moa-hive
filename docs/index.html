@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title data-en="MOA Hive — Your AI office in the browser, no install" data-zh="MOA Hive — 无需安装，在浏览器里直接用你的 AI 办公室" data-ja="MOA Hive — インストール不要、ブラウザでそのまま使えるAIオフィス">MOA Hive — 설치 없이 웹에서 바로 쓰는 내 AI 사무실</title>
+<title data-en="MOA Hive: your AI office in the browser, no install" data-zh="MOA Hive: 无需安装，在浏览器里直接用你的 AI 办公室" data-ja="MOA Hive: インストール不要、ブラウザでそのまま使えるAIオフィス">MOA Hive: 설치 없이 웹에서 바로 쓰는 내 AI 사무실</title>
 <meta name="description" content="MOA Hive는 설치 없이 브라우저에서 바로 쓰는 AI 사무실입니다. 악성 프로그램 경고·API 키·서버비 0원. 업종을 고르면 MOA Chief와 5명의 에이전트가 일을 나눠 처리합니다. 같은 팀을 ChatGPT · Claude에 그대로 옮기는 세팅 팩도 있습니다." />
 <meta name="theme-color" content="#070910" />
-<meta property="og:title" content="MOA Hive — 설치 없이 웹에서 바로 쓰는 내 AI 사무실" />
-<meta property="og:description" content="🌐 설치 0분 · 악성 경고 없음 · API 키 없음 · 서버비 0원. 업종별 AI 팀을 웹에서 바로 체험하고, ChatGPT · Claude 세팅 팩으로 내 계정에 그대로." />
+<meta property="og:title" content="MOA Hive: 설치 없이 웹에서 바로 쓰는 내 AI 사무실" />
+<meta property="og:description" content="설치 0분, 악성 경고 없음, API 키 없음, 서버비 0원. 업종별 AI 팀을 웹에서 바로 체험하고, ChatGPT · Claude 세팅 팩으로 내 계정에 그대로." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://cm-jccho.github.io/moa-hive/" />
 <meta property="og:image" content="./icons/icon-512.png" />
@@ -38,7 +38,7 @@
         <button type="button" data-lang="zh">中文</button>
         <button type="button" data-lang="ja">日本語</button>
       </div>
-      <button class="btn btn-sm" id="installBtn" type="button" hidden>📲 앱 설치</button>
+      <button class="btn btn-sm" id="installBtn" type="button" hidden> 앱 설치</button>
       <a class="btn btn-sm btn-primary" href="#demo" data-en="Try it now" data-zh="立即体验" data-ja="今すぐ試す">지금 체험</a>
     </div>
   </div>
@@ -49,14 +49,12 @@
   <section class="hero">
     <div class="container hero-grid">
       <div>
-        <span class="pill" data-en="🔒 In the browser · no malware warnings · no API keys" data-zh="🔒 直接在浏览器 · 无恶意软件警告 · 无需 API 密钥" data-ja="🔒 ブラウザで完結 · 警告なし · APIキー不要">🔒 웹에서 바로 · 악성 경고 없음 · API 키 없음</span>
         <h1 data-en-html="No install.<br /><em>Your AI office</em>, right in the browser" data-zh-html="无需安装<br /><em>你的 AI 办公室</em>就在浏览器里" data-ja-html="インストール不要<br /><em>あなたのAIオフィス</em>をブラウザで">설치 없이, 웹에서 바로<br /><em>내 AI 사무실</em></h1>
-        <p class="hero-lead" data-en="Say what you need and the team splits the work — Prototyper, Builder, Sweeper, Grower and Maintainer share one office. No unsigned-app warnings, no API keys, no server bill." data-zh="一句话交代任务，AI 团队就自己分工——Prototyper、Builder、Sweeper、Grower、Maintainer 在同一间办公室里协作。没有未签名应用的警告，不用 API 密钥，也不用付服务器费。" data-ja="やることを伝えれば、AIチームが仕事を分担します。Prototyper・Builder・Sweeper・Grower・Maintainer が同じオフィスで動きます。未署名アプリの警告も、APIキーも、サーバー代も不要です。">
-          말로 시키면 AI 팀이 알아서 일합니다. 프로토타이퍼·빌더·스위퍼·그로어·메인테이너가 한 사무실에서 일을 나눠 처리합니다. 설치 파일도, 악성 프로그램 경고도, API 키도, 서버비도 0원입니다.
+        <p class="hero-lede" data-en="Say what you need and the team splits the work. Prototyper, Builder, Sweeper, Grower and Maintainer share one office. No unsigned-app warnings, no API keys, no server bill." data-zh="一句话交代任务，AI 团队就自己分工, , Prototyper、Builder、Sweeper、Grower、Maintainer 在同一间办公室里协作。没有未签名应用的警告，不用 API 密钥，也不用付服务器费。" data-ja="やることを伝えれば、AIチームが仕事を分担します。Prototyper・Builder・Sweeper・Grower・Maintainer が同じオフィスで動きます。未署名アプリの警告も、APIキーも、サーバー代も不要です。"> 말로 시키면 AI 팀이 알아서 일합니다. 프로토타이퍼·빌더·스위퍼·그로어·메인테이너가 한 사무실에서 일을 나눠 처리합니다. 설치 파일도, 악성 프로그램 경고도, API 키도, 서버비도 0원입니다.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#demo" data-en="▶ Enter the virtual office now" data-zh="▶ 马上进入虚拟办公室" data-ja="▶ 今すぐバーチャルオフィスへ">▶ 지금 바로 가상 사무실 체험하기</a>
-          <a class="btn" href="#pack" data-en="🎁 See the ChatGPT/Claude pro pack" data-zh="🎁 查看 ChatGPT/Claude 专业包" data-ja="🎁 ChatGPT/Claude プロパックを見る">🎁 ChatGPT/Claude 프로 팩 보기</a>
+          <a class="btn btn-primary" href="#demo" data-en="Enter the virtual office now" data-zh="马上进入虚拟办公室" data-ja="今すぐバーチャルオフィスへ">지금 바로 가상 사무실 체험하기</a>
+          <a class="btn" href="#pack" data-en="See the ChatGPT/Claude pro pack" data-zh="查看 ChatGPT/Claude 专业包" data-ja="ChatGPT/Claude プロパックを見る"> ChatGPT/Claude 프로 팩 보기</a>
         </div>
         <div class="hero-meta">
           <span><b data-en="0 min setup" data-zh="0 分钟安装" data-ja="セットアップ0分">설치 0분</b></span>
@@ -68,26 +66,26 @@
 
       <div class="hive-card" aria-hidden="true">
         <div class="hive-head">
-          <span data-en="#all-team · taking instructions" data-zh="#全员频道 · 正在接收指令" data-ja="#全体チーム · 指示を受け付け中">#전체-팀 · 말로 시키는 중</span>
+          <span data-en="#all-team / taking instructions" data-zh="#全员频道 / 正在接收指令" data-ja="#全体チーム / 指示を受け付け中">#전체-팀 / 말로 시키는 중</span>
           <span class="pill blue" data-en="Running in your browser" data-zh="正在你的浏览器里运行" data-ja="ブラウザで実行中">브라우저에서 실행 중</span>
         </div>
         <div class="hive-bots">
-          <div class="hive-bot chief"><span class="em">🧠</span>MOA Chief</div>
-          <div class="hive-bot"><span class="em">💡</span>Prototyper</div>
-          <div class="hive-bot"><span class="em">🔨</span>Builder</div>
-          <div class="hive-bot"><span class="em">🧹</span>Sweeper</div>
+          <div class="hive-bot chief"><span class="em">C</span>MOA Chief</div>
+          <div class="hive-bot"><span class="em">P</span>Prototyper</div>
+          <div class="hive-bot"><span class="em">B</span>Builder</div>
+          <div class="hive-bot"><span class="em">S</span>Sweeper</div>
         </div>
         <div class="hive-chat">
           <div class="hive-line">
-            <span class="av">🙋</span>
+            <span class="av">나</span>
             <div class="hive-bubble" data-en="Sort this week's to-dos and meeting notes." data-zh="帮我整理这周要做的事和会议记录。" data-ja="今週のやることと議事録を整理して。">이번 주 할 일이랑 회의록 정리해줘.</div>
           </div>
           <div class="hive-line chief">
-            <span class="av">🧠</span>
+            <span class="av">C</span>
             <div class="hive-bubble" data-en-html="<b>MOA Chief</b> · Prototyper took the concept, Builder took the first screen." data-zh-html="<b>MOA Chief</b> · 已把概念交给 Prototyper，首屏交给 Builder。" data-ja-html="<b>MOA Chief</b> · コンセプトはPrototyper、最初の画面はBuilderに任せました。"><b>MOA Chief</b> · Prototyper에게 컨셉, Builder에게 첫 화면을 맡겼습니다.</div>
           </div>
           <div class="hive-line">
-            <span class="av">🧭</span>
+            <span class="av">G</span>
             <div class="hive-bubble" data-en="Three concepts and the first screen are ready. Take a look." data-zh="三个方案和首屏都准备好了，请过目。" data-ja="コンセプト3案と最初の画面を用意しました。確認してください。">컨셉 3안과 첫 화면을 준비했어요. 확인해 보세요.</div>
           </div>
         </div>
@@ -99,8 +97,7 @@
   <section class="section demo-sec" id="demo">
     <div class="container">
       <div class="section-head">
-        <div class="kicker" data-en="Try it in 3 steps" data-zh="3 步体验" data-ja="3ステップで体験">3단계 체험</div>
-        <h2 data-en="Pick, tap, paste — done in three steps" data-zh="选、点、粘贴 — 三步就搞定" data-ja="選ぶ・押す・貼る — 3ステップで完了">고르고, 눌러보고, 붙여넣기</h2>
+        <h2 data-en="Pick, tap, paste: done in three steps" data-zh="选、点、粘贴：三步就搞定" data-ja="選ぶ・押す・貼る：3ステップで完了">고르고, 눌러보고, 붙여넣기</h2>
         <p class="section-lead" data-en="No install, no sign-up, no API key. Pick your business, tap one big button, and the AI team starts working in the office below." data-zh="不用安装、不用注册、不用 API 密钥。选好行业，点一个大按钮，AI 团队就在下面的办公室里开工。" data-ja="インストールも会員登録もAPIキーも不要。業種を選び、大きなボタンをひとつ押せば、下のオフィスでAIチームが動き出します。">설치도, 회원가입도, API 키도 없습니다. 업종을 고르고 큰 버튼 하나만 누르면 AI 팀이 바로 일합니다.</p>
       </div>
 
@@ -119,7 +116,7 @@
             <b>3</b><span class="g-long" data-en="Copy into ChatGPT · Claude" data-zh="复制到 ChatGPT·Claude" data-ja="ChatGPT·Claude にコピペ">내 ChatGPT·Claude에 복붙</span><span class="g-short" data-en="Paste" data-zh="复制粘贴" data-ja="コピペ">복붙</span>
           </button>
           <span class="d-steps-spacer"></span>
-          <button class="d-reset" id="resetDemo" type="button" data-en="↺ Start over" data-zh="↺ 重新开始" data-ja="↺ 最初から">↺ 처음부터</button>
+          <button class="d-reset" id="resetDemo" type="button" data-en="Start over" data-zh="重新开始" data-ja="最初から">처음부터</button>
         </nav>
 
         <div class="demo-frame">
@@ -128,7 +125,7 @@
           <section class="d-block d-block-case" id="stepCase" data-block="1">
             <div class="d-block-head">
               <h3><span class="d-num">1</span><span data-en="What do you do?" data-zh="你是做什么的？" data-ja="どんな仕事をしていますか？">어떤 일을 하세요?</span></h3>
-              <p data-en="Tap one — that team moves into the office below." data-zh="点一个，下面的办公室就会换成这个团队。" data-ja="1つ押すと、下のオフィスにそのチームが入ります。">하나만 누르면 아래 사무실에 그 팀이 바로 들어옵니다.</p>
+              <p data-en="Tap one, and that team moves into the office below." data-zh="点一个，下面的办公室就换成这个团队。" data-ja="1つ押すと、下のオフィスにそのチームが入ります。">하나만 누르면 아래 사무실에 그 팀이 바로 들어옵니다.</p>
             </div>
             <div class="d-case-grid" id="caseGallery" role="group" aria-label="업종 선택"></div>
           </section>
@@ -139,9 +136,9 @@
           <!-- 2D 가상 사무실 -->
           <section class="d-office" data-testid="office">
             <div class="d-office-head">
-              <span class="d-office-title" data-en="🏢 My AI office" data-zh="🏢 我的 AI 办公室" data-ja="🏢 私のAIオフィス">🏢 내 AI 사무실</span>
+              <span class="d-office-title" data-en="My AI office" data-zh="我的 AI 办公室" data-ja="私のAIオフィス"> 내 AI 사무실</span>
               <span class="d-office-hint" id="officeHint"></span>
-              <button class="d-office-pack" id="officePackBtn" type="button" data-en="🎁 Setup pack" data-zh="🎁 配置包" data-ja="🎁 セットアップパック">🎁 세팅 팩</button>
+              <button class="d-office-pack" id="officePackBtn" type="button" data-en="Setup pack" data-zh="配置包" data-ja="セットアップパック"> 세팅 팩</button>
             </div>
             <div class="d-office-floor" id="officeFloor">
               <div class="office-stage" id="officeStage" data-phase="day">
@@ -153,16 +150,16 @@
                 </div>
                 <div class="office-times" id="officeTimes" role="group" aria-label="시간대 미리보기">
                   <button type="button" data-office-time="auto" class="is-active" data-en="Auto" data-zh="自动" data-ja="自動">자동</button>
-                  <button type="button" data-office-time="day" aria-label="낮" title="낮" data-en="Day" data-zh="白天" data-ja="昼">☀️</button>
-                  <button type="button" data-office-time="sunset" aria-label="노을" title="노을" data-en="Sunset" data-zh="黄昏" data-ja="夕暮れ">🌇</button>
-                  <button type="button" data-office-time="night" aria-label="밤" title="밤" data-en="Night" data-zh="夜晚" data-ja="夜">🌙</button>
+                  <button type="button" data-office-time="day" aria-label="낮" title="낮" data-en="Day" data-zh="白天" data-ja="昼">낮</button>
+                  <button type="button" data-office-time="sunset" aria-label="노을" title="노을" data-en="Sunset" data-zh="黄昏" data-ja="夕暮れ">노을</button>
+                  <button type="button" data-office-time="night" aria-label="밤" title="밤" data-en="Night" data-zh="夜晚" data-ja="夜">밤</button>
                 </div>
               </div>
             </div>
             <p class="d-office-tip" data-en="Tap a character to see what it does." data-zh="点一下角色，看看它负责什么。" data-ja="キャラクターを押すと、役割が分かります。">캐릭터를 누르면 무슨 일을 하는지 볼 수 있습니다.</p>
           </section>
 
-          <!-- 사무실 바로 아래 — 팀 · 봇 상태 요약 -->
+          <!-- 사무실 바로 아래: 팀 · 봇 상태 요약 -->
           <div class="d-bot-status" id="officeStatus" data-testid="office-status">
             <div class="d-bot-status-head">
               <span class="d-bot-status-title" data-en="Bot status" data-zh="机器人状态" data-ja="ボットの状態">봇 상태</span>
@@ -179,13 +176,13 @@
               <h3><span class="d-num">2</span><span data-en="Tell the team lead one line" data-zh="给队长机器人一句话" data-ja="チームリーダーに一言頼む">팀장 봇에게 한 줄 시키기</span></h3>
               <span class="d-team-chip" id="currentTeam">내 AI 팀</span>
             </div>
-            <p class="d-block-sub" data-en="Try it now — tap one of the buttons below." data-zh="马上试试 — 点下面一个按钮就行。" data-ja="すぐ試す — 下のボタンを1つ押すだけ。">바로 해보기 — 아래 버튼 하나만 누르면 됩니다.</p>
+            <p class="d-block-sub" data-en="Try it now: tap one of the buttons below." data-zh="马上试试：点下面一个按钮就行。" data-ja="すぐ試す：下のボタンを1つ押すだけ。">바로 해보기: 아래 버튼 하나만 누르면 됩니다.</p>
             <div class="d-quick" id="quickTasks"></div>
             <div class="d-composer">
               <div class="d-composer-row">
                 <label class="sr-only" for="demoInput">메시지 입력</label>
-                <textarea id="demoInput" rows="1" placeholder="직접 쓰기 — 예: 이번 주 할 일 정리해줘" data-en-placeholder="Type your own — e.g. “sort this week's to-dos”" data-zh-placeholder="自己写 — 例如“整理这周要做的事”" data-ja-placeholder="自分で書く — 例：「今週のやることを整理して」"></textarea>
-                <button class="d-mic" id="demoMic" type="button" title="음성 입력" aria-label="음성 입력">🎤</button>
+                <textarea id="demoInput" rows="1" placeholder="직접 쓰기, 예: 이번 주 할 일 정리해줘" data-en-placeholder="Type your own, e.g. “sort this week's to-dos”" data-zh-placeholder="自己写, 例如“整理这周要做的事”" data-ja-placeholder="自分で書く, 例：「今週のやることを整理して」"></textarea>
+                <button class="d-mic" id="demoMic" type="button" title="음성 입력" aria-label="음성 입력"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 4a2.5 2.5 0 0 1 2.5 2.5v5a2.5 2.5 0 0 1-5 0v-5A2.5 2.5 0 0 1 12 4Z"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/><path d="M12 17v3"/></svg></button>
                 <button class="d-send" id="demoSend" type="button" aria-label="전송">↑</button>
               </div>
               <div class="d-hint"><span id="demoTyping"></span><span data-en="Runs in this tab only" data-zh="只在这个标签页运行" data-ja="このタブ内だけで実行">이 탭에서만 실행</span></div>
@@ -203,7 +200,7 @@
               <h3><span class="d-num">3</span><span data-en="Copy this team into ChatGPT · Claude" data-zh="把这个团队复制到你的 ChatGPT·Claude" data-ja="このチームを ChatGPT·Claude に">내 ChatGPT·Claude에 붙여넣기</span></h3>
               <p data-en="The setup pack turns the same team and prompts into files you paste in. Ready in three minutes, in your own account." data-zh="把同一个团队和提示词整理成可直接粘贴的文件，3 分钟就能在自己的账号里用。" data-ja="同じチームとプロンプトを貼り付け用ファイルにまとめました。3分で自分のアカウントで使えます。">같은 팀과 프롬프트를 붙여넣기용 파일로 정리했습니다. 3분이면 내 계정에서 바로 씁니다.</p>
             </div>
-            <button class="btn btn-primary" id="packCta" type="button" data-en="🎁 See the setup pack" data-zh="🎁 查看配置包" data-ja="🎁 セットアップパックを見る">🎁 세팅 팩 보기</button>
+            <button class="btn btn-primary" id="packCta" type="button" data-en="See the setup pack" data-zh="查看配置包" data-ja="セットアップパックを見る"> 세팅 팩 보기</button>
           </section>
         </div>
 
@@ -211,20 +208,20 @@
         <div class="pack-sheet bot-sheet" id="botSheet" hidden>
           <div class="pack-dialog" role="dialog" aria-modal="true" aria-labelledby="inspName">
             <div class="pack-sheet-head">
-              <div class="d-insp-av idle" id="inspAvatar">🧭</div>
+              <div class="d-insp-av idle" id="inspAvatar"></div>
               <div class="grow">
                 <h3 id="inspName">MOA Chief</h3>
-                <p class="d-insp-state" id="inspState">✨ 대기 중</p>
+                <p class="d-insp-state" id="inspState"> 대기 중</p>
               </div>
-              <button class="icon-btn" id="closeBot" type="button" aria-label="닫기">✕</button>
+              <button class="icon-btn" id="closeBot" type="button" aria-label="닫기"></button>
             </div>
             <div class="pack-sheet-body">
-              <p class="d-insp-summary" id="inspSummary">—</p>
+              <p class="d-insp-summary" id="inspSummary"></p>
               <div class="d-block-title" data-en="What it can do now" data-zh="现在可以做的事" data-ja="今できること">지금 할 수 있는 일</div>
               <div id="taskList"></div>
               <div class="d-block-title" data-en="Recent activity" data-zh="最近处理记录" data-ja="最近の処理履歴">최근 처리 내역</div>
               <div id="activityList"></div>
-              <button class="btn btn-sm btn-block insp-pack-btn" id="inspPackBtn" type="button" data-en="🎁 Use this team in my ChatGPT · Claude" data-zh="🎁 把这个团队放进我的 ChatGPT·Claude" data-ja="🎁 このチームを自分のChatGPT·Claudeで使う">🎁 이 팀을 내 ChatGPT · Claude에서 쓰기</button>
+              <button class="btn btn-sm btn-block insp-pack-btn" id="inspPackBtn" type="button" data-en="Use this team in my ChatGPT · Claude" data-zh="把这个团队放进我的 ChatGPT·Claude" data-ja="このチームを自分のChatGPT·Claudeで使う"> 이 팀을 내 ChatGPT · Claude에서 쓰기</button>
             </div>
           </div>
         </div>
@@ -238,24 +235,23 @@
   <section class="section pack-sec" id="pack">
     <div class="container">
       <div class="section-head">
-        <div class="kicker" data-en="Pro pack" data-zh="专业包" data-ja="プロパック">Pro pack</div>
         <h2 data-en="Take the same team into your ChatGPT · Claude" data-zh="把这里配好的团队，原样搬进你的 ChatGPT · Claude" data-ja="ここで選んだチームを、自分のChatGPT · Claudeへ">웹에서 고른 팀을, 내 ChatGPT · Claude에 그대로</h2>
-        <p class="section-lead" data-en="The same six industry teams, 50 practical prompts and a Claude Code skill pack — as files you paste in. Ready in three minutes, no API key, no extra subscription." data-zh="同样的六种行业团队、50 条实用提示词，以及 Claude Code 技能包，都整理成可直接粘贴的文件。三分钟就能在自己的账号里用上。不用 API 密钥，也不用另外订阅。" data-ja="同じ6業種のチーム、実務プロンプト50本、Claude Codeスキルパックをコピペ用ファイルにまとめました。3分で自分のアカウントに導入できます。APIキーも追加契約も不要です。">같은 6종 업종 팀과 업종별 30개 + 공통 보너스 20개, 실무 프롬프트 50개, Claude Code용 스킬팩을 복붙용 파일로 정리했습니다. 3분이면 내 계정에서 바로 씁니다. API 키도, 추가 구독도 필요 없습니다.</p>
+        <p class="section-lead" data-en="The same six industry teams, 50 practical prompts and a Claude Code skill pack: as files you paste in. Ready in three minutes, no API key, no extra subscription." data-zh="同样的六种行业团队、50 条实用提示词，以及 Claude Code 技能包，都整理成可直接粘贴的文件。三分钟就能在自己的账号里用上。不用 API 密钥，也不用另外订阅。" data-ja="同じ6業種のチーム、実務プロンプト50本、Claude Codeスキルパックをコピペ用ファイルにまとめました。3分で自分のアカウントに導入できます。APIキーも追加契約も不要です。">같은 6종 업종 팀과 업종별 30개 + 공통 보너스 20개, 실무 프롬프트 50개, Claude Code용 스킬팩을 복붙용 파일로 정리했습니다. 3분이면 내 계정에서 바로 씁니다. API 키도, 추가 구독도 필요 없습니다.</p>
       </div>
 
       <div class="pack-grid">
         <article class="pack-card">
-          <div class="em">🧠</div>
+          
           <h3 data-en="MOA Chief master prompt" data-zh="MOA Chief 主指令" data-ja="MOA Chief マスター指示">MOA Chief 마스터 지침</h3>
-          <p data-en="A team-lead prompt with five roles (Prototyper · Builder · Sweeper · Grower · Maintainer) that divides the work and reports only the result — Korean and English." data-zh="把工作分给五个角色（Prototyper · Builder · Sweeper · Grower · Maintainer），只回报结果的总管指令。中英日韩对照。" data-ja="5つの役割（Prototyper · Builder · Sweeper · Grower · Maintainer）に仕事を分け、結果だけを報告するリーダー指示。韓国語・英語併記。">프로토타이퍼·빌더·스위퍼·그로어·메인테이너 5역할에 일을 나눠 맡기고 결과만 보고하는 팀장 지침. 한·영 병기.</p>
+          <p data-en="A team-lead prompt with five roles (Prototyper · Builder · Sweeper · Grower · Maintainer) that divides the work and reports only the result: Korean and English." data-zh="把工作分给五个角色（Prototyper · Builder · Sweeper · Grower · Maintainer），只回报结果的总管指令。中英日韩对照。" data-ja="5つの役割（Prototyper · Builder · Sweeper · Grower · Maintainer）に仕事を分け、結果だけを報告するリーダー指示。韓国語・英語併記。">프로토타이퍼·빌더·스위퍼·그로어·메인테이너 5역할에 일을 나눠 맡기고 결과만 보고하는 팀장 지침. 한·영 병기.</p>
         </article>
         <article class="pack-card">
-          <div class="em">🏪</div>
+          
           <h3 data-en="6 industry teams" data-zh="6 种行业团队" data-ja="6業種のチーム">6종 업종 맞춤팩</h3>
-          <p data-en="Local shop, office team, smart store seller, solo creator, freelancer, product startup — each with its own instruction block and five ready prompts." data-zh="小店、职场人、网店卖家、个人创作者、自由职业者、产品创业团队 — 每种都有专属指令和 5 条现成提示词。" data-ja="個人店、会社員、ネットショップ、個人クリエイター、フリーランス、プロダクトスタートアップ — それぞれ専用の指示と実務プロンプト5本付き。">자영업·직장인·스마트스토어·1인 크리에이터·프리랜서·프로덕트 스타트업 — 업종별 지침과 바로 쓰는 실무 프롬프트 5개씩.</p>
+          <p data-en="Local shop, office team, smart store seller, solo creator, freelancer, product startup: each with its own instruction block and five ready prompts." data-zh="小店、职场人、网店卖家、个人创作者、自由职业者、产品创业团队: 每种都有专属指令和 5 条现成提示词。" data-ja="個人店、会社員、ネットショップ、個人クリエイター、フリーランス、プロダクトスタートアップ: それぞれ専用の指示と実務プロンプト5本付き。">자영업·직장인·스마트스토어·1인 크리에이터·프리랜서·프로덕트 스타트업: 업종별 지침과 바로 쓰는 실무 프롬프트 5개씩.</p>
         </article>
         <article class="pack-card">
-          <div class="em">⚙️</div>
+          
           <h3 data-en="Claude Code skill pack" data-zh="Claude Code 技能包" data-ja="Claude Code スキルパック">Claude Code 스킬팩</h3>
           <p data-en="A CLAUDE.md and skills/ template for people who run Claude Code or a local AI." data-zh="给使用 Claude Code 或本地 AI 的人准备的 CLAUDE.md 与 skills/ 模板。" data-ja="Claude CodeやローカルAIを使う人向けのCLAUDE.mdとskills/テンプレート。">Claude Code·로컬 AI 사용자용 CLAUDE.md와 skills/ 템플릿.</p>
         </article>
@@ -263,10 +259,10 @@
 
       <div class="pack-buy">
         <div>
-          <div class="pack-price" data-en="Early bird 9,900 KRW · 50 prompts · Free lifetime updates" data-zh="早鸟价 9,900 韩元 · 50 条提示词 · 终身免费更新" data-ja="アーリーバード 9,900ウォン · プロンプト50本 · 生涯無料アップデート">얼리버드 9,900원 · 프롬프트 50개 · 평생 업데이트</div>
+          <div class="pack-price" data-en="Early bird 9,900 KRW, 50 prompts, free lifetime updates" data-zh="早鸟价 9,900 韩元, 50 条提示词, 终身免费更新" data-ja="アーリーバード 9,900ウォン, プロンプト50本, 生涯無料アップデート">얼리버드 9,900원, 프롬프트 50개, 평생 업데이트</div>
           <p class="small muted" data-en="Includes the 3-minute start guide (Markdown · PDF). The web demo stays free." data-zh="含 3 分钟上手指南（Markdown · PDF）。在线体验继续免费。" data-ja="3分スタートガイド（Markdown · PDF）付き。ウェブのデモはこれまで通り無料です。">3분 시작 가이드(Markdown · PDF) 포함. 웹 체험은 계속 무료입니다.</p>
         </div>
-        <a class="btn btn-primary" id="packBuyTop" data-pack-link href="https://www.latpeed.com/products/VTtxq" target="_blank" rel="noopener" data-en="Get the setup pack on Latpeed →" data-zh="在 Latpeed 购买配置包 →" data-ja="Latpeedでセットアップパックを購入 →">래피드에서 세팅 팩 받기 →</a>
+        <a class="btn btn-primary" id="packBuyTop" data-pack-link href="https://www.latpeed.com/products/VTtxq" target="_blank" rel="noopener" data-en="Get the setup pack on Latpeed" data-zh="在 Latpeed 购买配置包" data-ja="Latpeedでセットアップパックを購入">래피드에서 세팅 팩 받기</a>
       </div>
     </div>
   </section>
@@ -275,30 +271,29 @@
   <section class="section" id="mobile">
     <div class="container">
       <div class="section-head">
-        <div class="kicker" data-en="Mobile" data-zh="手机" data-ja="スマホ">휴대폰</div>
         <h2 data-en="Continue on your phone" data-zh="在手机上接着用" data-ja="スマホでもそのまま">휴대폰에서도 그대로</h2>
-        <p class="section-lead" data-en="The web office opens in any phone browser. Add it to your home screen and it runs like an app — no store, no install file." data-zh="网页版办公室在任何手机浏览器里都能打开。添加到主屏幕，就能像 App 一样使用 — 不用应用商店，也不用安装文件。" data-ja="ウェブ版オフィスはスマホのブラウザで開けます。ホーム画面に追加すればアプリのように使えます。ストアもインストールファイルも不要です。">웹 사무실은 휴대폰 브라우저에서도 열립니다. 홈 화면에 추가하면 앱처럼 쓸 수 있습니다. 스토어도, 설치 파일도 필요 없습니다.</p>
+        <p class="section-lead" data-en="The web office opens in any phone browser. Add it to your home screen and it runs like an app: no store, no install file." data-zh="网页版办公室在任何手机浏览器里都能打开。添加到主屏幕，就能像 App 一样使用: 不用应用商店，也不用安装文件。" data-ja="ウェブ版オフィスはスマホのブラウザで開けます。ホーム画面に追加すればアプリのように使えます。ストアもインストールファイルも不要です。">웹 사무실은 휴대폰 브라우저에서도 열립니다. 홈 화면에 추가하면 앱처럼 쓸 수 있습니다. 스토어도, 설치 파일도 필요 없습니다.</p>
       </div>
       <div class="remote-grid">
         <article class="remote-card">
-          <h3><span data-en="📱 Home screen" data-zh="📱 主屏幕" data-ja="📱 ホーム画面">📱 홈 화면</span> <span class="tag" data-en="easiest" data-zh="最简单" data-ja="いちばん簡単">가장 간단</span></h3>
+          <h3><span data-en="Home screen" data-zh="主屏幕" data-ja="ホーム画面"> 홈 화면</span> <span class="tag" data-en="easiest" data-zh="最简单" data-ja="いちばん簡単">가장 간단</span></h3>
           <p data-en="Open the address in Safari or Chrome, then Share → Add to Home Screen. It opens full screen like an app." data-zh="在 Safari 或 Chrome 打开网址，点分享 → 添加到主屏幕，就能像 App 一样全屏打开。" data-ja="SafariやChromeでURLを開き、共有 → ホーム画面に追加。アプリのように全画面で開きます。">사파리·크롬에서 주소를 열고 <b>공유 → 홈 화면에 추가</b>를 누르면 앱처럼 전체 화면으로 열립니다.</p>
           <button class="btn btn-sm" type="button" data-open-demo="mobile" data-en="Open the web demo" data-zh="打开在线体验" data-ja="ウェブデモを開く">웹 체험 열기</button>
         </article>
         <article class="remote-card">
-          <h3><span data-en="🔐 Desktop app, away from home" data-zh="🔐 不在家也能连" data-ja="🔐 外出先からも">🔐 집 밖에서도</span> <span class="tag" data-en="safe" data-zh="更安全" data-ja="安全">안전</span></h3>
+          <h3><span data-en="Desktop app, away from home" data-zh="不在家也能连" data-ja="外出先からも"> 집 밖에서도</span> <span class="tag" data-en="safe" data-zh="更安全" data-ja="安全">안전</span></h3>
           <p data-en="If you run the desktop app, install Tailscale on both devices, sign in with the same account, then follow the app's phone guide." data-zh="如果用桌面版，在电脑和手机上都安装 Tailscale 并用同一账号登录，再按应用里的“手机连接”指引操作。" data-ja="デスクトップアプリを使う場合は、PCとスマホの両方にTailscaleを入れて同じアカウントでログインし、アプリの「スマホ接続」案内に従ってください。">데스크톱 앱을 쓰는 경우, Mac과 휴대폰에 Tailscale을 설치하고 같은 계정으로 로그인한 뒤 앱의 <b>휴대폰 연결</b> 안내를 따르세요.</p>
           <details class="pro small"><summary data-en="Show command" data-zh="查看命令" data-ja="コマンドを見る">설정 명령 보기</summary><code>tailscale serve --bg 3847</code></details>
           <a class="btn btn-sm" href="https://tailscale.com/download" target="_blank" rel="noopener" data-en="Get Tailscale" data-zh="下载 Tailscale" data-ja="Tailscaleを入手">Tailscale 받기</a>
         </article>
         <article class="remote-card">
-          <h3><span data-en="☁️ Share a link for a while" data-zh="☁️ 临时分享链接" data-ja="☁️ 一時的にリンク共有">☁️ 링크로 잠깐 공유</span> <span class="tag" data-en="advanced" data-zh="进阶" data-ja="上級">고급</span></h3>
+          <h3><span data-en="Share a link for a while" data-zh="临时分享链接" data-ja="一時的にリンク共有"> 링크로 잠깐 공유</span> <span class="tag" data-en="advanced" data-zh="进阶" data-ja="上級">고급</span></h3>
           <p data-en="Only when you want to show someone. Keep the access token on so a known link still needs the token." data-zh="只在想给别人看一眼时使用。打开访问令牌，即使知道链接也需要令牌才能进入。" data-ja="誰かに見せたいときだけ使ってください。アクセストークンを有効にしておけば、リンクを知っていてもトークンなしでは入れません。">잠깐 링크로 보여주고 싶을 때만 쓰세요. 접속 토큰을 켜 두면 링크를 아는 사람도 토큰 없이는 들어올 수 없습니다.</p>
           <details class="pro small"><summary data-en="Show command" data-zh="查看命令" data-ja="コマンドを見る">설정 명령 보기</summary><code>MOA_REQUIRE_TOKEN=1 node server.js</code><br /><code>cloudflared tunnel --url http://127.0.0.1:3847</code></details>
           <a class="btn btn-sm" href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/" target="_blank" rel="noopener" data-en="cloudflared guide" data-zh="cloudflared 指南" data-ja="cloudflared ガイド">cloudflared 안내</a>
         </article>
       </div>
-      <p class="small muted" style="margin-top:12px" data-en="⚠️ Use a share link only while needed, and turn it off afterwards." data-zh="⚠️ 分享链接只在需要时短暂开启，用完请关掉。" data-ja="⚠️ 共有リンクは必要な間だけ短く使い、使い終わったらオフにしてください。">⚠️ 공유 링크는 필요한 동안만 짧게 쓰고, 쓰지 않을 때는 꺼 두세요.</p>
+      <p class="small muted" style="margin-top:12px" data-en="Use a share link only while needed, and turn it off afterwards." data-zh="分享链接只在需要时短暂开启，用完请关掉。" data-ja="共有リンクは必要な間だけ短く使い、使い終わったらオフにしてください。"> 공유 링크는 필요한 동안만 짧게 쓰고, 쓰지 않을 때는 꺼 두세요.</p>
     </div>
   </section>
 
@@ -306,17 +301,16 @@
   <section class="section" id="security">
     <div class="container">
       <div class="section-head">
-        <div class="kicker" data-en="Privacy by design" data-zh="安全的设计" data-ja="安全な設計">안전한 설계</div>
         <h2 data-en="Nothing to install, nothing uploaded" data-zh="不用安装，也不上传" data-ja="インストール不要、アップロードもなし">설치 없이 시작하고, 자료는 내 쪽에만</h2>
         <p class="section-lead" data-en="The web demo runs entirely in this browser tab and never uploads your text. The desktop app keeps everything on your machine, with no cloud sync." data-zh="在线体验完全在这个浏览器标签页里运行，你输入的内容不会被上传。桌面版把一切保存在本机，不做云端同步。" data-ja="ウェブのデモはこのタブ内だけで動き、入力した内容をどこにも送りません。デスクトップアプリはすべてのデータを手元にだけ保存し、クラウド同期はしません。">웹 체험판은 이 브라우저 탭 안에서만 돌고 입력한 내용을 어디로도 보내지 않습니다. 데스크톱 앱은 모든 자료를 내 컴퓨터에만 저장합니다.</p>
       </div>
       <div class="sec-grid">
-        <article class="sec-card"><div class="em">🌐</div><h3 data-en="Web first, no binary" data-zh="网页优先，没有安装包" data-ja="ウェブ優先、バイナリ不要">설치 파일 없이 웹에서</h3><p data-en="No unsigned installer, so no “unidentified developer” warning. Open the address and you are in." data-zh="没有未签名的安装包，就不会出现“无法验证开发者”的警告。打开网址就能用。" data-ja="未署名のインストーラがないので「開発元を確認できません」という警告も出ません。URLを開けばすぐ使えます。">서명되지 않은 설치 파일이 없으니 “확인되지 않은 개발자” 경고도 없습니다. 주소를 열면 바로 시작합니다.</p></article>
-        <article class="sec-card"><div class="em">💾</div><h3 data-en="Data stays in the tab" data-zh="数据留在这个标签页" data-ja="データはこのタブだけ">체험 데이터는 탭 안에</h3><p data-en="Demo conversations live in this tab only. The desktop app stores them in ./data/ on your machine." data-zh="体验对话只保存在这个标签页里。桌面版把它存在本机的 ./data/ 目录。" data-ja="デモの会話はこのタブ内だけにあります。デスクトップアプリは手元の ./data/ に保存します。">체험 대화는 이 탭 안에만 있습니다. 데스크톱 앱은 내 컴퓨터의 ./data/ 에만 저장합니다.</p></article>
-        <article class="sec-card"><div class="em">✋</div><h3 data-en="Approve before anything runs" data-zh="执行前一定先确认" data-ja="実行前に必ず確認">중요한 실행은 먼저 확인</h3><p data-en="Before a file is written or a command runs, the bot asks “may I?”." data-zh="在写入文件或执行命令之前，机器人一定会先问“可以吗？”" data-ja="ファイルを書いたりコマンドを実行したりする前に、ボットは必ず「やっていいですか？」と尋ねます。">파일을 만들거나 명령을 실행하기 전에 항상 “해도 될까요?” 하고 물어봅니다.</p></article>
-        <article class="sec-card"><div class="em">🔑</div><h3 data-en="No API key needed" data-zh="不需要 API 密钥" data-ja="APIキー不要">API 키 없이 시작</h3><p data-en="The web demo needs no key. If you add one in the app, it is never shown again after saving." data-zh="在线体验不需要任何密钥。在应用里添加密钥后，保存之后也不会再显示原文。" data-ja="ウェブのデモにキーは要りません。アプリでキーを設定しても、保存後は二度と表示されません。">웹 체험은 키가 필요 없습니다. 앱에서 키를 넣어도 저장한 뒤에는 다시 보여주지 않습니다.</p></article>
-        <article class="sec-card"><div class="em">📁</div><h3 data-en="Only the folder you allow" data-zh="只使用你指定的文件夹" data-ja="許可したフォルダだけ">정해진 폴더만 사용</h3><p data-en="Set the folder bots may work in; nothing outside it is touched." data-zh="指定机器人可以工作的文件夹，除此之外的文件不会被碰。" data-ja="ボットが作業してよいフォルダを決めれば、その外のファイルには触れません。">봇이 일할 수 있는 폴더를 정하면 그 밖의 파일은 건드리지 않습니다.</p></article>
-        <article class="sec-card"><div class="em">🛡️</div><h3 data-en="No server bill" data-zh="没有服务器费" data-ja="サーバー代0円">서버비 0원</h3><p data-en="Static hosting on GitHub Pages — no server to rent, nothing to keep running." data-zh="只用 GitHub Pages 静态托管 — 不用租服务器，也没有需要一直运行的进程。" data-ja="GitHub Pagesの静的ホスティングのみ。借りるサーバーも、動かし続けるプロセスもありません。">정적 호스팅만 씁니다. 빌려야 할 서버도, 켜 둘 프로세스도 없습니다.</p></article>
+        <article class="sec-card"><h3 data-en="Web first, no binary" data-zh="网页优先，没有安装包" data-ja="ウェブ優先、バイナリ不要">설치 파일 없이 웹에서</h3><p data-en="No unsigned installer, so no “unidentified developer” warning. Open the address and you are in." data-zh="没有未签名的安装包，就不会出现“无法验证开发者”的警告。打开网址就能用。" data-ja="未署名のインストーラがないので「開発元を確認できません」という警告も出ません。URLを開けばすぐ使えます。">서명되지 않은 설치 파일이 없으니 “확인되지 않은 개발자” 경고도 없습니다. 주소를 열면 바로 시작합니다.</p></article>
+        <article class="sec-card"><h3 data-en="Data stays in the tab" data-zh="数据留在这个标签页" data-ja="データはこのタブだけ">체험 데이터는 탭 안에</h3><p data-en="Demo conversations live in this tab only. The desktop app stores them in ./data/ on your machine." data-zh="体验对话只保存在这个标签页里。桌面版把它存在本机的 ./data/ 目录。" data-ja="デモの会話はこのタブ内だけにあります。デスクトップアプリは手元の ./data/ に保存します。">체험 대화는 이 탭 안에만 있습니다. 데스크톱 앱은 내 컴퓨터의 ./data/ 에만 저장합니다.</p></article>
+        <article class="sec-card"><h3 data-en="Approve before anything runs" data-zh="执行前一定先确认" data-ja="実行前に必ず確認">중요한 실행은 먼저 확인</h3><p data-en="Before a file is written or a command runs, the bot asks “may I?”." data-zh="在写入文件或执行命令之前，机器人一定会先问“可以吗？”" data-ja="ファイルを書いたりコマンドを実行したりする前に、ボットは必ず「やっていいですか？」と尋ねます。">파일을 만들거나 명령을 실행하기 전에 항상 “해도 될까요?” 하고 물어봅니다.</p></article>
+        <article class="sec-card"><h3 data-en="No API key needed" data-zh="不需要 API 密钥" data-ja="APIキー不要">API 키 없이 시작</h3><p data-en="The web demo needs no key. If you add one in the app, it is never shown again after saving." data-zh="在线体验不需要任何密钥。在应用里添加密钥后，保存之后也不会再显示原文。" data-ja="ウェブのデモにキーは要りません。アプリでキーを設定しても、保存後は二度と表示されません。">웹 체험은 키가 필요 없습니다. 앱에서 키를 넣어도 저장한 뒤에는 다시 보여주지 않습니다.</p></article>
+        <article class="sec-card"><h3 data-en="Only the folder you allow" data-zh="只使用你指定的文件夹" data-ja="許可したフォルダだけ">정해진 폴더만 사용</h3><p data-en="Set the folder bots may work in; nothing outside it is touched." data-zh="指定机器人可以工作的文件夹，除此之外的文件不会被碰。" data-ja="ボットが作業してよいフォルダを決めれば、その外のファイルには触れません。">봇이 일할 수 있는 폴더를 정하면 그 밖의 파일은 건드리지 않습니다.</p></article>
+        <article class="sec-card"><h3 data-en="No server bill" data-zh="没有服务器费" data-ja="サーバー代0円">서버비 0원</h3><p data-en="Static hosting on GitHub Pages: no server to rent, nothing to keep running." data-zh="只用 GitHub Pages 静态托管: 不用租服务器，也没有需要一直运行的进程。" data-ja="GitHub Pagesの静的ホスティングのみ。借りるサーバーも、動かし続けるプロセスもありません。">정적 호스팅만 씁니다. 빌려야 할 서버도, 켜 둘 프로세스도 없습니다.</p></article>
       </div>
     </div>
   </section>
@@ -325,21 +319,20 @@
   <section class="section" id="advanced">
     <div class="container">
       <div class="section-head">
-        <div class="kicker" data-en="Advanced" data-zh="进阶" data-ja="上級">고급 · 개발자</div>
         <h2 data-en="Desktop app and source (only if you need them)" data-zh="桌面版与源码（只在需要时）" data-ja="デスクトップアプリとソース（必要な人だけ）">데스크톱 앱과 소스로 쓰기</h2>
-        <p class="section-lead" data-en="These are unsigned personal builds, so macOS and Windows may warn you. Most people do not need them — the web version already works." data-zh="这些是未签名的个人构建，macOS 和 Windows 可能会提示警告。大多数人并不需要 — 网页版已经够用。" data-ja="これらは未署名の個人ビルドのため、macOSやWindowsで警告が出ることがあります。ほとんどの人には不要です — ウェブ版で十分です。">여기 파일들은 서명되지 않은 개인 빌드라 macOS·Windows가 경고를 보여 줄 수 있습니다. 대부분은 필요 없습니다 — 웹 버전만으로 충분합니다.</p>
+        <p class="section-lead" data-en="These are unsigned personal builds, so macOS and Windows may warn you. Most people do not need them: the web version already works." data-zh="这些是未签名的个人构建，macOS 和 Windows 可能会提示警告。大多数人并不需要: 网页版已经够用。" data-ja="これらは未署名の個人ビルドのため、macOSやWindowsで警告が出ることがあります。ほとんどの人には不要です: ウェブ版で十分です。">여기 파일들은 서명되지 않은 개인 빌드라 macOS·Windows가 경고를 보여 줄 수 있습니다. 대부분은 필요 없습니다: 웹 버전만으로 충분합니다.</p>
       </div>
 
       <details class="pro" id="desktopApp">
-        <summary data-en="💿 Desktop app install files (macOS .dmg · Windows .exe)" data-zh="💿 桌面版安装文件（macOS .dmg · Windows .exe）" data-ja="💿 デスクトップアプリのインストーラ（macOS .dmg · Windows .exe）">💿 데스크톱 앱 설치 파일 (macOS .dmg · Windows .exe)</summary>
+        <summary data-en="Desktop app install files (macOS .dmg · Windows .exe)" data-zh="桌面版安装文件（macOS .dmg · Windows .exe）" data-ja="デスクトップアプリのインストーラ（macOS .dmg · Windows .exe）"> 데스크톱 앱 설치 파일 (macOS .dmg · Windows .exe)</summary>
         <div class="adv-body">
           <div class="dl-grid">
             <article class="dl-card mac">
               <div class="dl-top">
-                <div class="dl-ico" aria-hidden="true">💿</div>
+                
                 <div>
                   <h3>Mac</h3>
-                  <p class="dl-sub" data-en="Apple Silicon · Intel" data-zh="Apple Silicon · Intel" data-ja="Apple Silicon · Intel">Apple Silicon · Intel 모두 지원</p>
+                  <p class="dl-sub" data-en="Apple Silicon, Intel" data-zh="Apple Silicon, Intel" data-ja="Apple Silicon, Intel">Apple Silicon, Intel 모두 지원</p>
                 </div>
               </div>
               <a class="btn btn-primary btn-block" data-dl="mac-universal" href="https://github.com/CM-jccho/moa-hive/releases/latest" data-en="Download for Mac" data-zh="下载 Mac 版" data-ja="Mac版をダウンロード">Mac용 내려받기</a>
@@ -348,7 +341,7 @@
 
             <article class="dl-card win">
               <div class="dl-top">
-                <div class="dl-ico" aria-hidden="true">🧩</div>
+                
                 <div>
                   <h3>Windows</h3>
                   <p class="dl-sub">Windows 10 / 11</p>
@@ -369,9 +362,9 @@
               <li><b data-en="Open the install file" data-zh="打开安装文件" data-ja="インストーラを開く">설치 파일 열기</b><p><code>MOA-Hive-0.3.4-universal.dmg</code></p></li>
               <li><b data-en="Move to Applications" data-zh="移到 Applications 文件夹" data-ja="Applicationsへ移動">Applications 폴더로 옮기기</b><p data-en="Drag MOA Hive onto Applications in the window." data-zh="在打开的窗口里把 MOA Hive 拖到 Applications 文件夹。" data-ja="開いたウィンドウでMOA HiveのアイコンをApplicationsへドラッグします。">열린 창에서 MOA Hive 아이콘을 Applications로 끌어다 놓습니다.</p></li>
               <li><b data-en="Open MOA Hive" data-zh="运行 MOA Hive" data-ja="MOA Hiveを起動">MOA Hive 실행</b><p data-en-html="If macOS blocks it: <b>Done</b> → <b>System Settings &gt; Privacy &amp; Security</b> → <b>Open Anyway</b>. After that, double-click opens it." data-zh-html="如果 macOS 拦截，点 <b>完成</b> → <b>系统设置 &gt; 隐私与安全性</b> → <b>仍要打开</b>。之后双击就能打开。" data-ja-html="macOSがブロックした場合は<b>完了</b> → <b>システム設定 &gt; プライバシーとセキュリティ</b> → <b>このまま開く</b>。以後はダブルクリックで開きます。">처음 한 번 경고가 뜨면 <b>완료</b> → <b>시스템 설정 &gt; 개인정보 보호 및 보안</b> → <b>확인 없이 열기</b>. 그다음부터는 더블클릭으로 열립니다.</p></li>
-              <li><b data-en="Say what you need" data-zh="说出要做的事" data-ja="やることを話す">하고 싶은 일 말하기</b><p data-en="Type “sort this week's to-dos” or press 🎤 and speak." data-zh="输入“整理这周要做的事”，或按 🎤 说出来。" data-ja="「今週のやることを整理して」と入力するか、🎤を押して話します。">“이번 주 할 일 정리해줘”처럼 입력하거나 🎤를 눌러 말합니다.</p></li>
+              <li><b data-en="Say what you need" data-zh="说出要做的事" data-ja="やることを話す">하고 싶은 일 말하기</b><p data-en="Type “sort this week's to-dos” or press and speak." data-zh="输入“整理这周要做的事”，或按  说出来。" data-ja="「今週のやることを整理して」と入力するか、を押して話します。">“이번 주 할 일 정리해줘”처럼 입력하거나 를 눌러 말합니다.</p></li>
             </ol>
-            <div class="note" data-en="💡 All conversations stay on this Mac. No account needed." data-zh="💡 所有对话只保存在这台 Mac 上，不需要注册账号。" data-ja="💡 会話と資料はこのMac内だけに保存されます。アカウントも不要です。">💡 모든 대화와 자료는 이 Mac 안에만 저장됩니다. 계정을 만들 필요도 없습니다.</div>
+            <div class="note" data-en="All conversations stay on this Mac. No account needed." data-zh="所有对话只保存在这台 Mac 上，不需要注册账号。" data-ja="会話と資料はこのMac内だけに保存されます。アカウントも不要です。"> 모든 대화와 자료는 이 Mac 안에만 저장됩니다. 계정을 만들 필요도 없습니다.</div>
           </div>
 
           <div class="guide-pane" data-pane="win" hidden>
@@ -379,9 +372,9 @@
               <li><b data-en="Open the install file" data-zh="打开安装文件" data-ja="インストーラを開く">설치 파일 열기</b><p><code>MOA-Hive-Setup-0.3.4.exe</code></p></li>
               <li><b data-en="Next → Install" data-zh="下一步 → 安装" data-ja="次へ → インストール">다음 → 설치</b><p data-en="Leave the install path and press Install." data-zh="安装路径保持默认，点“安装”。" data-ja="インストール先はそのままで「インストール」を押します。">설치 위치는 그대로 두고 <b>설치</b>를 누릅니다.</p></li>
               <li><b data-en="Run MOA Hive" data-zh="运行 MOA Hive" data-ja="MOA Hiveを起動">MOA Hive 실행</b><p data-en="Use the desktop or Start menu shortcut." data-zh="点桌面或开始菜单里的 MOA Hive 图标。" data-ja="デスクトップまたはスタートメニューのMOA Hiveアイコンを押します。">바탕화면이나 시작 메뉴의 MOA Hive 아이콘을 누릅니다.</p></li>
-              <li><b data-en="Say what you need" data-zh="说出要做的事" data-ja="やることを話す">하고 싶은 일 말하기</b><p data-en="Type “sort this week's to-dos” or press 🎤 and speak." data-zh="输入“整理这周要做的事”，或按 🎤 说出来。" data-ja="「今週のやることを整理して」と入力するか、🎤を押して話します。">“이번 주 할 일 정리해줘”처럼 입력하거나 🎤를 눌러 말합니다.</p></li>
+              <li><b data-en="Say what you need" data-zh="说出要做的事" data-ja="やることを話す">하고 싶은 일 말하기</b><p data-en="Type “sort this week's to-dos” or press and speak." data-zh="输入“整理这周要做的事”，或按  说出来。" data-ja="「今週のやることを整理して」と入力するか、を押して話します。">“이번 주 할 일 정리해줘”처럼 입력하거나 를 눌러 말합니다.</p></li>
             </ol>
-            <div class="note" data-en="💡 All conversations stay on this PC. No account needed." data-zh="💡 所有对话只保存在这台电脑上，不需要注册账号。" data-ja="💡 会話と資料はこのPC内だけに保存されます。アカウントも不要です。">💡 모든 대화와 자료는 이 PC 안에만 저장됩니다. 계정을 만들 필요도 없습니다.</div>
+            <div class="note" data-en="All conversations stay on this PC. No account needed." data-zh="所有对话只保存在这台电脑上，不需要注册账号。" data-ja="会話と資料はこのPC内だけに保存されます。アカウントも不要です。"> 모든 대화와 자료는 이 PC 안에만 저장됩니다. 계정을 만들 필요도 없습니다.</div>
           </div>
 
           <div class="dl-actions dl-sub-actions"><a data-dl="releases" href="https://github.com/CM-jccho/moa-hive/releases" data-en="See all releases" data-zh="查看其他版本" data-ja="他のバージョンを見る">다른 버전 보기</a></div>
@@ -397,7 +390,7 @@
             <li data-en="Source: download the ZIP · GitHub repository" data-zh="源码：下载 ZIP · GitHub 仓库" data-ja="ソース：ZIPをダウンロード · GitHubリポジトリ">소스: <a data-dl="win-zip" href="https://github.com/CM-jccho/moa-hive/archive/refs/heads/main.zip">ZIP 내려받기</a> · <a href="https://github.com/CM-jccho/moa-hive" target="_blank" rel="noopener">GitHub 저장소</a></li>
             <li>실행: <code>git clone https://github.com/CM-jccho/moa-hive.git</code> → <code>cd moa-hive</code> → <code>node server.js</code> → <code>http://127.0.0.1:3847</code></li>
             <li>앱 빌드: <code>npm install</code> → <code>npm run dist:mac</code> 또는 <code>npm run dist:win</code></li>
-            <li>Apple Silicon 전용 <a data-dl="mac-arm64" href="https://github.com/CM-jccho/moa-hive/releases/latest">arm64</a> · Intel 전용 <a data-dl="mac-x64" href="https://github.com/CM-jccho/moa-hive/releases/latest">x64</a> · <a data-dl="mac-script" href="https://github.com/CM-jccho/moa-hive/blob/main/start.command">start.command</a> · <a data-dl="win-script" href="https://github.com/CM-jccho/moa-hive/blob/main/start.bat">start.bat</a></li>
+            <li>Apple Silicon용 <a data-dl="mac-arm64" href="https://github.com/CM-jccho/moa-hive/releases/latest">arm64</a>, Intel용 <a data-dl="mac-x64" href="https://github.com/CM-jccho/moa-hive/releases/latest">x64</a>, <a data-dl="mac-script" href="https://github.com/CM-jccho/moa-hive/blob/main/start.command">start.command</a>, <a data-dl="win-script" href="https://github.com/CM-jccho/moa-hive/blob/main/start.bat">start.bat</a></li>
           </ul>
         </div>
       </details>
@@ -407,34 +400,34 @@
 
 <footer class="site-foot">
   <div class="container">
-    <span data-en="© 2026 MOA Hive · Personal license (UNLICENSED) · Jaecheol Cho" data-zh="© 2026 MOA Hive · 个人使用许可（UNLICENSED）· Jaecheol Cho" data-ja="© 2026 MOA Hive · 個人利用ライセンス（UNLICENSED）· Jaecheol Cho">© 2026 MOA Hive · 개인 사용 라이선스(UNLICENSED) · 조재철</span>
+    <span data-en="© 2026 MOA Hive, personal licence (UNLICENSED), Jaecheol Cho" data-zh="© 2026 MOA Hive, 个人使用许可（UNLICENSED）, Jaecheol Cho" data-ja="© 2026 MOA Hive, 個人利用ライセンス（UNLICENSED）, Jaecheol Cho">© 2026 MOA Hive, 개인 사용 라이선스(UNLICENSED), 조재철</span>
     <span>
-      <a href="https://github.com/CM-jccho/moa-hive" target="_blank" rel="noopener" data-en="GitHub repository" data-zh="GitHub 仓库" data-ja="GitHubリポジトリ">GitHub 저장소</a> ·
-      <a href="https://github.com/CM-jccho/moa-hive/releases" target="_blank" rel="noopener" data-en="Releases" data-zh="发布版本" data-ja="リリース">릴리스</a> ·
+      <a href="https://github.com/CM-jccho/moa-hive" target="_blank" rel="noopener" data-en="GitHub repository" data-zh="GitHub 仓库" data-ja="GitHubリポジトリ">GitHub 저장소</a>,
+      <a href="https://github.com/CM-jccho/moa-hive/releases" target="_blank" rel="noopener" data-en="Releases" data-zh="发布版本" data-ja="リリース">릴리스</a>,
       <a href="#pack" data-en="Pro pack" data-zh="专业包" data-ja="プロパック">프로 팩</a>
     </span>
   </div>
 </footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<button class="btn btn-primary install-fab" id="installFab" type="button">📲 홈 화면에 추가</button>
+<button class="btn btn-primary install-fab" id="installFab" type="button"> 홈 화면에 추가</button>
 
 <!-- 세팅 팩 모달 -->
 <div class="pack-sheet" id="packSheet" hidden>
   <div class="pack-dialog" role="dialog" aria-modal="true" aria-labelledby="packTitle">
     <div class="pack-sheet-head">
       <div class="grow">
-        <h3 id="packTitle">🎁 이 팀을 내 ChatGPT · Claude에 그대로 쓰기</h3>
-        <p id="packSub">세팅 팩 — 한 번 붙여넣으면 3분 만에 준비됩니다.</p>
+        <h3 id="packTitle"> 이 팀을 내 ChatGPT · Claude에 그대로 쓰기</h3>
+        <p id="packSub">세팅 팩: 한 번 붙여넣으면 3분 만에 준비됩니다.</p>
       </div>
-      <button class="icon-btn" id="closePack" type="button" aria-label="닫기">✕</button>
+      <button class="icon-btn" id="closePack" type="button" aria-label="닫기"></button>
     </div>
     <div class="pack-sheet-body">
       <div class="pack-team-label">이 팀 구성</div>
       <div class="pack-team" id="packTeam"></div>
       <ol class="pack-steps" id="packSteps"></ol>
       <div class="pack-price-line" id="packPrice"></div>
-      <a class="btn btn-primary btn-block" id="packBuy" data-pack-link href="https://www.latpeed.com/products/VTtxq" target="_blank" rel="noopener">래피드에서 세팅 팩 받기 →</a>
+      <a class="btn btn-primary btn-block" id="packBuy" data-pack-link href="https://www.latpeed.com/products/VTtxq" target="_blank" rel="noopener">래피드에서 세팅 팩 받기</a>
       <p class="pack-note" id="packNote"></p>
     </div>
   </div>
